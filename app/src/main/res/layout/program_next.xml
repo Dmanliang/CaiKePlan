@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#fafafa"
+    android:orientation="vertical" >
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#cb2336" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:id="@+id/program_tilte_next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="重庆时时彩预测前二组选9码5期"
+                android:textColor="#ffffff"
+                android:textSize="18dp" />
+
+            <ImageView
+                android:id="@+id/collect_back_btn11"
+                android:layout_width="8dp"
+                android:layout_height="14dp"
+                android:layout_marginLeft="5dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/program_back_btn" />
+
+            <Button
+                android:id="@+id/program_next_back_btn"
+                android:layout_width="45dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/button"
+                android:text="方案"
+                android:textColor="#ffffff"
+                android:textSize="14dp" />
+
+            <Button
+                android:id="@+id/collect_copy11"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/button"
+                android:text="复制"
+                android:textColor="#ffffff"
+                android:textSize="14dp" />
+        </RelativeLayout>
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/relativeNextList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:id="@+id/planTitle"
+            android:layout_width="match_parent"
+            android:layout_height="50dp" >
+
+            <HorizontalScrollView
+                android:id="@+id/scrollview_next"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="10dp"
+                android:background="#00000000"
+                android:scrollbars="none" >
+
+                <RadioGroup
+                    android:id="@+id/radioGroup_next"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal" >
+
+                    <RadioButton
+                        android:id="@+id/radio0"
+                        android:layout_width="80dp"
+                        android:layout_height="32dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/radiobuttonbg"
+                        android:button="@null"
+                        android:checked="true"
+                        android:gravity="center"
+                        android:text="以筠"
+                        android:textColor="@drawable/radiotextbg"
+                        android:textSize="15dp" />
+
+                    <RadioButton
+                        android:id="@+id/radio1"
+                        android:layout_width="80dp"
+                        android:layout_height="32dp"
+                        android:layout_marginLeft="20dp"
+                        android:background="@drawable/radiobuttonbg"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:text="新竹"
+                        android:textColor="@drawable/radiotextbg"
+                        android:textSize="15dp" />
+
+                    <RadioButton
+                        android:id="@+id/radio2"
+                        android:layout_width="80dp"
+                        android:layout_height="32dp"
+                        android:layout_marginLeft="20dp"
+                        android:background="@drawable/radiobuttonbg"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:text="绮露"
+                        android:textColor="@drawable/radiotextbg"
+                        android:textSize="15dp" />
+
+                    <RadioButton
+                        android:id="@+id/radio3"
+                        android:layout_width="80dp"
+                        android:layout_height="32dp"
+                        android:layout_marginLeft="20dp"
+                        android:background="@drawable/radiobuttonbg"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:text="白竹"
+                        android:textColor="@drawable/radiotextbg"
+                        android:textSize="15dp" />
+
+                    <RadioButton
+                        android:id="@+id/radio4"
+                        android:layout_width="80dp"
+                        android:layout_height="32dp"
+                        android:layout_marginLeft="20dp"
+                        android:background="@drawable/radiobuttonbg"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:text="飞兰"
+                        android:textColor="@drawable/radiotextbg"
+                        android:textSize="15dp" />
+
+                    <RadioButton
+                        android:id="@+id/radio5"
+                        android:layout_width="80dp"
+                        android:layout_height="32dp"
+                        android:layout_marginLeft="20dp"
+                        android:background="@drawable/radiobuttonbg"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:text="曼雁"
+                        android:textColor="@drawable/radiotextbg"
+                        android:textSize="15dp" />
+
+                    <RadioButton
+                        android:id="@+id/radio6"
+                        android:layout_width="80dp"
+                        android:layout_height="32dp"
+                        android:layout_marginLeft="20dp"
+                        android:background="@drawable/radiobuttonbg"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:text="雁露"
+                        android:textColor="@drawable/radiotextbg"
+                        android:textSize="15dp" />
+
+                    <RadioButton
+                        android:id="@+id/radio7"
+                        android:layout_width="80dp"
+                        android:layout_height="32dp"
+                        android:layout_marginLeft="20dp"
+                        android:background="@drawable/radiobuttonbg"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:text="凝冬"
+                        android:textColor="@drawable/radiotextbg"
+                        android:textSize="15dp" />
+
+                    <RadioButton
+                        android:id="@+id/radio8"
+                        android:layout_width="80dp"
+                        android:layout_height="32dp"
+                        android:layout_marginLeft="20dp"
+                        android:background="@drawable/radiobuttonbg"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:text="含灵"
+                        android:textColor="@drawable/radiotextbg"
+                        android:textSize="15dp" />
+
+                    <RadioButton
+                        android:id="@+id/radio9"
+                        android:layout_width="80dp"
+                        android:layout_height="32dp"
+                        android:layout_marginLeft="20dp"
+                        android:background="@drawable/radiobuttonbg"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:text="初阳"
+                        android:textColor="@drawable/radiotextbg"
+                        android:textSize="15dp" />
+                </RadioGroup>
+            </HorizontalScrollView>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/nextBestData"
+            android:layout_below="@+id/planTitle"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="#9dcdf1" >
+
+            <TextView
+                android:id="@+id/title_accuracy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/textView13"
+                android:layout_toRightOf="@+id/textView13"
+                android:text="94.22%"
+                android:textColor="#ffffff"
+                android:textSize="13dp" />
+
+            <TextView
+                android:id="@+id/textView13"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/title_plan"
+                android:layout_alignBottom="@+id/title_plan"
+                android:layout_centerHorizontal="true"
+                android:text=" 正确率最高达 "
+                android:textColor="#ffffff"
+                android:textSize="13dp" />
+
+            <TextView
+                android:id="@+id/title_plan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/textView13"
+                android:textColor="#ffffff"
+                android:textSize="13dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/nextListMidTitle"
+            android:layout_below="@+id/nextBestData"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:background="#fafafa" >
+            <View
+                android:id="@+id/view2"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="88dp"
+                android:background="#f0f0f0" />
+
+            <View
+                android:id="@+id/view1"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="198dp"
+                android:background="#f0f0f0" />
+
+            <View
+                android:id="@+id/view3"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="309dp"
+                android:background="#f0f0f0" />
+
+            <TextView
+                android:id="@+id/textView15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="14dp"
+                android:text="计划期间"
+                android:textColor="#606060"
+                android:textSize="15dp" />
+
+            <TextView
+                android:id="@+id/textView17"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/textView18"
+                android:layout_alignBottom="@+id/textView18"
+                android:layout_alignRight="@+id/view3"
+                android:layout_marginRight="40dp"
+                android:text="开奖"
+                android:textColor="#606060"
+                android:textSize="15dp" />
+
+            <TextView
+                android:id="@+id/textView18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/textView16"
+                android:layout_alignBottom="@+id/textView16"
+                android:layout_marginLeft="9dp"
+                android:layout_toRightOf="@+id/view3"
+                android:text="结果"
+                android:textColor="#606060"
+                android:textSize="15dp" />
+
+            <TextView
+                android:id="@+id/textView16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/textView15"
+                android:layout_alignBottom="@+id/textView15"
+                android:layout_alignRight="@+id/view1"
+                android:layout_marginRight="23dp"
+                android:text="计划方案"
+                android:textColor="#606060"
+                android:textSize="15dp" />
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/line5"
+            android:layout_below="@+id/nextListMidTitle"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#cccccc" />
+
+        <RelativeLayout
+            android:id="@+id/nextListMid"
+            android:layout_width="match_parent"
+            android:layout_below="@id/line5"
+            android:layout_height="385dp" >
+            <com.example.next.list.listview.ListView
+                android:id="@+id/program_next_result_listview"
+                android:layout_width="match_parent"
+                android:layout_height="385dp" />
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/line6"
+            android:layout_above="@+id/nextListEnd"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="0dp"
+            android:background="#cccccc" />
+
+        <RelativeLayout
+            android:id="@+id/nextListEnd"
+            android:layout_width="match_parent"
+            android:layout_height="68dp"
+            android:layout_alignParentBottom="true"
+            android:background="#f2f2f2" >
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/textView2"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="10dp"
+                android:text="正确率："
+                android:textColor="#888888"
+                android:textSize="15dp" />
+
+            <TextView
+                android:id="@+id/program_next_accuracy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/textView5"
+                android:layout_alignBottom="@+id/textView5"
+                android:layout_toRightOf="@+id/textView5"
+                android:text="00.00%"
+                android:textColor="#3aa0ed"
+                android:textSize="15dp" />
+
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/program_next_accuracy"
+                android:layout_alignBottom="@+id/program_next_accuracy"
+                android:layout_toRightOf="@+id/program_next_accuracy"
+                android:text="; 当前已完成"
+                android:textColor="#888888"
+                android:textSize="15dp" />
+
+            <TextView
+                android:id="@+id/program_next_zhouqi_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/textView7"
+                android:layout_alignBottom="@+id/textView7"
+                android:layout_toRightOf="@+id/textView7"
+                android:text="0"
+                android:textColor="#888888"
+                android:textSize="15dp" />
+
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/program_next_zhouqi_num"
+                android:layout_alignBottom="@+id/program_next_zhouqi_num"
+                android:layout_toRightOf="@+id/program_next_zhouqi_num"
+                android:text="个周期，错误"
+                android:textColor="#888888"
+                android:textSize="15dp" />
+
+            <TextView
+                android:id="@+id/program_next_No_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/textView9"
+                android:layout_toRightOf="@+id/textView9"
+                android:text="0"
+                android:textColor="#888888"
+                android:textSize="15dp" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="9dp"
+                android:layout_marginTop="9dp"
+                android:text="当前"
+                android:textColor="#888888"
+                android:textSize="15dp" />
+
+            <TextView
+                android:id="@+id/textView11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/program_next_No_num"
+                android:layout_alignBottom="@+id/program_next_No_num"
+                android:layout_toRightOf="@+id/program_next_No_num"
+                android:text="个"
+                android:textColor="#888888"
+                android:textSize="15dp" />
+
+            <TextView
+                android:id="@+id/program_next_end_program_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/textView2"
+                android:layout_alignBottom="@+id/textView2"
+                android:layout_toRightOf="@+id/textView2"
+                android:textColor="#888888"
+                android:textSize="15dp" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/program_next_end_program_num"
+                android:layout_alignBottom="@+id/program_next_end_program_num"
+                android:layout_toRightOf="@+id/program_next_end_program_num"
+                android:text="状态："
+                android:textColor="#888888"
+                android:textSize="15dp" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+</LinearLayout>

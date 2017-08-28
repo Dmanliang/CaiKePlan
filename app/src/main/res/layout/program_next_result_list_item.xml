@@ -1,0 +1,125 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="40dp" >
+
+    <RelativeLayout
+        android:id="@+id/relativeResult"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" >
+
+        <View
+            android:id="@+id/view4"
+            android:layout_width="1dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="88dp"
+            android:background="#e6e6e6" />
+
+        <View
+            android:id="@+id/view5"
+            android:layout_width="1dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="198dp"
+            android:background="#e6e6e6" />
+
+        <View
+            android:id="@+id/view6"
+            android:layout_width="1dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="309dp"
+            android:background="#e6e6e6" />
+
+        <RelativeLayout
+            android:layout_width="88dp"
+            android:layout_height="40dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true" >
+
+            <TextView
+                android:id="@+id/program_next_result_list_ranges"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="56-57"
+                android:textColor="#808080"
+                android:textSize="15dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="110dp"
+            android:layout_height="40dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="0dp"
+            android:layout_toRightOf="@+id/view4" >
+
+            <TextView
+                android:id="@+id/program_next_result_list_plan_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="212"
+                android:textColor="#808080"
+                android:textSize="15dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="110dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="0dp"
+            android:layout_toRightOf="@+id/view5" >
+
+            <TextView
+                android:id="@+id/program_next_result_list_nums"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/program_next_result_list_result_issue"
+                android:layout_alignBottom="@+id/program_next_result_list_result_issue"
+                android:layout_toRightOf="@+id/program_next_result_list_result_issue"
+                android:layout_marginLeft="5dp"
+                android:text="12345"
+                android:textColor="#808080"
+                android:textSize="15dp" />
+
+            <TextView
+                android:id="@+id/program_next_result_list_result_issue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:layout_centerVertical="true"
+                android:text="54期"
+                android:textColor="#808080"
+                android:textSize="15dp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="0dp"
+            android:layout_toRightOf="@+id/view6" >
+
+            <TextView
+                android:id="@+id/program_next_result_list_result_hit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                 />
+
+            <ImageView
+                android:id="@+id/program_next_result_list_result_hit_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/next_list_yes" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="41dp">
+    <RelativeLayout
+        android:id="@+id/item_rank_layout"
+        android:layout_width="match_parent"
+        android:layout_height="41dp">
+        <TextView
+            android:id="@+id/item_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/balckText"
+            android:textSize="13sp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="21dp"/>
+        <TextView
+            android:id="@+id/item_plan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/balckText"
+            android:textSize="13sp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@+id/item_num"/>
+        <TextView
+            android:id="@+id/item_hot_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/grayText"
+            android:textSize="12sp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="30dp"/>
+        <ImageView
+            android:id="@+id/item_icon_fire"
+            android:layout_width="15dp"
+            android:layout_height="20dp"
+            android:background="@drawable/icon_fire"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="80dp"/>
+        <View
+            android:layout_width="0.1dp"
+            android:layout_height="15dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/item_icon_fire"
+            android:layout_marginRight="16dp"
+            android:background="@color/whileDivider3" />
+    </RelativeLayout>
+</RelativeLayout>

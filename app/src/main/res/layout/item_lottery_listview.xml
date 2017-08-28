@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="45dp">
+    <TextView
+        android:layout_height="45dp"
+        android:layout_width="match_parent"
+        android:id="@+id/lottery_title"
+        android:textColor="@color/blackText"
+        android:text="重庆时时彩"
+        android:textSize="16sp"
+        android:gravity="center"
+        />
+    <ImageView
+        android:id="@+id/title_checks"
+        android:layout_width="13dp"
+        android:layout_height="12dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="14dp"/>
+</RelativeLayout>

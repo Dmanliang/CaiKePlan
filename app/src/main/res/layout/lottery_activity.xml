@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#feefed">
+    <include
+        android:id="@+id/lottery_toolbar"
+        layout="@layout/toolbar"
+        android:layout_height="70dp"
+        android:layout_width="match_parent"
+        />
+    <RelativeLayout
+        android:id="@+id/relativeList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/lottery_toolbar">
+        <com.example.caikeplan.logic.RefreshableView
+            android:id="@+id/refreshable_view"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+            <ListView
+                android:id="@+id/listrview_caizhong"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="@color/whileDivider"
+                android:dividerHeight="0.2dp"
+                />
+        </com.example.caikeplan.logic.RefreshableView>
+    </RelativeLayout>
+    <include
+        layout="@layout/reload_internet"
+        android:id="@+id/reload_internet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+</RelativeLayout>

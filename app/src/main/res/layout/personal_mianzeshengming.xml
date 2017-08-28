@@ -1,0 +1,68 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/mainback"
+    tools:context=".activity.MainActivity" >
+
+        <include
+            android:id="@+id/free_toolbar"
+            layout="@layout/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/free_toolbar">
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/free"
+                android:textColor="#808080"
+                android:textSize="15dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/qqlayout"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="70dp"
+            android:gravity="center_vertical">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.1dp"
+                android:background="@color/whileDivider" />
+            <TextView
+                android:id="@+id/textqq"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/grey"
+                android:layout_centerVertical="true"
+                android:text="客服QQ"
+                android:textSize="15sp"
+                android:layout_marginLeft="14dp"/>
+            <TextView
+                android:id="@+id/qqtext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="961820000"
+                android:textColor="@color/grey"
+                android:layout_toRightOf="@+id/textqq"
+                android:layout_marginLeft="15dp"
+                android:layout_centerVertical="true"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.1dp"
+                android:background="@color/whileDivider"
+                android:layout_alignParentBottom="true"/>
+        </RelativeLayout>
+
+</RelativeLayout>

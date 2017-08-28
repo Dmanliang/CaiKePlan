@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <RelativeLayout
+        android:id="@+id/relativeItem"
+        android:layout_width="match_parent"
+        android:layout_height="95dp" >
+        <LinearLayout
+            android:id="@+id/linearTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="14dp"
+            android:layout_marginTop="20dp"
+            >
+            <TextView
+                android:id="@+id/lty_cq_nextpage_issue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="第20170103002期"
+                android:textColor="@color/blacktabText"
+                android:textSize="15dp"
+                android:layout_marginLeft="2dp"/>
+
+            <TextView
+                android:id="@+id/lty_cq_nextpage_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="2017-01-03 09:30"
+                android:textColor="#999999"
+                android:textSize="15dp"
+                android:layout_marginLeft="5dp"/>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/CaiZhongLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/linearTitle"
+            android:layout_marginLeft="14dp"
+            android:layout_marginTop="14dp">
+            <TextView
+                android:id="@+id/lottery_list_item_ball_1"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/icon_ball"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="17sp"
+                android:inAnimation="@anim/ball_in"
+                android:outAnimation="@anim/ball_out"/>
+            <TextView
+                android:id="@+id/lottery_list_item_ball_2"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/icon_ball"
+                android:layout_toRightOf="@+id/lottery_list_item_ball_1"
+                android:layout_marginLeft="7dp"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="17sp"
+                android:inAnimation="@anim/ball_in"
+                android:outAnimation="@anim/ball_out"/>
+            <TextView
+                android:id="@+id/lottery_list_item_ball_3"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/icon_ball"
+                android:layout_toRightOf="@+id/lottery_list_item_ball_2"
+                android:layout_marginLeft="10dp"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="17sp" />
+            <TextView
+                android:id="@+id/lottery_list_item_ball_4"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/icon_ball"
+                android:layout_toRightOf="@+id/lottery_list_item_ball_3"
+                android:layout_marginLeft="7dp"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="17sp" />
+            <TextView
+                android:id="@+id/lottery_list_item_ball_5"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/icon_ball"
+                android:layout_toRightOf="@+id/lottery_list_item_ball_4"
+                android:layout_marginLeft="7dp"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="17sp" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/relativeDrop"
+            android:layout_width="60dp"
+            android:layout_height="95dp"
+            android:layout_alignParentRight="true"
+            >
+            <ImageView
+                android:id="@+id/up_arrow"
+                android:layout_centerVertical="true"
+                android:layout_width="16dp"
+                android:layout_height="10dp"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/drop_arrow" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relativeHide"
+        android:background="@color/pinkback"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:layout_below="@+id/relativeItem"
+        >
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:background="@color/whileDivider"
+            android:layout_alignParentTop="true"
+            />
+        <TextView
+            android:id="@+id/startThree"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="前三：组三"
+            android:textSize="13sp"
+            android:textColor="@color/blacktabText"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="27dp"
+            />
+        <TextView
+            android:id="@+id/middleThree"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="中三：组三"
+            android:textSize="13sp"
+            android:textColor="@color/blacktabText"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            />
+        <TextView
+            android:id="@+id/endThree"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="后三：组三"
+            android:textSize="13sp"
+            android:textColor="@color/blacktabText"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="27dp"
+            android:layout_alignParentRight="true"
+            />
+        <TextView
+            android:id="@+id/bigSingle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="大单  | 大单"
+            android:textSize="13sp"
+            android:layout_below="@+id/startThree"
+            android:layout_marginLeft="27dp"
+            android:textColor="@color/blacktabText"
+            android:layout_marginTop="12dp"
+            />
+    </RelativeLayout>
+
+
+</RelativeLayout>

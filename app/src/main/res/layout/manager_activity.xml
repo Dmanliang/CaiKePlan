@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/mainback">
+
+    <include
+        android:id="@+id/manager_toolbar"
+        layout="@layout/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        />
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_manager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:guidance_text_color="@color/colorPrimary"
+        app:guidance_view_bg_color="@color/transparent"
+        app:load_text="加载更多"
+        app:progress_bar_color="@color/colorPrimary"
+        app:refresh_text="下拉刷新"
+        android:layout_below="@+id/manager_toolbar"
+        android:layout_marginTop="15dp">
+        <ListView
+            android:id="@+id/manager_listview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:dividerHeight="0.1dp"
+            android:divider="@color/whileDivider"
+            />
+    </android.support.v4.widget.SwipeRefreshLayout>
+    <RelativeLayout
+        android:id="@+id/loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/blackHalfAlphaBlack"
+        android:visibility="gone">
+        <ProgressBar
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
+</LinearLayout>

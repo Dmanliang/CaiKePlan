@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:background="@color/mainback">
+    <include
+        android:id="@+id/collect_toolbar"
+        layout="@layout/toolbar"
+        android:layout_height="70dp"
+        android:layout_width="match_parent"
+        />
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_collect"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:guidance_text_color="@color/colorPrimary"
+        app:guidance_view_bg_color="@color/transparent"
+        app:load_text="加载更多"
+        app:progress_bar_color="@color/colorPrimary"
+        app:refresh_text="下拉刷新"
+        android:layout_below="@+id/collect_toolbar">
+            <ListView
+                android:id="@+id/program_collect_listview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="@color/whileDivider"
+                android:dividerHeight="0.1dp"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
+    <include layout="@layout/no_collect"
+             android:id="@+id/no_collect"
+             android:layout_height="match_parent"
+             android:layout_width="match_parent"
+             />
+    <include
+        layout="@layout/no_data"
+        android:id="@+id/no_data"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"/>
+</LinearLayout>

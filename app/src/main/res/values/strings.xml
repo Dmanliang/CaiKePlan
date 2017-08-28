@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">聚彩盆</string>
+    <string name="can_not_find_version_name">聚彩盆</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string-array name="spingarr">
+    <item>重庆时时彩</item>
+    <item>天津时时彩</item>
+    <item>新疆时时彩</item>
+    </string-array>
+    <string name="pull_to_refresh">下拉可以刷新</string>
+    <string name="release_to_refresh">释放立即刷新</string>
+    <string name="refreshing">正在刷新…</string>
+    <string name="not_updated_yet">暂未更新过</string>
+    <string name="updated_at">上次更新于%1$s前</string>
+    <string name="updated_just_now">刚刚更新</string>
+    <string name="time_error">时间有问题</string>
+    <string name="pull_to_refresh_pull_label">下拉刷新</string>
+    <string name="pull_to_refresh_release_label">释放立即刷新</string>
+    <string name="pull_to_refresh_refreshing_label">正在刷新…</string>
+    <string name="lottery_title">计 划 周 期    |   计 划 方 案    |    开 奖    |    结 果 </string>
+    <string name="line">    \n---------------------------------------------------------\n</string>
+    <string name="line1">    \n---------------------------------------------------------</string>
+    <string name="update">更新时间：     </string>
+    <string name="update_time">2017-01-17   18:46:21</string>
+    <string name="descript">\u3000\u3000通过大数据处理,提供最专业的计划,是您购彩必备的利器。</string>
+    <string name="finish"><u>以后再说</u></string>
+    <string name="aboutus">\u3000\u3000聚彩盆是业内领先的彩票数据分析计划软件，平台由厦门不明觉厉有限公司主办，以服务彩票群体为宗旨，为彩票用户打造最详细、最专业的计划分析平台。聚彩盆将致力于彩票产业的健康发展，不断提升自身服务水平，努力成为中国最好的彩票计划分析平台。\n
+   \u3000\u3000聚彩盆软件为您提供：专业的计划方案；智能的预警方案；全面的数据分析。</string>
+    <string name="free">\u3000\u3000聚彩盆计划客户端，创建于2017年，是一个专业为广大彩民提供投注计划与技术交流的综合性网络系统。客户端由一批专业从事研究、分析的专家倾力打造，并由一批强大的技术运营团队进行管理，致力于建设成为国内权威、高效的各类高频电脑分析与人工计划的集聚中心。</string>
+</resources>

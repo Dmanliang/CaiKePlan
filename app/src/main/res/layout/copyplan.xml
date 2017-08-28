@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:background="@color/mainback"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+    <include
+        android:id="@+id/copyplan_toolbar"
+        layout="@layout/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="70dp" />
+    <RelativeLayout
+        android:id="@+id/copyitem_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/copyplan_toolbar">
+        <include
+            android:id="@+id/copyadditem"
+            layout="@layout/copyadditem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/copytitle"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/copyitem_layout">
+        <View
+            android:id="@+id/l1"
+            android:layout_width="117dp"
+            android:layout_height="1dp"
+            android:background="@color/whileDivider"
+            android:layout_marginLeft="9dp"
+            android:layout_centerVertical="true"
+            />
+        <TextView
+            android:id="@+id/l3"
+            android:text="玩法类型"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="#4d4d4d"
+            android:textSize="13sp"/>
+        <View
+            android:id="@+id/l2"
+            android:layout_width="117dp"
+            android:layout_height="1dp"
+            android:background="@color/whileDivider"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="9dp"
+            />
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/selectlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/mainback"
+        android:layout_below="@+id/copytitle">
+        <include
+            layout="@layout/copy_choicelayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+
+</RelativeLayout>

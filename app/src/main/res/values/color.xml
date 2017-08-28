@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="trans">#00000000</color>
+    <color name="blue">#0000ff</color>
+    <color name="trans_blue">#7f4A708B</color>
+    <color name="tras_black">#7f000000</color>
+
+    <!-- 透明 -->
+    <color name="transparent">#00000000</color>
+    <color name="hintColor">#e6e6e6</color>
+    <color name="deepRed">#b7182b</color>
+    <!-- 黑色 -->
+    <color name="black">#000000</color>
+    <!-- 白色 -->
+    <color name="white">#FFFFFF</color>
+    <!-- 浅灰色 -->
+    <color name="lightgrey">#C4C4C4</color>
+    <!-- 灰色 -->
+    <color name="grey">#666666</color>
+    <!-- 深灰色 -->
+    <color name="darkgrey">#D1D1D1</color>
+    <!-- 绿色 -->
+    <color name="green">#218868</color>
+    <!-- 海绿色 -->
+    <color name="lightgreen">#6db237</color>
+    <!-- 暗灰色 -->
+    <color name="dimgrey">#696969</color>
+    <!-- 天蓝色 -->
+    <color name="gray">#808080</color>
+    <!-- 雪白色 -->
+    <color name="floralwhite">#FFFAF0</color>
+    <!-- 红色 -->
+    <color name="red">#cb2337</color>
+    <!-- 70%透明度 -->
+    <color name="sevenalpha">#19000000</color>
+    <!-- 95%透明度 -->
+    <color name="NFalpha">#0c000000</color>
+    <color name="blackHalfAlphaBlack">#7D000000</color>
+    <color name="google_red">#d62d20</color>
+    <color name="google_blue">#0057e7</color>
+    <color name="google_green">#008744</color>
+    <color name="google_yellow">#ffa700</color>
+    <!--开奖页面-->
+    <color name="redText">#d12d10</color>
+    <color name="timeback">#d2d2d7</color>
+    <color name="timetext">#949493</color>
+    <color name="redlight">#ff2703</color>
+    <color name="balckText">#333333</color>
+    <color name="grayText1">#888888</color>
+    <color name="blueTime">#3aa0ed</color>
+    <color name="redCaiZhong">#cb2337</color>
+    <color name="blueCaiZhong">#1baaf4</color>
+    <color name="grayDate">#999999</color>
+    <color name="whileText">#ffffff</color>
+    <color name="whileBack">#fafafa</color>
+    <color name="whileDivider">#cccccc</color>
+    <color name="whileDivider2">#e5e5e5</color>
+    <color name="whileDivider3">#cac0ce</color>
+    <color name="blackText">#666666</color>
+    <color name="blackText2">#b8b8b8</color>
+    <color name="grayText">#808080</color>
+    <color name="whileItem">#f2f2f2</color>
+    <color name="blueText">#53abee</color>
+    <color name="grayDivider">#e6e6e6</color>
+    <color name="blacktabText">#4d4d4d</color>
+    <color name="bluetabText">#3ca0ec</color>
+    <color name="grayText2">#e8d1a0</color>
+    <color name="blueText2">#e0f2ff</color>
+    <color name="blueText3">#3ca0ec</color>
+    <color name="blueText4">#2e74b5</color>
+    <color name="blueText5">#0687c9</color>
+    <color name="blueScroll">#a0d7ff</color>
+    <color name="blueMQ">#3ca0ec</color>
+    <color name="blueStork">#bbd5ed</color>
+    <color name="blueback">#deeaf6</color>
+    <color name="grayBack">#ededed</color>
+    <color name="grayDivider2">#d5d5d5</color>
+    <color name="grayContent">#676767</color>
+    <color name="orangeBack">#f59c34</color>
+    <color name="blueBack">#007fff</color>
+    <color name="hotRed">#c91c1c</color>
+    <color name="coolGreen">#3b8b0f</color>
+    <color name="warmYellow">#e9a910</color>
+    <color name="tableLine">#bfbfbf</color>
+    <color name="table1">#ff6c60</color>
+    <color name="table2">#fcb322</color>
+    <color name="table3">#a9d86e</color>
+    <color name="table4">#88b0e2</color>
+    <color name="playBlue">#54a7fc</color>
+    <color name="playBlue2">#1baaf4</color>
+    <color name="pinkback">#ffebeb</color>
+    <color name="mainback">#f6f6f6</color>
+</resources>

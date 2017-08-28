@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:background="@color/whileBack"
+              android:layout_width="match_parent"
+              android:layout_height="130dp">
+
+    <LinearLayout
+        android:id="@+id/linearTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginLeft="14dp"
+        android:layout_marginTop="16dp"
+        >
+        <TextView
+            android:id="@+id/home_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:text="重庆时时彩"
+            android:textColor="@color/blacktabText"
+            android:textSize="16sp" />
+        <TextView
+            android:id="@+id/home_date_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/home_title"
+            android:text="第20170103001期已开"
+            android:textColor="@color/grayDate"
+            android:textSize="12sp" />
+        <ImageView
+            android:id="@+id/home_data_open"
+            android:layout_width="38dp"
+            android:layout_height="14dp"
+            android:background="@drawable/img_lottory"
+            android:layout_marginLeft="2dp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/relativeCaiZhong"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linearTitle"
+        android:layout_marginLeft="14dp"
+        android:layout_marginTop="18dp">
+        <TextView
+            android:id="@+id/ball_1"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@drawable/icon_ball"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="17sp"
+            android:inAnimation="@anim/ball_in"
+            android:outAnimation="@anim/ball_out"/>
+        <TextView
+            android:id="@+id/ball_2"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@drawable/icon_ball"
+            android:layout_toRightOf="@+id/ball_1"
+            android:layout_marginLeft="7dp"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="17sp"
+            android:inAnimation="@anim/ball_in"
+            android:outAnimation="@anim/ball_out"/>
+        <TextView
+            android:id="@+id/ball_3"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@drawable/icon_ball"
+            android:layout_toRightOf="@+id/ball_2"
+            android:layout_marginLeft="10dp"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="17sp" />
+        <TextView
+            android:id="@+id/ball_4"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@drawable/icon_ball"
+            android:layout_toRightOf="@+id/ball_3"
+            android:layout_marginLeft="7dp"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="17sp" />
+        <TextView
+            android:id="@+id/ball_5"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@drawable/icon_ball"
+            android:layout_toRightOf="@+id/ball_4"
+            android:layout_marginLeft="7dp"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="17sp" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/lineaertime"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/relativeCaiZhong"
+        android:layout_marginLeft="14dp"
+        android:layout_marginTop="14dp">
+        <TextView
+            android:id="@+id/home_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="第20170103002期开奖倒计时："
+            android:textColor="@color/grayDate"
+            android:textSize="12sp" />
+        <TextView
+            android:id="@+id/home_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="05:23"
+            android:textColor="@color/blueTime"
+            android:textSize="13dp" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/relativeArrow"
+        android:layout_width="60dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        >
+        <ImageButton
+            android:id="@+id/item_arrow"
+            android:layout_centerInParent="true"
+            android:layout_width="8dp"
+            android:layout_height="14dp"
+            android:background="@drawable/btn_next" />
+    </RelativeLayout>
+
+</RelativeLayout>
