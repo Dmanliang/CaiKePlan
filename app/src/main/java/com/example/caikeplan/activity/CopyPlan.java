@@ -388,7 +388,7 @@ public class CopyPlan extends BaseActivity implements View.OnClickListener{
                         String plan_id      = jsonObject.getString("plan_id");
                         String plan_name    = jsonObject.getString("plan_name");
                         String cls_name     = jsonObject.getString("cls_name");
-                        planBaseMessage = new PlanBaseMessage(SendMessage.getInstance().getLotteryName(),lotteryId, s_id, scheme_name+plan_name.substring(0,2), plan_id,plan_name,cls_name,"");
+                        planBaseMessage = new PlanBaseMessage(SendMessage.getInstance().getLotteryName(),lotteryId, s_id, scheme_name+plan_name.substring(0,2), plan_id,plan_name,cls_name,"","0");
                         copyList.add(planBaseMessage);
                     }
                     Message msg = new Message();
@@ -491,7 +491,7 @@ public class CopyPlan extends BaseActivity implements View.OnClickListener{
                         String plan_id      = jsonObject.getString("plan_id");
                         String plan_name    = options2Items.get(item1).get(item2);
                         String cls_name     = jsonObject.getString("cls_name");
-                        planBaseMessage = new PlanBaseMessage(SendMessage.getInstance().getLotteryName(),lotteryId, s_id, scheme_name+plan_name.toString().substring(0,2), plan_id,plan_name,cls_name,"");
+                        planBaseMessage = new PlanBaseMessage(SendMessage.getInstance().getLotteryName(),lotteryId, s_id, scheme_name+plan_name.toString().substring(0,2), plan_id,plan_name,cls_name,"","0");
                         copyList.add(planBaseMessage);
                     }
                     Message msg = new Message();

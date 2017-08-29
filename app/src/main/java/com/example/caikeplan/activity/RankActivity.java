@@ -109,7 +109,8 @@ public class RankActivity extends BaseActivity implements View.OnClickListener,E
                         String count        = jsonObject.getString("count");
                         String lottery_name = jsonObject.getString("lottery_name");
                         String lottery_id   = jsonObject.getString("lottery_id");
-                        planBaseMessage     = new PlanBaseMessage(lottery_name,lottery_id, s_id, scheme_name, plan_id,plan_name,cls_name,count);
+                        String jcp          = jsonObject.getString("is_jcp");
+                        planBaseMessage     = new PlanBaseMessage(lottery_name,lottery_id, s_id, scheme_name, plan_id,plan_name,cls_name,count,jcp);
                         if(i<9){
                             planBaseMessage.setId("0"+(i+1)+"");
                         }else{
@@ -167,6 +168,8 @@ public class RankActivity extends BaseActivity implements View.OnClickListener,E
         bundle.putString("plan_name",rankList.get(position).getPlan_name());
         bundle.putString("cls_name",rankList.get(position).getCls_name());
         bundle.putString("lottery_name",rankList.get(position).getLottery_name());
+        bundle.putString("is_jcp",rankList.get(position).getIs_jcp());
+        bundle.putString("type","1");
         intent.putExtras(bundle);
         startActivity(intent);
     }

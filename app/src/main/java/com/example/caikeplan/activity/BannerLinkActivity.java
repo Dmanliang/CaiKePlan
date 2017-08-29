@@ -56,7 +56,7 @@ public class BannerLinkActivity extends BaseActivity {
         setting.setBuiltInZoomControls(true);           // 设置显示缩放按钮
         setting.setSupportZoom(true);                   // 支持缩放
         setting.setUseWideViewPort(true);               //将图片调整到适合webview的大小
-        setting.setAppCacheEnabled(true);
+        setting.setAppCacheEnabled(false);              //加缓存
         setting.setRenderPriority(WebSettings.RenderPriority.HIGH);  //提高渲染的优先级
         setting.setDomStorageEnabled(true);
         setting.setDatabaseEnabled(true);               //支持数据库

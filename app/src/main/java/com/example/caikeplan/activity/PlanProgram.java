@@ -44,6 +44,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -80,7 +82,7 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
     private CopyEditAdpater     copyEditAdpater;
     private ImageView           btn_copy, btn_edit,btn_collect;
     private TextView            plan_accuracy, plan_cycle, plan_wrong;
-    private String              plan_id, s_id, scheme_name, lottery_name, plan_name, cls_name;            //计划id和对应第几个计划
+    private String              plan_id, s_id, scheme_name, lottery_name, plan_name, cls_name,is_jcp,type;            //计划id和对应第几个计划
     private String              bestS_id, bestRate, rate;                                                 //最高命中率的计划和最高命中率,本计划命中率
     private int                 countYes = 0, countNo = 0, countCyecles = 0;                              //统计正确率,错误率和周期
     private String              update_time;
@@ -153,12 +155,17 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
         plan.setText("当前计划："+lottery_name + plan_name);
         SendMessage.getInstance().setTempMid();
         SendMessage.getInstance().setTempdivider();
+        if(type.equals("0")){
+            btn_collect.setVisibility(View.GONE);
+        }else{
+            btn_collect.setVisibility(View.VISIBLE);
+        }
     }
 
     //添加收藏
-    public void requestAddURL(String user_id, int lottery_id, String plan_id,String s_id,String scheme_name) {
+    public void requestAddURL1(String user_id, int lottery_id, String plan_id,String s_id,String is_jcp) {
         String url;
-        url = Constants.API+Constants.PLAN_FAVORITE + user_id + "&lottery_id=" + lottery_id + "&plan_id=" + plan_id + "&s_id="+s_id +"&scheme_name=" +scheme_name ;
+        url = Constants.API+Constants.PLAN_FAVORITE + user_id + "&lottery_id=" + lottery_id + "&plan_id=" + plan_id + "&s_id="+s_id +"&is_jcp=" +is_jcp ;
         HttpTask addhttpTask = new HttpTask();
         addhttpTask.execute(url);
         addhttpTask.setTaskHandler(new HttpTask.HttpTaskHandler() {
@@ -174,15 +181,35 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
         });
     }
 
+    //添加收藏
+    public void requestAddURL2(String user_id, int lottery_id, String plan_id,String s_id) {
+        String url;
+        url = Constants.API+Constants.PLAN_FAVORITE + user_id + "&lottery_id=" + lottery_id + "&plan_id=" + plan_id + "&s_id="+s_id;
+        HttpTask addhttpTask = new HttpTask();
+        addhttpTask.execute(url);
+        addhttpTask.setTaskHandler(new HttpTask.HttpTaskHandler() {
+            @Override
+            public void taskSuccessful(String json) {
+                ToastUtil.getShortToastByString(PlanProgram.this,"收藏成功");
+            }
+
+            @Override
+            public void taskFailed() {
+                ToastUtil.getShortToastByString(PlanProgram.this,"收藏失败");
+            }
+        });
+    }
     //获得请求参数
     public void getDataType() {
-        bundle = this.getIntent().getExtras();
-        plan_id = bundle.getString("plan_id");
-        s_id = bundle.getString("s_id");
-        scheme_name = bundle.getString("scheme_name");
-        plan_name = bundle.getString("plan_name");
-        cls_name = bundle.getString("cls_name");
-        lottery_name = bundle.getString("lottery_name");
+        bundle          =   this.getIntent().getExtras();
+        plan_id         =   bundle.getString("plan_id");
+        s_id            =   bundle.getString("s_id");
+        scheme_name     =   bundle.getString("scheme_name");
+        plan_name       =   bundle.getString("plan_name");
+        cls_name        =   bundle.getString("cls_name");
+        lottery_name    =   bundle.getString("lottery_name");
+        is_jcp          =   bundle.getString("is_jcp");
+        type            =   bundle.getString("type");
     }
 
     public void setSwipeRefreshLayout(){
@@ -619,7 +646,11 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
                 finish();
                 break;
             case R.id.btn_collect:
-                 requestAddURL(UserMessage.getInstance().getUser_id(),SendMessage.getInstance().getLotteryId(),plan_id,s_id,scheme_name);
+                if(is_jcp.equals("1")){
+                    requestAddURL1(UserMessage.getInstance().getUser_id(),SendMessage.getInstance().getLotteryId(),plan_id,s_id,is_jcp);
+                }else{
+                    requestAddURL2(UserMessage.getInstance().getUser_id(),SendMessage.getInstance().getLotteryId(),plan_id,s_id);
+                }
                 break;
         }
     }

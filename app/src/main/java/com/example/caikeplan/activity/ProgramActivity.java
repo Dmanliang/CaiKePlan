@@ -131,6 +131,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
     private int                     play_cls = 1;            //彩种类别
     private String                  play_id;                 //玩法id
     private String                  plan_id;                 //计划id
+    private String                  lottery_name = "重庆时时彩";
     private String[]                lottery_title   = {"  重庆时时彩", "  天津时时彩", "  新疆时时彩"," 北京PK10","广东11选5"};
     private String[]                types           = {"定位", "直选", "组选", "大小", "单双", "和值", "单式"};
     private int[]                   pknums={R.drawable.type2_ball_1,R.drawable.type2_ball_2,R.drawable.type2_ball_3,R.drawable.type2_ball_4,
@@ -299,6 +300,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
         setPlanGridView();
         mlistLotteryTitle = new ArrayList<>();
         mlistLotteryTitle = setLotteryTitleData();
+        SendMessage.getInstance().setLotteryName(lottery_name);
     }
 
     //scrollview下拉刷新
@@ -442,6 +444,8 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
         bundle.putString("plan_name",recommendList.get(position).getPlan_name());
         bundle.putString("cls_name",recommendList.get(position).getCls_name());
         bundle.putString("lottery_name",recommendList.get(position).getLottery_name());
+        bundle.putString("is_jcp",recommendList.get(position).getIs_jcp());
+        bundle.putString("type","1");
         intent.putExtras(bundle);
         startActivity(intent);
     }
@@ -474,6 +478,8 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
                 bundle.putString("plan_name",lookList.get(position).getPlan_name());
                 bundle.putString("cls_name",lookList.get(position).getCls_name());
                 bundle.putString("lottery_name",lookList.get(position).getLottery_name());
+                bundle.putString("is_jcp",lookList.get(position).getIs_jcp());
+                bundle.putString("type","1");
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -500,6 +506,8 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
                 bundle.putString("plan_name",planList.get(position).getPlan_name());
                 bundle.putString("cls_name",planList.get(position).getCls_name());
                 bundle.putString("lottery_name",planList.get(position).getLottery_name());
+                bundle.putString("is_jcp",planList.get(position).getIs_jcp());
+                bundle.putString("type","1");
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -541,16 +549,16 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
                         String plan_id      = jsonObject.getString("plan_id");
                         String plan_name    = jsonObject.getString("plan_name");
                         String cls_name     = jsonObject.getString("cls_name");
-                        planBaseMessage     = new PlanBaseMessage(SendMessage.getInstance().getLotteryName(),lotteryId, s_id, scheme_name, plan_id, plan_name,cls_name,"");
+                        planBaseMessage     = new PlanBaseMessage(SendMessage.getInstance().getLotteryName(),lotteryId, s_id, scheme_name, plan_id, plan_name,cls_name,"","0");
                         list.add(planBaseMessage);
                         if(i==0 || i==1){
-                            tlist1.add(planBaseMessage.getScheme_name()+planBaseMessage.getPlan_name().substring(0,2));
+                            tlist1.add(planBaseMessage.getScheme_name()+planBaseMessage.getCls_name());
                         }else if(i==2 || i==3){
-                            tlist2.add(planBaseMessage.getScheme_name()+planBaseMessage.getPlan_name().substring(0,2));
+                            tlist2.add(planBaseMessage.getScheme_name()+planBaseMessage.getCls_name());
                         }else if(i==4 || i==5){
-                            tlist3.add(planBaseMessage.getScheme_name()+planBaseMessage.getPlan_name().substring(0,2));
+                            tlist3.add(planBaseMessage.getScheme_name()+planBaseMessage.getCls_name());
                         }else if(i==6 || i==7){
-                            tlist4.add(planBaseMessage.getScheme_name()+planBaseMessage.getPlan_name().substring(0,2));
+                            tlist4.add(planBaseMessage.getScheme_name()+planBaseMessage.getCls_name());
                         }
                     }
                     recommendList.clear();
@@ -689,7 +697,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
                         String plan_name    = jsonObject.getString("plan_name");
                         String plan_id      = jsonObject.getString("plan_id");
                         String cls_name     = jsonObject.getString("cls_name");
-                        planBaseMessage     = new PlanBaseMessage(SendMessage.getInstance().getLotteryName(),lotteryId, s_id, scheme_name, plan_id,plan_name,cls_name,"");
+                        planBaseMessage     = new PlanBaseMessage(SendMessage.getInstance().getLotteryName(),lotteryId, s_id, scheme_name, plan_id,plan_name,cls_name,"","0");
                         hotList.add(planBaseMessage);
                     }
                     Message msg = new Message();
@@ -879,7 +887,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
                         String plan_id      = jsonObject.getString("plan_id");
                         String cls_name     = jsonObject.getString("cls_name");
                         String plan_name    = options2Items.get(item1).get(item2)+options3Items.get(item1).get(item2).get(item3);
-                        planBaseMessage     = new PlanBaseMessage(SendMessage.getInstance().getLotteryName(),lotteryId, s_id, scheme_name, plan_id,plan_name,cls_name,"");
+                        planBaseMessage     = new PlanBaseMessage(SendMessage.getInstance().getLotteryName(),lotteryId, s_id, scheme_name, plan_id,plan_name,cls_name,"","0");
                         planList.add(planBaseMessage);
                     }
                     Message msg = new Message();
@@ -1009,7 +1017,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
                 home_date_end_pk10.setText("第 " + lastTime + " 期已开");
                 lottery_open_pk10.setVisibility(View.GONE);
             }
-            homeTitle_pk10.setText(SendMessage.getInstance().getLotteryName());
+            homeTitle_pk10.setText(lottery_name);
             home_date_pk10.setText("全天共开" + allissues + "期，当前" + th + "期，剩余" + left + "期");
         }else{
             balls_1.setText(numList[0]);
@@ -1027,7 +1035,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
                 home_date_end.setText("第 " + lastTime + " 期已开");
                 lottery_open.setVisibility(View.GONE);
             }
-            homeTitle.setText(SendMessage.getInstance().getLotteryName());
+            homeTitle.setText(lottery_name);
             home_date.setText("全天共开" + allissues + "期，当前" + th + "期，剩余" + left + "期");
             setDoubleSingle();
         }
@@ -1283,8 +1291,9 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
         if (position == 0) {
             lotteryId = "1";
             setURL(lotteryId, getPlay_cls() + "", SendMessage.getInstance().getMac());
-            SendMessage.getInstance().setLotteryId(3);
+            SendMessage.getInstance().setLotteryId(1);
             SendMessage.getInstance().setLotteryName("重庆时时彩");
+            lottery_name = lottery_title[position];
             lotterylayout.setVisibility(View.VISIBLE);
             pk10layout.setVisibility(View.GONE);
             resetData();
@@ -1294,6 +1303,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
             setURL(lotteryId, getPlay_cls() + "", SendMessage.getInstance().getMac());
             SendMessage.getInstance().setLotteryId(3);
             SendMessage.getInstance().setLotteryName("天津时时彩");
+            lottery_name = lottery_title[position];
             lotterylayout.setVisibility(View.VISIBLE);
             pk10layout.setVisibility(View.GONE);
             resetData();
@@ -1303,6 +1313,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
             setURL(lotteryId, getPlay_cls() + "", SendMessage.getInstance().getMac());
             SendMessage.getInstance().setLotteryId(7);
             SendMessage.getInstance().setLotteryName("新疆时时彩");
+            lottery_name = lottery_title[position];
             lotterylayout.setVisibility(View.VISIBLE);
             pk10layout.setVisibility(View.GONE);
             resetData();
@@ -1312,6 +1323,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
             setURL(lotteryId, getPlay_cls() + "", SendMessage.getInstance().getMac());
             SendMessage.getInstance().setLotteryId(27);
             SendMessage.getInstance().setLotteryName("北京PK10");
+            lottery_name = lottery_title[position];
             lotterylayout.setVisibility(View.GONE);
             pk10layout.setVisibility(View.VISIBLE);
             resetData();
@@ -1321,6 +1333,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
             setURL(lotteryId, getPlay_cls() + "", SendMessage.getInstance().getMac());
             SendMessage.getInstance().setLotteryId(9);
             SendMessage.getInstance().setLotteryName("广东11选5");
+            lottery_name = lottery_title[position];
             lotterylayout.setVisibility(View.VISIBLE);
             pk10layout.setVisibility(View.GONE);
             resetData();

@@ -188,6 +188,8 @@ public class CollectActivity extends BaseActivity implements OnClickListener {
 		bundle.putString("plan_name",newsBeanList.get(position).getPlan_name());
 		bundle.putString("cls_name",newsBeanList.get(position).getCls_name());
 		bundle.putString("lottery_name",newsBeanList.get(position).getLottery_name());
+		bundle.putString("is_jcp","0");
+		bundle.putString("type","0");
 		intent.putExtras(bundle);
 		startActivity(intent);
 	}

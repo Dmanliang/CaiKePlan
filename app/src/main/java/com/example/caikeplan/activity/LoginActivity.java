@@ -21,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.base.AndroidBug5497Workaround;
 import com.example.base.Constants;
 import com.example.base.Validator;
 import com.example.caikeplan.R;

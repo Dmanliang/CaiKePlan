@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.base.AndroidBug5497Workaround;
 import com.example.caikeplan.R;
 import com.example.util.Util;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
@@ -65,6 +66,5 @@ public class BaseActivity extends AppCompatActivity{
             //  getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         }
         setContentView(layoutID);
-
     }
 }

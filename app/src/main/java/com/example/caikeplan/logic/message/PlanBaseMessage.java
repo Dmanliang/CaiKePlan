@@ -18,8 +18,10 @@ public class PlanBaseMessage implements Serializable {
     private String  count;           //数量
     private String  lottery_name;    //彩种名称
     private String  id;              //序号
+    private String  is_jcp;          //聚彩盆判断
 
-    public PlanBaseMessage(String lottery_name,String lottery_id, String s_id, String scheme_name, String plan_id, String plan_name, String cls_name, String count){
+    public PlanBaseMessage(String lottery_name,String lottery_id, String s_id, String scheme_name, String plan_id, String plan_name, String cls_name, String count,String is_jcp){
+        this.is_jcp     =   is_jcp;
         this.lottery_name = lottery_name;
         this.lottery_id =   lottery_id;
         this.s_id       =   s_id;
@@ -28,7 +30,14 @@ public class PlanBaseMessage implements Serializable {
         this.plan_name  =   plan_name;
         this.cls_name   =   cls_name;
         this.count      =   count;
+    }
 
+    public String getIs_jcp() {
+        return is_jcp;
+    }
+
+    public void setIs_jcp(String is_jcp) {
+        this.is_jcp = is_jcp;
     }
 
     public String getId() {
