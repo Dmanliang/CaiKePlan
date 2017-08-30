@@ -44,6 +44,8 @@ public class CollectActivity extends BaseActivity implements OnClickListener {
 	public  static final int 	TYPE3 = 3;
 	public  static final int 	TYPE4 = 4;
 	public  static final int 	TYPE5 = 5;
+	public  static final int 	TYPE6 = 6;
+	public  static final int 	TYPE7 = 7;
 	private SwipeRefreshLayout  swipeRefreshLayout;
 	private RelativeLayout      nodataLayout;
 	private RelativeLayout      main_toolbar;
@@ -54,7 +56,7 @@ public class CollectActivity extends BaseActivity implements OnClickListener {
 	private TextView 			toolbar_title;
 	private ImageView			choice_collect;
 	private PopupWindow			lotteryWindow;
-	private RelativeLayout		lottery_cq_ssc_layout,lottery_tj_ssc_layout,lottery_xj_ssc_layout,lottery_pk10_layout,lottery_11x5_layout;
+	private RelativeLayout		lottery_cq_ssc_layout,lottery_tj_ssc_layout,lottery_xj_ssc_layout,lottery_pk10_layout,lottery_gd11x5_layout,lottery_sh11x5_layout,lottery_sd11x5_layout;
 	public  List<CollectBean>	newsBeanList = new ArrayList<>();
 	private Button				dataload_button;
 	@Override
@@ -173,6 +175,12 @@ public class CollectActivity extends BaseActivity implements OnClickListener {
 					case TYPE5:
 						requestSelectLottery("9");
 						break;
+					case TYPE6:
+						requestSelectLottery("22");
+						break;
+					case TYPE7:
+						requestSelectLottery("10");
+						break;
 				}
 				swipeRefreshLayout.setRefreshing(false);
 			}
@@ -261,7 +269,7 @@ public class CollectActivity extends BaseActivity implements OnClickListener {
 						String schemem_name	= 	jsonObject.getString("scheme_name");
 						String lottery_name = 	jsonObject.getString("lottery_name");
 						String cls_name		=	jsonObject.getString("cls_name");
-						newsBean = new CollectBean(lottery_name,cls_name,plan_id,play_id,log_id,plan_name,s_id,schemem_name+plan_name.substring(0,2),lottery_id,true);
+						newsBean = new CollectBean(lottery_name,cls_name,plan_id,play_id,log_id,plan_name,s_id,schemem_name,lottery_id,true);
 						list.add(newsBean);
 					}
 					newsBeanList.clear();
@@ -311,13 +319,17 @@ public class CollectActivity extends BaseActivity implements OnClickListener {
 		lottery_cq_ssc_layout 	= (RelativeLayout)view.findViewById(R.id.lottery_cq_ssc_layout);
 		lottery_tj_ssc_layout 	= (RelativeLayout)view.findViewById(R.id.lottery_tj_ssc_layout);
 		lottery_xj_ssc_layout 	= (RelativeLayout)view.findViewById(R.id.lottery_xj_ssc_layout);
-		lottery_11x5_layout 	= (RelativeLayout)view.findViewById(R.id.lottery_11x5_layout);
+		lottery_gd11x5_layout 	= (RelativeLayout)view.findViewById(R.id.lottery_gd11x5_layout);
 		lottery_pk10_layout 	= (RelativeLayout)view.findViewById(R.id.lottery_pk10_layout);
+		lottery_sh11x5_layout 	= (RelativeLayout)view.findViewById(R.id.lottery_sh11x5_layout);
+		lottery_sd11x5_layout 	= (RelativeLayout)view.findViewById(R.id.lottery_sd11x5_layout);
 		lottery_cq_ssc_layout.setOnClickListener(this);
 		lottery_tj_ssc_layout.setOnClickListener(this);
 		lottery_xj_ssc_layout.setOnClickListener(this);
 		lottery_pk10_layout.setOnClickListener(this);
-		lottery_11x5_layout.setOnClickListener(this);
+		lottery_gd11x5_layout.setOnClickListener(this);
+		lottery_sh11x5_layout.setOnClickListener(this);
+		lottery_sd11x5_layout.setOnClickListener(this);
 	}
 
 
@@ -358,12 +370,26 @@ public class CollectActivity extends BaseActivity implements OnClickListener {
 				recomdHandler.sendMessageDelayed(msg4,500);
 				requstType = 4;
 				break;
-			case R.id.lottery_11x5_layout:
+			case R.id.lottery_gd11x5_layout:
 				requestSelectLottery("9");
 				Message msg5 = new Message();
 				msg5.what = 1;
 				recomdHandler.sendMessageDelayed(msg5,500);
 				requstType = 5;
+				break;
+			case R.id.lottery_sh11x5_layout:
+				requestSelectLottery("22");
+				Message msg6 = new Message();
+				msg6.what = 1;
+				recomdHandler.sendMessageDelayed(msg6,500);
+				requstType = 6;
+				break;
+			case R.id.lottery_sd11x5_layout:
+				requestSelectLottery("10");
+				Message msg7 = new Message();
+				msg7.what = 1;
+				recomdHandler.sendMessageDelayed(msg7,500);
+				requstType = 7;
 				break;
 			case R.id.dataload_button:
 				requestCollection();

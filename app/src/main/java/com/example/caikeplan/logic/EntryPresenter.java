@@ -47,9 +47,15 @@ public class EntryPresenter implements EntryContract.Presenter {
                     mView.disableLoadingAnimation();
                     try {
                         JSONObject jsonObject = new JSONObject(reason);
-                        if (jsonObject.getInt("success") == HttpStatusCode.UNKNOWN_ERROR) {
+                        if (jsonObject.getInt("success") == HttpStatusCode.ERROR_SYSTEM) {
                             mView.onMessage(HttpStatusCode.UNKNOWN_ERROR_DES);
-                        } else {
+                        }else if(jsonObject.getInt("success") == HttpStatusCode.USER_PAS){
+                            mView.onMessage(HttpStatusCode.USER_PAS_DES);
+                        } else if(jsonObject.getInt("success") == HttpStatusCode.FREEZE){
+                            mView.onMessage(HttpStatusCode.FREEZE_DES);
+                        }else if(jsonObject.getInt("success") == HttpStatusCode.OVERTIME){
+                            mView.onMessage(HttpStatusCode.OVERTIME_DES);
+                        }else{
                             mView.onMessage(jsonObject.getString("message"));
                         }
                     } catch (JSONException e) {
@@ -68,7 +74,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                     String     token     = o.getJSONObject("data").getString("token");
                     String     role_id   = o.getJSONObject("data").getString("role_id");
                     String     due_time  = o.getJSONObject("data").getString("due_time");
-                    String     email     = o.getJSONObject("data").getString("email");
+                    String     phone     = o.getJSONObject("data").getString("phone");
                     String     power_add = o.getJSONObject("data").getString("power_add");
                     String     parent_id = o.getJSONObject("data").getString("parent_id");
                     UserMessage.getInstance().setUsername(username);
@@ -76,7 +82,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                     UserMessage.getInstance().setToken(token);
                     UserMessage.getInstance().setRole_id(role_id);
                     UserMessage.getInstance().setDue_time(due_time);
-                    UserMessage.getInstance().setEmail(email);
+                    UserMessage.getInstance().setPhone(phone);
                     UserMessage.getInstance().setPower_add(power_add);
                     UserMessage.getInstance().setParent_id(parent_id);
                     if (mView != null) {
@@ -96,16 +102,16 @@ public class EntryPresenter implements EntryContract.Presenter {
         this.map = map;
         mView.showLoadingAnimation();
         instance.setToken(map.get("token"));
-        instance.post(Constants.API2+Constants.BIND_EMAIL, map, new OnNetRequestCallback() {
+        instance.post(Constants.API2+Constants.BIND_PHONE, map, new OnNetRequestCallback() {
             @Override
             public void onFailed(String reason) {
                 mView.disableLoadingAnimation();
                 try {
                     JSONObject jsonObject = new JSONObject(reason);
                     if (jsonObject.getInt("success") == HttpStatusCode.UNKNOWN_ERROR) {
-                        mView.onMessage(HttpStatusCode.UNKNOWN_ERROR_DES);
+                        mView.onMessage(HttpStatusCode.REGISTE_DES);
                     } else {
-                        mView.onMessage(jsonObject.getString("success"));
+                        mView.onMessage(jsonObject.getString("message"));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -116,7 +122,7 @@ public class EntryPresenter implements EntryContract.Presenter {
             public void onSuccess(String response) {
                 if (mView != null) {
                     mView.disableLoadingAnimation();
-                    ToastUtil.getShortToastByString(context,"邮箱绑定成功");
+                    ToastUtil.getShortToastByString(context,"手机绑定成功");
                     mView.toHome(UserMessage.getInstance());
                 }
             }
@@ -127,16 +133,16 @@ public class EntryPresenter implements EntryContract.Presenter {
     public void sendCode(Map<String, String> map) {
         this.map = map;
         mView.showLoadingAnimation();
-        instance.post(Constants.API2+Constants.SEND_EMAIL, map, new OnNetRequestCallback() {
+        instance.post(Constants.API2+Constants.SEND_PHONE, map, new OnNetRequestCallback() {
             @Override
             public void onFailed(String reason) {
                 mView.disableLoadingAnimation();
                 try {
                     JSONObject jsonObject = new JSONObject(reason);
                     if (jsonObject.getInt("success") == HttpStatusCode.UNKNOWN_ERROR) {
-                        mView.onMessage(HttpStatusCode.UNKNOWN_ERROR_DES);
+                        mView.onMessage(HttpStatusCode.SENDCODE_DES);
                     } else {
-                        mView.onMessage(jsonObject.getString("success"));
+                        mView.onMessage(jsonObject.getString("message"));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -147,6 +153,12 @@ public class EntryPresenter implements EntryContract.Presenter {
             public void onSuccess(String response) {
                 if (mView != null) {
                     mView.disableLoadingAnimation();
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        mView.onMessage(jsonObject.getString("message"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     mView.toSuccessAction("code");
                     ToastUtil.getShortToastByString(context,"验证码发送成功");
                 }
@@ -165,7 +177,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                 try {
                     JSONObject jsonObject = new JSONObject(reason);
                     if (jsonObject.getInt("success") == HttpStatusCode.UNKNOWN_ERROR) {
-                        mView.onMessage(HttpStatusCode.UNKNOWN_ERROR_DES);
+                        mView.onMessage(HttpStatusCode.RESET_DES);
                     } else {
                         mView.onMessage(jsonObject.getString("message"));
                     }
@@ -197,7 +209,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                 try {
                     JSONObject jsonObject = new JSONObject(reason);
                     if (jsonObject.getInt("success") == HttpStatusCode.UNKNOWN_ERROR) {
-                        mView.onMessage(HttpStatusCode.UNKNOWN_ERROR_DES);
+                        mView.onMessage(HttpStatusCode.PASSWORD_DES);
                     } else {
                         mView.onMessage(jsonObject.getString("message"));
                     }
@@ -229,7 +241,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                 try {
                     JSONObject jsonObject = new JSONObject(reason);
                     if (jsonObject.getInt("success") == HttpStatusCode.UNKNOWN_ERROR) {
-                        mView.onMessage(HttpStatusCode.UNKNOWN_ERROR_DES);
+                        mView.onMessage(HttpStatusCode.ADDUSER_DES);
                     } else {
                         mView.onMessage(jsonObject.getString("message"));
                     }
@@ -261,7 +273,6 @@ public class EntryPresenter implements EntryContract.Presenter {
                 try {
                     JSONObject jsonObject = new JSONObject(reason);
                     if (jsonObject.getInt("success") == HttpStatusCode.UNKNOWN_ERROR) {
-                        mView.onMessage(HttpStatusCode.UNKNOWN_ERROR_DES);
                     } else {
                         mView.toFailAction(jsonObject.getString("message"));
                     }
@@ -285,9 +296,9 @@ public class EntryPresenter implements EntryContract.Presenter {
                             }
                         }else if(map.get("type").equals("1")){
                             if(data.equals("0")){
-                                mView.toFailAction("邮箱已绑定");
+                                mView.toFailAction("手机已绑定");
                             }else{
-                                mView.toSuccessAction("邮箱通过");
+                                mView.toSuccessAction("手机通过");
                             }
                         }
                     }catch (Exception e){
@@ -310,7 +321,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                 try {
                     JSONObject jsonObject = new JSONObject(reason);
                     if (jsonObject.getInt("success") == HttpStatusCode.UNKNOWN_ERROR) {
-                        mView.onMessage(HttpStatusCode.UNKNOWN_ERROR_DES);
+                        mView.onMessage(HttpStatusCode.MANLIST_DES);
                     } else {
                         mView.toFailAction(jsonObject.getString("message"));
                     }
@@ -359,7 +370,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                 try {
                     JSONObject jsonObject = new JSONObject(reason);
                     if (jsonObject.getInt("success") == HttpStatusCode.UNKNOWN_ERROR) {
-                        mView.onMessage(HttpStatusCode.UNKNOWN_ERROR_DES);
+                        mView.onMessage(HttpStatusCode.UPDATE_DES);
                     } else {
                         mView.toFailAction(jsonObject.getString("message"));
                     }
@@ -391,7 +402,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                 try {
                     JSONObject jsonObject = new JSONObject(reason);
                     if (jsonObject.getInt("success") == HttpStatusCode.UNKNOWN_ERROR) {
-                        mView.onMessage(HttpStatusCode.UNKNOWN_ERROR_DES);
+                        mView.onMessage(HttpStatusCode.DELETE_DES);
                     } else {
                         mView.toFailAction(jsonObject.getString("message"));
                     }
@@ -423,7 +434,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                 try {
                     JSONObject jsonObject = new JSONObject(reason);
                     if (jsonObject.getInt("success") == HttpStatusCode.UNKNOWN_ERROR) {
-                        mView.onMessage(HttpStatusCode.UNKNOWN_ERROR_DES);
+                        mView.onMessage(HttpStatusCode.MESSAGE_DES);
                     } else {
                         mView.toFailAction(jsonObject.getString("message"));
                     }
@@ -481,7 +492,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                 try {
                     JSONObject jsonObject = new JSONObject(reason);
                     if (jsonObject.getInt("success") == HttpStatusCode.UNKNOWN_ERROR) {
-                        mView.onMessage(HttpStatusCode.UNKNOWN_ERROR_DES);
+                        mView.onMessage(HttpStatusCode.PASSWORD_DES);
                     } else {
                         mView.onMessage(jsonObject.getString("message"));
                     }

@@ -126,14 +126,15 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
     private List<String>            tiplist2 = new ArrayList<>();
     private List<String>            tiplist3 = new ArrayList<>();
     private List<String>            tiplist4 = new ArrayList<>();
-    private String                  URL;                     //请求链接
-    private String                  lotteryId = "1";      //彩种id
-    private int                     play_cls = 1;            //彩种类别
-    private String                  play_id;                 //玩法id
-    private String                  plan_id;                 //计划id
-    private String                  lottery_name = "重庆时时彩";
-    private String[]                lottery_title   = {"  重庆时时彩", "  天津时时彩", "  新疆时时彩"," 北京PK10","广东11选5"};
+    private String                  URL;                        //请求链接
+    private String                  lotteryId = "1";            //彩种id
+    private int                     play_cls = 1;               //彩种类别
+    private String                  play_id;                    //玩法id
+    private String                  plan_id;                    //计划id
+    private String                  lottery_name    = "重庆时时彩";
+    private String[]                lottery_title   = {"重庆时时彩", "天津时时彩", "新疆时时彩","北京PK10","上海11选5","广东11选5","山东11选5"};
     private String[]                types           = {"定位", "直选", "组选", "大小", "单双", "和值", "单式"};
+    private String[]                lottery_ids     = {"1","3","7","27","22","9","10"};
     private int[]                   pknums={R.drawable.type2_ball_1,R.drawable.type2_ball_2,R.drawable.type2_ball_3,R.drawable.type2_ball_4,
                                     R.drawable.type2_ball_5,R.drawable.type2_ball_6, R.drawable.type2_ball_7,R.drawable.type2_ball_8,R.drawable.type2_ball_9,R.drawable.type2_ball_10};
     private List<LotteryTitle>      mlistLotteryTitle;
@@ -1122,7 +1123,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
     }
 
     //选择彩种计划头列表
-    public void showLotteryTitle(View view) {
+    public void showLotteryTitle() {
         lottery_window = ProgramActivity.this.getLayoutInflater().inflate(R.layout.lottery_listview, null,false);
         titleWindow = new PopupWindow(lottery_window, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
         titleWindow.setTouchable(true);
@@ -1170,7 +1171,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
         final String url;
         if(lotteryId.equals("27")){
             url = Constants.API+Constants.PK10_VIDEO+lotteryId;
-        }else if(lotteryId.equals("9")){
+        }else if(lotteryId.equals("8") && lotteryId.equals("9") && lotteryId.equals("10")){
             url = Constants.API+Constants.GD11X5_VIDEO+lotteryId;
         }else{
             url = Constants.API+Constants.SSC_VIDEO+lotteryId;
@@ -1251,7 +1252,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
     public List<LotteryTitle> setLotteryTitleData() {
         LotteryTitle lotteryTitle;
         for (int i = 0; i < lottery_title.length; i++) {
-            lotteryTitle = new LotteryTitle(lottery_title[i], false);
+            lotteryTitle = new LotteryTitle(lottery_ids[i],lottery_title[i], false);
             mlistLotteryTitle.add(lotteryTitle);
         }
         return mlistLotteryTitle;
@@ -1288,51 +1289,25 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
 
     //选择彩种计划
     public void EnterPlan(int position) {
-        if (position == 0) {
-            lotteryId = "1";
+        setPlanData(position);
+    }
+
+    public void setPlanData(int position){
+        if(position == 3){
+            lotteryId = lottery_ids[position];
             setURL(lotteryId, getPlay_cls() + "", SendMessage.getInstance().getMac());
-            SendMessage.getInstance().setLotteryId(1);
-            SendMessage.getInstance().setLotteryName("重庆时时彩");
-            lottery_name = lottery_title[position];
-            lotterylayout.setVisibility(View.VISIBLE);
-            pk10layout.setVisibility(View.GONE);
-            resetData();
-            requestData();
-        } else if (position == 1) {
-            lotteryId = "3";
-            setURL(lotteryId, getPlay_cls() + "", SendMessage.getInstance().getMac());
-            SendMessage.getInstance().setLotteryId(3);
-            SendMessage.getInstance().setLotteryName("天津时时彩");
-            lottery_name = lottery_title[position];
-            lotterylayout.setVisibility(View.VISIBLE);
-            pk10layout.setVisibility(View.GONE);
-            resetData();
-            requestData();
-        } else if (position == 2) {
-            lotteryId = "7";
-            setURL(lotteryId, getPlay_cls() + "", SendMessage.getInstance().getMac());
-            SendMessage.getInstance().setLotteryId(7);
-            SendMessage.getInstance().setLotteryName("新疆时时彩");
-            lottery_name = lottery_title[position];
-            lotterylayout.setVisibility(View.VISIBLE);
-            pk10layout.setVisibility(View.GONE);
-            resetData();
-            requestData();
-        }else if(position == 3){
-            lotteryId = "27";
-            setURL(lotteryId, getPlay_cls() + "", SendMessage.getInstance().getMac());
-            SendMessage.getInstance().setLotteryId(27);
-            SendMessage.getInstance().setLotteryName("北京PK10");
+            SendMessage.getInstance().setLotteryId(Integer.parseInt(lottery_ids[position]));
+            SendMessage.getInstance().setLotteryName(lottery_title[position]);
             lottery_name = lottery_title[position];
             lotterylayout.setVisibility(View.GONE);
             pk10layout.setVisibility(View.VISIBLE);
             resetData();
             requestData();
-        }else if(position == 4){
-            lotteryId = "9";
+        }else{
+            lotteryId = lottery_ids[position];
             setURL(lotteryId, getPlay_cls() + "", SendMessage.getInstance().getMac());
-            SendMessage.getInstance().setLotteryId(9);
-            SendMessage.getInstance().setLotteryName("广东11选5");
+            SendMessage.getInstance().setLotteryId(Integer.parseInt(lottery_ids[position]));
+            SendMessage.getInstance().setLotteryName(lottery_title[position]);
             lottery_name = lottery_title[position];
             lotterylayout.setVisibility(View.VISIBLE);
             pk10layout.setVisibility(View.GONE);
@@ -1485,11 +1460,8 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
                     pickerView.show();
                 }
                 break;
-            case R.id.title_layout:
-                showLotteryTitle(v);
-                break;
             case R.id.toolbar_title:
-                showLotteryTitle(toolbar_title);
+                showLotteryTitle();
                 break;
             case R.id.btn_copy_plan:
                 Intent intent = new Intent(ProgramActivity.this, CopyPlan.class);

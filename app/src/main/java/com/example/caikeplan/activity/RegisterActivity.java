@@ -32,19 +32,18 @@ import java.util.Map;
 
 public class RegisterActivity extends BaseActivity implements View.OnClickListener,EntryContract.View,TextView.OnEditorActionListener{
 
-    private EditText        edit_email;
+    private EditText        edit_phone;
     private EditText        edit_code;
     private Button          button_code;
     private Button          button_register;
     private ImageView       register_close;
-    private TextView        emails_check;
+    private TextView        phones_check;
     private EntryPresenter  mPresenter;
-    private String          user_id,email,code,token;
+    private String          user_id,phone,code,token;
     private RelativeLayout  loading;
     private boolean         isExist = true;
     private int             second = 60;
     private String          codetype;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,8 +60,8 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     }
 
     public void initView(){
-        emails_check    = (TextView)findViewById(R.id.emails_check);
-        edit_email      = (EditText)findViewById(R.id.edit_email);
+        phones_check    = (TextView)findViewById(R.id.phones_check);
+        edit_phone      = (EditText)findViewById(R.id.edit_phone);
         edit_code       = (EditText)findViewById(R.id.edit_code);
         button_code     = (Button)findViewById(R.id.button_code);
         button_register = (Button)findViewById(R.id.button_register);
@@ -73,7 +72,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         button_register.setOnClickListener(this);
         edit_code.setOnEditorActionListener(this);
         mPresenter = new EntryPresenter(this,this);
-        edit_email.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        phones_check.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(!hasFocus){
@@ -101,46 +100,46 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     }
 
     public void SendCode(){
-        email = edit_email.getText().toString();
-        if(email.length() == 0){
-            ToastUtil.getShortToastByString(this,"邮箱不能为空,请填写!");
-        }else if(!Validator.isEmail(email)) {
-            ToastUtil.getShortToastByString(this,"邮箱格式错误,请重新填写!");
+        phone = edit_phone.getText().toString();
+        if(phone.length() == 0){
+            ToastUtil.getShortToastByString(this,"手机号码不能为空,请填写!");
+        }else if(!Validator.isMobile(phone)) {
+            ToastUtil.getShortToastByString(this,"手机号码格式错误,请重新填写!");
         }else if(isExist){
-            ToastUtil.getShortToastByString(this,"邮箱已存在,请重新填写!");
+            ToastUtil.getShortToastByString(this,"手机号码已绑定,请重新填写!");
         }else{
             Map<String, String> mapsend = new HashMap<>();
-            mapsend.put("email",email);
+            mapsend.put("phone",phone);
             mPresenter.sendCode(mapsend);
         }
     }
 
     public void CheckEmail(){
-        email = edit_email.getText().toString();
-        if(email.length() != 0){
+        phone = edit_phone.getText().toString();
+        if(phone.length() != 0){
             Map<String, String> map = new HashMap<>();
             map.put("type","1");
-            map.put("email",email);
+            map.put("phone",phone);
             map.put("token",UserMessage.getInstance().getToken());
             mPresenter.validuser(map);
         }
     }
 
     public void Register(){
-        email = edit_email.getText().toString();
+        phone = edit_phone.getText().toString();
         code  = edit_code.getText().toString();
-        if(email.length() == 0){
-            ToastUtil.getShortToastByString(this,"邮箱不能为空,请填写!");
-        }else if(!Validator.isEmail(email)) {
-            ToastUtil.getShortToastByString(this,"邮箱格式错误,请重新填写!");
+        if(phone.length() == 0){
+            ToastUtil.getShortToastByString(this,"手机号码不能为空,请填写!");
+        }else if(!Validator.isMobile(phone)) {
+            ToastUtil.getShortToastByString(this,"手机号码格式错误,请重新填写!");
         }else if(code.length() == 0){
             ToastUtil.getShortToastByString(this,"验证码不能为空,请填写!");
         }else if(isExist){
-            ToastUtil.getShortToastByString(this,"邮箱已注册,请重新填写!");
+            ToastUtil.getShortToastByString(this,"手机号码已绑定,请重新填写!");
         }else{
             Map<String, String> mapbind = new HashMap<>();
             mapbind.put("user_id",user_id);
-            mapbind.put("email",email);
+            mapbind.put("phone",phone);
             mapbind.put("code",code);
             mapbind.put("token",token);
             mPresenter.register(mapbind);
@@ -199,15 +198,6 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     public void toHome(UserMessage userMessage) {
         Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        Bundle bundle= new Bundle();
-        bundle.putString("user_id",userMessage.getUser_id());
-        bundle.putString("username",userMessage.getUsername());
-        bundle.putString("token",userMessage.getToken());
-        bundle.putString("role_id",userMessage.getRole_id());
-        bundle.putString("due_time",userMessage.getDue_time());
-        bundle.putString("email",userMessage.getEmail());
-        bundle.putString("power_add",userMessage.getPower_add());
-        bundle.putString("parent_id",userMessage.getParent_id());
         startActivity(intent);
     }
 
@@ -221,21 +211,21 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             timerHandler.post(timeRunnable);
         }else if(codetype.equals("1")){
             isExist = false;
-            emails_check.setTextColor(this.getResources().getColor(R.color.green));
-            emails_check.setText(message);
+            phones_check.setTextColor(this.getResources().getColor(R.color.green));
+            phones_check.setText(message);
             SendCode();
         }else if(codetype.equals("2")){
             isExist = false;
-            emails_check.setTextColor(this.getResources().getColor(R.color.green));
-            emails_check.setText(message);
+            phones_check.setTextColor(this.getResources().getColor(R.color.green));
+            phones_check.setText(message);
         }
     }
 
     @Override
     public void toFailAction(String message) {
         isExist = true;
-        emails_check.setTextColor(this.getResources().getColor(R.color.red));
-        emails_check.setText(message);
+        phones_check.setTextColor(this.getResources().getColor(R.color.red));
+        phones_check.setText(message);
     }
 
     @Override

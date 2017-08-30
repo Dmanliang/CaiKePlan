@@ -18,9 +18,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
-        android:text="亲, 网络不给力哦~~~"
+        android:text="亲, 网络不给力哦!"
         android:textSize="19sp"
-        android:textColor="@color/balckText"
+        android:textColor="@color/grayDate"
         android:layout_below="@+id/no_internet_icon"
         android:layout_centerHorizontal="true"
         />

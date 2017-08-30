@@ -7,11 +7,21 @@ package com.example.caikeplan.logic.message;
 public class LotteryTitle {
 
     private String      lottery_title;
+    private String      lottery_id;
     private boolean     isFocus=false;
 
-    public LotteryTitle(String lottery_title ,boolean isFocus){
+    public LotteryTitle(String lottery_id,String lottery_title,boolean isFocus){
+        this.lottery_id     =   lottery_id;
         this.lottery_title  =   lottery_title;
         this.isFocus        =   isFocus;
+    }
+
+    public String getLottery_id() {
+        return lottery_id;
+    }
+
+    public void setLottery_id(String lottery_id) {
+        this.lottery_id = lottery_id;
     }
 
     public boolean isFocus() {

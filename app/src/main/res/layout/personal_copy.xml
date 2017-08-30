@@ -78,7 +78,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="20dp"
-                    android:text="默认：聚彩盆（重庆）"
+                    android:text="默认：聚彩盆"
                     android:textColor="#808080"
                     android:textSize="15dp" />
             </RelativeLayout>
@@ -177,7 +177,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="20dp"
-                    android:text="默认：聚彩盆（重庆）"
+                    android:text="默认：聚彩盆"
                     android:textColor="#808080"
                     android:textSize="15dp" />
             </RelativeLayout>

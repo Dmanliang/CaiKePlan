@@ -118,6 +118,7 @@ public class LoginActivity extends XActivity implements View.OnClickListener,Ent
         edit_provider.setOnEditorActionListener(this);
         edit_user.setText(username);
         edit_password.setText(password);
+        edit_provider.setText(realCode);
     }
 
     @Override
@@ -166,7 +167,7 @@ public class LoginActivity extends XActivity implements View.OnClickListener,Ent
             ToastUtil.getShortToastByString(this,"密码不符合6-20位");
         }else{
             Map<String, String> map = new HashMap<>();
-            map.put("username", edit_user.getText().toString());
+            map.put("user_msg", usname);
             map.put("password", md5(password));
             xCache.put("username",usname);
             xCache.put("password",password);
@@ -201,7 +202,7 @@ public class LoginActivity extends XActivity implements View.OnClickListener,Ent
 
     @Override
     public void toHome(UserMessage userMessage) {
-        if(isEmpty(userMessage.getEmail()) && !userMessage.getRole_id().toString().equals("2")){
+        if(isEmpty(userMessage.getPhone()) && !userMessage.getRole_id().toString().equals("2")){
             ToastUtil.getShortToastByString(this,"为注册邮箱账号");
             Intent registerIntent = new Intent(LoginActivity.this,RegisterActivity.class);
             Bundle bundle1 = new Bundle();
@@ -218,7 +219,7 @@ public class LoginActivity extends XActivity implements View.OnClickListener,Ent
             bundle2.putString("token",userMessage.getToken());
             bundle2.putString("role_id",userMessage.getRole_id());
             bundle2.putString("due_time",userMessage.getDue_time());
-            bundle2.putString("email",userMessage.getEmail());
+            bundle2.putString("phone",userMessage.getPhone());
             bundle2.putString("power_add",userMessage.getPower_add());
             bundle2.putString("parent_id",userMessage.getParent_id());
             startActivity(intent2);

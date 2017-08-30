@@ -27,9 +27,9 @@ public class SendMessage {
 	private String 				next_plan_num,next_issue,next_num,next_hit;
 	private List<String>   		test 		= new ArrayList<>();
 	private List<String> 		test2		= new ArrayList<>();
-	private String				head 		=	"彩客计划";
-	private String 				mid 		= 	"彩客";
-	private String 				end			=	"彩客方案    仅供参考";							//复制的头中尾
+	private String				head 		=	"聚彩盆";
+	private String 				mid 		= 	"聚彩盆";
+	private String 				end			=	"聚彩盆    仅供参考";							//复制的头中尾
 	private String				NextPageName;													//方案分页的标题名字
 	private String				LotteryName	=	"重庆时时彩";									//全局的彩种名字
 	private String				program_plan_id;
@@ -106,7 +106,7 @@ public class SendMessage {
 	{
 		temphead = head;
 		if(head.isEmpty()==true) {
-			this.head="彩客计划"+"("+getLotteryName()+")";
+			this.head="聚彩盆"+"("+getLotteryName()+")";
 		}
 		else if(head.isEmpty()==false) {
 			this.head = head;
@@ -119,7 +119,7 @@ public class SendMessage {
 
 	public void setCopymid(String mid){//获取复制的中部set方法
 		if(mid==null) {
-			this.mid="彩客";
+			this.mid="聚彩盆";
 		}
 		else if(mid!=null) {
 			this.mid = mid;
@@ -149,7 +149,7 @@ public class SendMessage {
 	public void setCopyEnd(String end) {
 		tempend = end;
 		if(end.isEmpty()==true){
-			this.end="彩客方案    仅供参考";
+			this.end="聚彩盆    仅供参考";
 		}
 		else if(end.isEmpty()==false){
 			this.end = end;

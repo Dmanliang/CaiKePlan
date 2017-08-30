@@ -8,6 +8,7 @@ import com.example.caikeplan.logic.message.TabItem;
 import com.example.getJson.HttpTask;
 import com.example.util.Util;
 import com.tbruyelle.rxpermissions.RxPermissions;
+import com.umeng.analytics.MobclickAgent;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -19,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -237,4 +239,25 @@ public class MainActivity extends TabActivity {
 		});
 	}
 
+	@Override
+	protected void onResume() {
+		MobclickAgent.onResume(this);
+		super.onResume();
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			MobclickAgent.onKillProcess( this );
+			int pid = android.os.Process.myPid();
+			android.os.Process.killProcess(pid);
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
 }

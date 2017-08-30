@@ -2,6 +2,7 @@ package com.example.caikeplan.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -26,13 +28,16 @@ import com.example.caikeplan.R;
 import com.example.caikeplan.logic.EntryContract;
 import com.example.caikeplan.logic.EntryPresenter;
 import com.example.caikeplan.logic.WifiAdmin;
+import com.example.caikeplan.logic.adapter.LotteryTitleAdapter;
 import com.example.caikeplan.logic.adapter.RankAdapter;
+import com.example.caikeplan.logic.message.LotteryTitle;
 import com.example.caikeplan.logic.message.PlanBaseMessage;
 import com.example.caikeplan.logic.message.UserMessage;
 import com.example.getJson.HttpTask;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,33 +50,43 @@ import java.util.Map;
 
 public class RankActivity extends BaseActivity implements View.OnClickListener,EntryContract.View{
 
-    private SwipeRefreshLayout  swipeRefreshLayout;
-    private RelativeLayout      ranktoolbar;
-    private ListView            ranklistview;
+    private SwipeRefreshLayout      swipeRefreshLayout;
+    private RelativeLayout          program_toolbar;
+    private RelativeLayout          ranktoolbar;
+    private LinearLayout            title_layout;
+    private ImageView               title_arrow;
+    private ListView                ranklistview;
     private List<PlanBaseMessage>   rankList = new ArrayList<>();
-    private RankAdapter         rankAdapter;
-    private View                header;
-    private ImageView           num_one,num_two,num_three;
-    private ImageView           rank_message;
-    private TextView            num_one_plan,num_two_plan,num_three_plan,hot_count1,hot_count2,hot_count3;
-    private TextView            toolbar_title;
-    private String              lottery_id = "1";
-    private LinearLayout        plan_one_layout,plan_two_layout,plan_three_layout;
-    private EntryPresenter      mPresenter;
-    private Map<String, String> messagemap = new HashMap<>();
+    private RankAdapter             rankAdapter;
+    private View                    header;
+    private ImageView               num_one,num_two,num_three;
+    private ImageView               rank_message;
+    private TextView                num_one_plan,num_two_plan,num_three_plan,hot_count1,hot_count2,hot_count3;
+    private TextView                toolbar_title;
+    private View                    lottery_window;
+    private PopupWindow             titleWindow;
+    private String                  lottery_id = "1";
+    private LinearLayout            plan_one_layout,plan_two_layout,plan_three_layout;
+    private EntryPresenter          mPresenter;
+    private Map<String, String>     messagemap = new HashMap<>();
+    private List<LotteryTitle>      mlistLotteryTitle = new ArrayList<>();
+    private String[]                lottery_title   = {"重庆时时彩", "天津时时彩", "新疆时时彩","北京PK10","上海11选5","广东11选5","山东11选5"};
+    private String[]                lottery_ids     = {"1","3","7","27","22","9","10"};
+    private ListView                lottery_listview;
     //网络无法连接
-    private RelativeLayout      nointernetLayout;
-    private RelativeLayout      nodataLayout;
-    private Button              reload_button;
-    private Button              dataload_button;
-    private TextView            no_internet_text;
+    private RelativeLayout          nointernetLayout;
+    private RelativeLayout          nodataLayout;
+    private Button                  reload_button;
+    private Button                  dataload_button;
+    private TextView                no_internet_text;
     //监测网络状
-    private ConnectivityManager manager;
+    private ConnectivityManager     manager;
     //自动连接网
-    private WifiAdmin           wifiAdmin;
-    private PopupWindow         windowItem;
-    private View                loadview;
-    private boolean				isCheckData  = false;
+    private WifiAdmin               wifiAdmin;
+    private PopupWindow             windowItem;
+    private View                    loadview;
+    private boolean				    isCheckData  = false;
+    private int                     index = 0;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,12 +100,12 @@ public class RankActivity extends BaseActivity implements View.OnClickListener,E
         mPresenter.message(messagemap);
     }
 
-    public void requestHotData(){
+    public void requestHotData(int position){
         Message msg = new Message();
         msg.what = 2;
         recomdHandler.sendMessage(msg);
         HttpTask httpTask = new HttpTask();
-        httpTask.execute(Constants.API+Constants.HOT_SCHEME+lottery_id);
+        httpTask.execute(Constants.API+Constants.HOT_SCHEME+lottery_ids[position]);
         httpTask.setTaskHandler(new HttpTask.HttpTaskHandler() {
             @Override
             public void taskSuccessful(String json) {
@@ -176,9 +191,12 @@ public class RankActivity extends BaseActivity implements View.OnClickListener,E
 
     public void initView(){
         swipeRefreshLayout  =   (SwipeRefreshLayout)findViewById(R.id.swipe_refresh_rank);
+        program_toolbar     =   (RelativeLayout) findViewById(R.id.ranktoolbar);
         ranktoolbar         =   (RelativeLayout)findViewById(R.id.ranktoolbar);
+        title_layout        =   (LinearLayout)findViewById(R.id.title_layout);
         ranklistview        =   (ListView)findViewById(R.id.ranklistview);
         toolbar_title       =   (TextView)findViewById(R.id.toolbar_title);
+        title_arrow         =   (ImageView)findViewById(R.id.title_arrow);
         rank_message        =   (ImageView)findViewById(R.id.message);
         header              =   LayoutInflater.from(this).inflate(R.layout.rank_header,null,false);
         plan_one_layout     =   (LinearLayout)header.findViewById(R.id.plan_one_layout);
@@ -200,16 +218,20 @@ public class RankActivity extends BaseActivity implements View.OnClickListener,E
         no_internet_text    =   (TextView)findViewById(R.id.no_internet_text);
         reload_button.setOnClickListener(this);
         dataload_button.setOnClickListener(this);
-        toolbar_title.setText("点击率排行榜");
+        toolbar_title.setText(lottery_title[index]);
         rank_message.setVisibility(View.VISIBLE);
         ranklistview.addHeaderView(header);
         ranklistview.setDividerHeight(0);
         mPresenter = new EntryPresenter(this,this);
+        toolbar_title.setOnClickListener(this);
         rank_message.setOnClickListener(this);
         plan_one_layout.setOnClickListener(this);
         plan_two_layout.setOnClickListener(this);
         plan_three_layout.setOnClickListener(this);
+        title_layout.setOnClickListener(this);
+        title_arrow.setVisibility(View.VISIBLE);
         setSwipeRefreshLayout();
+        mlistLotteryTitle = setLotteryTitleData();
         ranklistview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -291,11 +313,73 @@ public class RankActivity extends BaseActivity implements View.OnClickListener,E
         @Override
         public void handleMessage(Message msg) {
             if(msg.what==1){
-                requestHotData();
+                requestHotData(index);
                 swipeRefreshLayout.setRefreshing(false);
             }
         }
     };
+
+    //设置标题信息
+    public List<LotteryTitle> setLotteryTitleData() {
+        LotteryTitle lotteryTitle;
+        for (int i = 0; i < lottery_title.length; i++) {
+            lotteryTitle = new LotteryTitle(lottery_ids[i],lottery_title[i], false);
+            mlistLotteryTitle.add(lotteryTitle);
+        }
+        return mlistLotteryTitle;
+    }
+
+    //选择彩种计划头列表
+    public void showLotteryTitle() {
+        lottery_window = RankActivity.this.getLayoutInflater().inflate(R.layout.lottery_listview, null,false);
+        titleWindow = new PopupWindow(lottery_window, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
+        titleWindow.setTouchable(true);
+        titleWindow.setOutsideTouchable(true);
+        lottery_window.setBackgroundColor(Color.parseColor("#80000000"));
+        if (titleWindow.isShowing()) {
+            titleWindow.dismiss();
+        } else {
+            titleWindow.setFocusable(true);
+            titleWindow.getContentView().setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    titleWindow.setFocusable(false);
+                    titleWindow.dismiss();
+                    return false;
+                }
+            });
+        }
+        lottery_listview = (ListView) lottery_window.findViewById(R.id.lottery_listview);
+        final LotteryTitleAdapter ltAdapter = new LotteryTitleAdapter(RankActivity.this, mlistLotteryTitle);
+        lottery_listview.setAdapter(ltAdapter);
+        ltAdapter.notifyDataSetChanged();
+        lottery_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                toolbar_title.setText(mlistLotteryTitle.get(position).getLottery_title());
+                index = position;
+                if (!mlistLotteryTitle.get(position).isFocus()) {
+                    resetFocues();
+                    mlistLotteryTitle.get(position).setFocus(true);
+                    ltAdapter.notifyDataSetChanged();
+                }
+                ltAdapter.notifyDataSetChanged();
+                requestHotData(position);
+                Message msg = new Message();
+                msg.what = 3;
+                recomdHandler.sendMessageDelayed(msg,500);
+            }
+        });
+        int xOffset = program_toolbar.getWidth() / 2 - lottery_window.getMeasuredWidth() / 2;
+        titleWindow.showAsDropDown(program_toolbar, xOffset, 0);
+    }
+
+    //重设选中标题信息
+    public void resetFocues() {
+        for (int i = 0; i < mlistLotteryTitle.size(); i++) {
+            mlistLotteryTitle.get(i).setFocus(false);
+        }
+    }
 
     @Override
     public void onClick(View v) {
@@ -318,7 +402,10 @@ public class RankActivity extends BaseActivity implements View.OnClickListener,E
                 wifiAdmin.openWifi();
                 break;
             case R.id.dataload_button:
-                requestHotData();
+                requestHotData(index);
+                break;
+            case R.id.toolbar_title:
+                showLotteryTitle();
                 break;
         }
     }
@@ -335,6 +422,9 @@ public class RankActivity extends BaseActivity implements View.OnClickListener,E
                     break;
                 case 2:
                     showItem();
+                    break;
+                case 3:
+                    titleWindow.dismiss();
                     break;
             }
         }
@@ -374,7 +464,7 @@ public class RankActivity extends BaseActivity implements View.OnClickListener,E
         checkNetWorkState();
         requestMessage();
         if(!isCheckData){
-            requestHotData();
+            requestHotData(index);
         }
         super.onResume();
     }

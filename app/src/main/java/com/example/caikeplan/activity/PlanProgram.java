@@ -460,7 +460,7 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
             SendMessage.getInstance().setDivider(xCache.getAsString("divider"));
         }
         SendMessage.getInstance().updateMid();
-        copylist.setText(CopyPlanList());
+        copylist.setText("当前计划："+lottery_name + plan_name+"\n"+getResources().getString(R.string.line2)+getResources().getString(R.string.lottery_title)+getResources().getString(R.string.line1)+CopyPlanList());
         edit_end_time.setText("更新时间：" + update_time);
         save_copy.setOnClickListener(this);
         SendMessage.getInstance().setTempMid();
@@ -479,8 +479,8 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
     public String CopyPlan() {
         update_time = format.format(time());
         String copyString = "";
-        copyString = SendMessage.getInstance().getCopyhead();
-        copyString += getResources().getString(R.string.line);
+        copyString =  SendMessage.getInstance().getCopyhead();
+        copyString += "\n"+"当前计划："+lottery_name + plan_name+"\n"+getResources().getString(R.string.line2);
         copyString += getResources().getString(R.string.lottery_title);
         for (int k = SendMessage.getInstance().getTest().size() - 1; k >= 0; k--) {
             copyString += SendMessage.getInstance().getSHUZU(k);
@@ -498,8 +498,6 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
         String copyString = "";
         copyString = copy_plan_title.getText().toString() + ":" + copy_content_title.getText().toString();
         copyString += copy_content_title.getText().toString();
-        copyString += getResources().getString(R.string.line);
-        copyString += getResources().getString(R.string.lottery_title);
         copyString += copylist.getText();
         copyString += getResources().getString(R.string.line);
         copyString += edit_end_text.getText().toString() + "\n";

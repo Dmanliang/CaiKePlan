@@ -8,13 +8,12 @@ import java.util.List;
  */
 
 public class UserMessage {
-
     private String              username;
     private String              user_id;
     private String              token;
     private String              role_id;
     private String              due_time;
-    private String              email;
+    private String              phone;
     private String              power_add;
     private String              parent_id;
     private List<PersonMessage> personlist = new ArrayList<>();
@@ -23,13 +22,13 @@ public class UserMessage {
 
     }
 
-    public UserMessage(String username,String user_id,String token,String role_id,String due_time,String email,String power_add,String parent_id){
+    public UserMessage(String username,String user_id,String token,String role_id,String due_time,String phone,String power_add,String parent_id){
         this.username = username;
         this.user_id  = user_id;
         this.token    = token;
         this.role_id  = role_id;
         this.due_time = due_time;
-        this.email    = email;
+        this.phone    = phone;
         this.power_add= power_add;
         this.parent_id= parent_id;
     }
@@ -100,12 +99,12 @@ public class UserMessage {
         this.due_time = due_time;
     }
 
-    public String getEmail() {
-        return email;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getPower_add() {

@@ -7,8 +7,8 @@ package com.example.base;
 public class Constants {
     public static final int     POST             = 0;                                                       //post请求方式
     public static final int     GET              = 1;                                                       //get请求方式
-    public static final String  API             = "http://39.108.185.81:8001"; 					            //http://120.77.242.46:9550服务器地址
-    public static final String  API2            = "http://39.108.185.81:8001"; 					            //服务器地址
+    public static final String  API             = "http://39.108.185.81:8001"; 					        //http://39.108.185.81:8001服务器地址
+    public static final String  API2            = "http://39.108.185.81:8001"; 					        //服务器地址
     public static final String  API3            = "http://39.108.133.173:9550"; 					        //服务器地址
     public static final String  PLAYCLASS       ="/lottery/find_lottery_play_cls_list";                     //查询彩种玩法分类列表
     public static final String  PLAY_LIST       ="/lottery/find_lottery_play_list";                         //查询彩种玩法列表
@@ -32,11 +32,11 @@ public class Constants {
     public static final String  UPDATE          ="/user/client_version_update?os=2";                        //版本更新
     public static final String  LOTTERY_HISTOEY ="/lottery/find_lottery_result_list?lottery_id=";           //彩种开奖记录
     public static final String  SERVER_TIME     ="/lottery/get_server_time";                                //服务器时间
-    public static final String  VALID_USER      ="/user/valid_user";                                        //查看用户名或者邮箱是否存在
+    public static final String  VALID_USER      ="/user/valid_user";                                        //查看用户名或者手机是否存在
     public static final String  USER_LOGIN      ="/user/user_login";                                        //用户登入
-    public static final String  BIND_EMAIL      ="/user/bind_email";                                        //绑定邮箱
+    public static final String  BIND_PHONE      ="/user/bind_phone";                                        //绑定手机
     public static final String  EDIT_PASWD      ="/user/edit_password";                                     //修改密码
-    public static final String  SEND_EMAIL      ="/user/send_email";                                        //发送验证码到邮箱
+    public static final String  SEND_PHONE      ="/user/send_phone_code";                                   //发送验证码到手机
     public static final String  RESET_PASWD     ="/user/reset_password";                                    //邮箱重置密码
     public static final String  ADD_USER        ="/user/add_user";                                          //客户端添加用户
     public static final String  USER_LIST       ="/user/manager_user_list";                                 //用户管理列表

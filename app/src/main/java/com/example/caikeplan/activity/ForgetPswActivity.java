@@ -24,13 +24,15 @@ import com.example.util.Util;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.example.util.Util.md5;
+
 /**
  * Created by dell on 2017/8/16.
  */
 
 public class ForgetPswActivity extends BaseActivity implements View.OnClickListener,EntryContract.View,TextView.OnEditorActionListener{
 
-    private EditText        forgetpsw_email;
+    private EditText        forgetpsw_phone;
     private EditText        forgetpsw_code;
     private EditText        forgetpsw_new_password;
     private ImageView       forgetpsw_close;
@@ -38,7 +40,7 @@ public class ForgetPswActivity extends BaseActivity implements View.OnClickListe
     private Button          forgetpsw_button;
     private EntryPresenter  mPresenter;
     private RelativeLayout  loading;
-    private String          email,code,newpaswd;
+    private String          phone,code,newpaswd;
     private int             second =60;
 
     @Override
@@ -49,7 +51,7 @@ public class ForgetPswActivity extends BaseActivity implements View.OnClickListe
     }
 
     public void initView(){
-        forgetpsw_email         =   (EditText)findViewById(R.id.forgetpsw_email);
+        forgetpsw_phone         =   (EditText)findViewById(R.id.forgetpsw_phone);
         forgetpsw_code          =   (EditText)findViewById(R.id.forgetpsw_code);
         forgetpsw_new_password  =   (EditText)findViewById(R.id.forgetpsw_new_password);
         forgetpsw_close         =   (ImageView)findViewById(R.id.forgetpsw_close);
@@ -89,26 +91,26 @@ public class ForgetPswActivity extends BaseActivity implements View.OnClickListe
     }
 
     public void SendCode(){
-        email = forgetpsw_email.getText().toString();
-        if(email.length() == 0){
-            ToastUtil.getShortToastByString(this,"邮箱不能为空,请填写!");
-        }else if(!Validator.isEmail(email)) {
-            ToastUtil.getShortToastByString(this,"邮箱格式错误,请重新填写!");
+        phone = forgetpsw_phone.getText().toString();
+        if(phone.length() == 0){
+            ToastUtil.getShortToastByString(this,"手机号码不能为空,请填写!");
+        }else if(!Validator.isMobile(phone)) {
+            ToastUtil.getShortToastByString(this,"手机号码格式错误,请重新填写!");
         }else{
             Map<String, String> mapsend = new HashMap<>();
-            mapsend.put("email",email);
+            mapsend.put("phone",phone);
             mPresenter.sendCode(mapsend);
         }
     }
 
     public void forgetPassword(){
-        email       = forgetpsw_email.getText().toString();
+        phone       = forgetpsw_phone.getText().toString();
         code        = forgetpsw_code.getText().toString();
-        newpaswd    = Util.md5(forgetpsw_new_password.getText().toString());
-        if(email.length() == 0){
-            ToastUtil.getShortToastByString(this,"邮箱不能为空,请填写!");
-        }else if(!Validator.isEmail(email)) {
-            ToastUtil.getShortToastByString(this,"邮箱格式错误,请重新填写!");
+        newpaswd    = forgetpsw_new_password.getText().toString();
+        if(phone.length() == 0){
+            ToastUtil.getShortToastByString(this,"手机号码不能为空,请填写!");
+        }else if(!Validator.isMobile(phone)) {
+            ToastUtil.getShortToastByString(this,"手机号码格式错误,请重新填写!");
         } else if(code.length() == 0){
             ToastUtil.getShortToastByString(this,"验证码不能为空,请填写!");
         }else if(newpaswd.length() == 0){
@@ -119,9 +121,9 @@ public class ForgetPswActivity extends BaseActivity implements View.OnClickListe
             ToastUtil.getShortToastByString(this,"密码不符合6-20位");
         }else {
             Map<String, String> mapbind = new HashMap<>();
-            mapbind.put("email",email);
+            mapbind.put("phone",phone);
             mapbind.put("code",code);
-            mapbind.put("password",newpaswd);
+            mapbind.put("password",md5(newpaswd));
             mPresenter.resetPassword(mapbind);
         }
     }

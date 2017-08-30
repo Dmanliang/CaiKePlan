@@ -20,9 +20,10 @@
     <string name="pull_to_refresh_pull_label">下拉刷新</string>
     <string name="pull_to_refresh_release_label">释放立即刷新</string>
     <string name="pull_to_refresh_refreshing_label">正在刷新…</string>
-    <string name="lottery_title">计 划 周 期    |   计 划 方 案    |    开 奖    |    结 果 </string>
-    <string name="line">    \n---------------------------------------------------------\n</string>
-    <string name="line1">    \n---------------------------------------------------------</string>
+    <string name="lottery_title">\u3000\u3000计 划 周 期\u3000|\u3000计 划 方 案\u3000|\u3000开 奖\u3000|\u3000结 果</string>
+    <string name="line">\n—— —— —— —— —— —— —— —— —— —— —— —— —— ——\n</string>
+    <string name="line1">\n—— —— —— —— —— —— —— —— —— —— —— —— —— ——</string>
+    <string name="line2">—— —— —— —— —— —— —— —— —— —— —— —— —— ——\n</string>
     <string name="update">更新时间：     </string>
     <string name="update_time">2017-01-17   18:46:21</string>
     <string name="descript">\u3000\u3000通过大数据处理,提供最专业的计划,是您购彩必备的利器。</string>

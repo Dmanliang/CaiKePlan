@@ -34,21 +34,21 @@
             android:layout_height="45dp"
             android:background="@drawable/shape_input">
             <ImageView
-                android:id="@+id/icon_email"
+                android:id="@+id/icon_phone"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="15dp"
-                android:background="@drawable/icon_email"/>
+                android:background="@drawable/icon_phone"/>
             <EditText
-                android:id="@+id/edit_email"
+                android:id="@+id/edit_phone"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:textCursorDrawable="@null"
                 android:background="@null"
                 android:layout_centerVertical="true"
-                android:hint="请输入邮箱"
-                android:layout_toRightOf="@+id/icon_email"
+                android:hint="请输入手机号码"
+                android:layout_toRightOf="@+id/icon_phone"
                 android:textColorHint="@color/whileDivider"
                 android:textSize="15sp"
                 android:layout_marginLeft="15dp"
@@ -57,7 +57,7 @@
                 android:ellipsize="end"
                 />
             <TextView
-                android:id="@+id/emails_check"
+                android:id="@+id/phones_check"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="13sp"
