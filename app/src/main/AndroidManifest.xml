@@ -84,7 +84,6 @@
         <activity android:name=".activity.AddUserActivity" />
         <activity android:name=".activity.ManagerActivity" />
         <activity android:name=".activity.ManagerPersonActivity" />
-        <activity android:name=".activity.ToolsActivity" />
         <activity android:name="com.example.NextPage.LotteryNextActitivty" />
         <activity android:name=".activity.PersonResetPswActivity" />
         <activity android:name=".activity.MessageActivity" />
@@ -95,6 +94,7 @@
         <activity android:name="com.example.next.list.ProgramMainNext" />
         <activity android:name=".activity.PersonalDisclaimer" />
         <activity android:name=".activity.PersonalConnect" />
+        <activity android:name=".activity.LinkActivity" />
 
         <!-- 聊天界面 -->
         <activity

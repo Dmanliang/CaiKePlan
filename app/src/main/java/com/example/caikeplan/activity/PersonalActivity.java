@@ -49,6 +49,7 @@ public class PersonalActivity extends XActivity implements View.OnClickListener,
     private     RelativeLayout      copycontentLayout;
     private     RelativeLayout      freeLayout;
     private     TextView            toolbar_title;
+    private     TextView            all_count;
     private     ImageView           message;
     private     EntryPresenter      mPresenter;
     private     Map<String, String> messagemap = new HashMap<>();
@@ -96,8 +97,10 @@ public class PersonalActivity extends XActivity implements View.OnClickListener,
         exitlogin           = (TextView)findViewById(R.id.exitlogin);
         endtime             = (TextView)findViewById(R.id.endtime);
         versiontext         = (TextView)findViewById(R.id.versiontext);
+        all_count           = (TextView)findViewById(R.id.all_count);
         versiontext.setText("当前版本:"+getVersion());
         toolbar_title.setText("设置");
+        all_count.setText(UserMessage.getInstance().getUse_count()+"/"+UserMessage.getInstance().getAll_count());
         username.setText(UserMessage.getInstance().getUsername());
         endtime.setText(UserMessage.getInstance().getDue_time());
         message.setVisibility(View.VISIBLE);
@@ -141,10 +144,9 @@ public class PersonalActivity extends XActivity implements View.OnClickListener,
                 startActivity(new Intent(PersonalActivity.this, CollectActivity.class));
                 break;
             case R.id.tools_layout:
-                Intent intent = new Intent(PersonalActivity.this,ToolsActivity.class);
+                Intent intent = new Intent(PersonalActivity.this,LinkActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putString("url", Constants.API+Constants.CALCULATOR);
-                bundle.putString("title","计算器");
+                bundle.putString("url", Constants.API+Constants.ALL_TOOLS);
                 intent.putExtras(bundle);
                 startActivity(intent);
                 break;
@@ -224,6 +226,7 @@ public class PersonalActivity extends XActivity implements View.OnClickListener,
     @Override
     protected void onResume() {
         requestMessage();
+        all_count.setText(UserMessage.getInstance().getUse_count()+"/"+UserMessage.getInstance().getAll_count());
         super.onResume();
     }
 

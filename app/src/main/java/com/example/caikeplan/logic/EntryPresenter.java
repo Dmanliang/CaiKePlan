@@ -77,6 +77,8 @@ public class EntryPresenter implements EntryContract.Presenter {
                     String     phone     = o.getJSONObject("data").getString("phone");
                     String     power_add = o.getJSONObject("data").getString("power_add");
                     String     parent_id = o.getJSONObject("data").getString("parent_id");
+                    String     use_count = o.getJSONObject("data").getString("use_count");
+                    String     all_count = o.getJSONObject("data").getString("all_count");
                     UserMessage.getInstance().setUsername(username);
                     UserMessage.getInstance().setUser_id(user_id);
                     UserMessage.getInstance().setToken(token);
@@ -85,6 +87,8 @@ public class EntryPresenter implements EntryContract.Presenter {
                     UserMessage.getInstance().setPhone(phone);
                     UserMessage.getInstance().setPower_add(power_add);
                     UserMessage.getInstance().setParent_id(parent_id);
+                    UserMessage.getInstance().setUse_count(use_count);
+                    UserMessage.getInstance().setAll_count(all_count);
                     if (mView != null) {
                         mView.disableLoadingAnimation();
                         mView.toHome(UserMessage.getInstance());
@@ -256,6 +260,8 @@ public class EntryPresenter implements EntryContract.Presenter {
                     mView.disableLoadingAnimation();
                     ToastUtil.getShortToastByString(context,"开户成功");
                     mView.toHome(UserMessage.getInstance());
+                    int use_count = Integer.parseInt(UserMessage.getInstance().getUse_count())+1;
+                    UserMessage.getInstance().setUse_count(use_count+"");
                 }
             }
         }, true);
@@ -417,6 +423,8 @@ public class EntryPresenter implements EntryContract.Presenter {
                     mView.disableLoadingAnimation();
                     mView.onMessage("用户删除成功");
                     mView.toSuccessAction("");
+                    int use_count = Integer.parseInt(UserMessage.getInstance().getUse_count())-1;
+                    UserMessage.getInstance().setUse_count(use_count+"");
                 }
             }
         }, true);

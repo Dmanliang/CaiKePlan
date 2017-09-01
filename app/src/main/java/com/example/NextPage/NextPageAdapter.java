@@ -15,11 +15,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.example.caikeplan.R;
 
+import org.w3c.dom.Text;
+
 public class NextPageAdapter extends BaseAdapter {
 
 	public static final int     TYPE_COUNT = 3;
 	public static final int     TYPE_ITEM1 = 1;
 	public static final int     TYPE_ITEM2 = 2;
+	public static final int     TYPE_ITEM3 = 3;
 	private Context context;
 	private List<NextPageBean> 	mList;
 	private LayoutInflater 		mInflater;
@@ -28,10 +31,12 @@ public class NextPageAdapter extends BaseAdapter {
 	SimpleDateFormat 			format2 =  	new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private ViewHolder 			viewholder = null;
 	private PKViewHolder		pkViewHolder = null;
+	private K3ViewHolder		k3ViewHolder = null;
 	private int                 currentType;
-	private View                itemview1,itemview2;
+	private View                itemview1,itemview2,itemview3;
 	private int[]               nums={R.drawable.type2_ball_1,R.drawable.type2_ball_2,R.drawable.type2_ball_3,R.drawable.type2_ball_4,
 								R.drawable.type2_ball_5,R.drawable.type2_ball_6, R.drawable.type2_ball_7,R.drawable.type2_ball_8,R.drawable.type2_ball_9,R.drawable.type2_ball_10};
+	private int[]               k3nums={R.drawable.type3_ball_1,R.drawable.type3_ball_2,R.drawable.type3_ball_3,R.drawable.type3_ball_4,R.drawable.type3_ball_5,R.drawable.type3_ball_6};
 	// 构造方法
 	public NextPageAdapter(Context context, List<NextPageBean> data) {
 		mList = data;
@@ -60,6 +65,8 @@ public class NextPageAdapter extends BaseAdapter {
 			return TYPE_ITEM1;
 		}else if("2".equals(mList.get(position).getType())){
 			return TYPE_ITEM2;
+		}else if("3".equals(mList.get(position).getType())){
+			return TYPE_ITEM3;
 		}else{
 			return 100;
 		}
@@ -99,6 +106,18 @@ public class NextPageAdapter extends BaseAdapter {
 				}
 				setData2(position);
 				break;
+			case TYPE_ITEM3:
+				if (convertView == null) {
+					k3ViewHolder 	= new K3ViewHolder();
+					itemview3 		= mInflater.inflate(R.layout.lottery_listk3_item,parent,false);
+					setView3(itemview3);
+					itemview3.setTag(k3ViewHolder);
+					convertView 	= itemview3;
+				} else {
+					k3ViewHolder	= (K3ViewHolder) convertView.getTag();
+				}
+				setData3(position);
+				break;
 		}
 		return convertView;
 	}
@@ -133,11 +152,11 @@ public class NextPageAdapter extends BaseAdapter {
 		viewholder.relativeDrop.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				int tag=position;
-				if(tag==current){
-					current=-1;
+				int tag	=	position;
+				if(tag	==	current){
+					current	=	-1;
 				}else {
-					current = tag;
+					current = 	tag;
 				}
 				notifyDataSetChanged();
 			}
@@ -195,6 +214,28 @@ public class NextPageAdapter extends BaseAdapter {
 		}
 	}
 
+	public void setView3(View view){
+		k3ViewHolder.expect_time 	= 	(TextView)view.findViewById(R.id.lty_cq_nextpage_time_k3);
+		k3ViewHolder.issue 	     	= 	(TextView)view.findViewById(R.id.lty_cq_nextpage_issue_pk10);
+		k3ViewHolder.num1 			= 	(ImageView)view.findViewById(R.id.lottery_list_type3_ball1);
+		k3ViewHolder.num2 			= 	(ImageView)view.findViewById(R.id.lottery_list_type3_ball2);
+		k3ViewHolder.num3 			= 	(ImageView)view.findViewById(R.id.lottery_list_type3_ball3);
+	}
+
+	public void setData3(int position){
+		k3ViewHolder.issue.setText("第"+mList.get(position).getIssue()+"期");
+		try {
+			k3ViewHolder.expect_time.setText(format2.format(format1.parse(mList.get(position).getExpect_time())));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		if(mList.get(position).getNums().size()!=0){
+			k3ViewHolder.num1.setBackground(ContextCompat.getDrawable(context, k3nums[Integer.parseInt(mList.get(position).getNums().get(0)) - 1]));
+			k3ViewHolder.num2.setBackground(ContextCompat.getDrawable(context, k3nums[Integer.parseInt(mList.get(position).getNums().get(1)) - 1]));
+			k3ViewHolder.num3.setBackground(ContextCompat.getDrawable(context, k3nums[Integer.parseInt(mList.get(position).getNums().get(2)) - 1]));
+		}
+	}
+
 	class ViewHolder {
 		public TextView 		issue,expect_time,num1,num2,num3,num4,num5,startThree,middleThree,endThree,bigSingle;
 		public ImageView 		up_arrow;
@@ -204,6 +245,11 @@ public class NextPageAdapter extends BaseAdapter {
 	class PKViewHolder{
 		public TextView 		issue,expect_time;
 		public ImageView		num1,num2,num3,num4,num5,num6,num7,num8,num9,num10;
+	}
+
+	class K3ViewHolder{
+		public TextView 		issue,expect_time;
+		public ImageView		num1,num2,num3;
 	}
 
 }

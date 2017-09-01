@@ -5,10 +5,10 @@ package com.example.base;
  */
 
 public class Constants {
-    public static final int     POST             = 0;                                                       //post请求方式
-    public static final int     GET              = 1;                                                       //get请求方式
-    public static final String  API             = "http://39.108.185.81:8001"; 					        //http://39.108.185.81:8001服务器地址
-    public static final String  API2            = "http://39.108.185.81:8001"; 					        //服务器地址
+    public static final int     POST            = 0;                                                        //post请求方式
+    public static final int     GET             = 1;                                                        //get请求方式
+    public static final String  API             = "http://39.108.185.81:8001"; 					            //http://39.108.185.81:8001服务器地址
+    public static final String  API2            = "http://39.108.185.81:8001"; 					            //服务器地址
     public static final String  API3            = "http://39.108.133.173:9550"; 					        //服务器地址
     public static final String  PLAYCLASS       ="/lottery/find_lottery_play_cls_list";                     //查询彩种玩法分类列表
     public static final String  PLAY_LIST       ="/lottery/find_lottery_play_list";                         //查询彩种玩法列表
@@ -48,5 +48,7 @@ public class Constants {
     public static final String  SSC_VIDEO       ="/static/ssc/index.html?lottery_id=";                      //时时彩开奖视频
     public static final String  PK10_VIDEO      ="/static/pk10/index.html?lottery_id=";                     //pk10开奖视频
     public static final String  GD11X5_VIDEO    ="/static/11x5/index.html?lottery_id=";                     //11选5开奖视频
+    public static final String  K3_VIDEO        ="/static/k3/index.html?lottery_id=";                       //快3开奖视频
+    public static final String  ALL_TOOLS       ="/static/tool/index.html";                                 //总工具列表
 
 }

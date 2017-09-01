@@ -12,6 +12,10 @@ import com.example.caikeplan.R;
 import com.example.caikeplan.activity.BaseActivity;
 import com.example.caikeplan.activity.PlanProgram;
 import com.example.caikeplan.activity.RankActivity;
+import com.example.caikeplan.logic.MyGridView;
+import com.example.caikeplan.logic.adapter.TitleGrildAdapter;
+import com.example.caikeplan.logic.message.LotteryTitle;
+import com.example.caikeplan.logic.message.PlanBaseMessage;
 import com.example.caikeplan.logic.message.UserMessage;
 import com.example.getJson.HttpTask;
 
@@ -28,6 +32,7 @@ import android.view.View.OnClickListener;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -46,6 +51,7 @@ public class CollectActivity extends BaseActivity implements OnClickListener {
 	public  static final int 	TYPE5 = 5;
 	public  static final int 	TYPE6 = 6;
 	public  static final int 	TYPE7 = 7;
+	public  static final int 	TYPE8 = 8;
 	private SwipeRefreshLayout  swipeRefreshLayout;
 	private RelativeLayout      nodataLayout;
 	private RelativeLayout      main_toolbar;
@@ -56,9 +62,15 @@ public class CollectActivity extends BaseActivity implements OnClickListener {
 	private TextView 			toolbar_title;
 	private ImageView			choice_collect;
 	private PopupWindow			lotteryWindow;
-	private RelativeLayout		lottery_cq_ssc_layout,lottery_tj_ssc_layout,lottery_xj_ssc_layout,lottery_pk10_layout,lottery_gd11x5_layout,lottery_sh11x5_layout,lottery_sd11x5_layout;
+	private List<LotteryTitle>	lottery_titleList = new ArrayList<>();
+	private GridView			titleGridView;
+	private TitleGrildAdapter   titleGrildAdapter;
 	public  List<CollectBean>	newsBeanList = new ArrayList<>();
 	private Button				dataload_button;
+	private String[]            lottery_title   = {"重庆时时彩", "天津时时彩", "新疆时时彩","上海11选5","广东11选5","山东11选5","北京PK10","",""};
+	private String[]            lottery_ids     = {"1","3","7","22","9","10","27","",""};
+	private int[]               lottery_resid   = {R.drawable.lottery_cq_ssc,R.drawable.lottery_tj_ssc,R.drawable.lottery_xj_ssc,R.drawable.lottery_sh_11x5,R.drawable.lottery_gd_11x5,R.drawable.lottery_sd_11x5,R.drawable.lottery_bj_pk10,0,0};
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -78,6 +90,7 @@ public class CollectActivity extends BaseActivity implements OnClickListener {
 		noCollect			=	(RelativeLayout)findViewById(R.id.no_collect);
 		dataload_button		=	(Button)findViewById(R.id.dataload_button);
 		adapter = new CollectListAdapter(CollectActivity.this, newsBeanList);
+		lottery_titleList = setLotteryTitleData();
 		mListview.setAdapter(adapter);
 		toolbar_title.setText("收藏");
 		program_back.setVisibility(View.VISIBLE);
@@ -170,16 +183,19 @@ public class CollectActivity extends BaseActivity implements OnClickListener {
 						requestSelectLottery("7");
 						break;
 					case TYPE4:
-						requestSelectLottery("27");
+						requestSelectLottery("22");
 						break;
 					case TYPE5:
 						requestSelectLottery("9");
 						break;
 					case TYPE6:
-						requestSelectLottery("22");
+						requestSelectLottery("10");
 						break;
 					case TYPE7:
-						requestSelectLottery("10");
+						requestSelectLottery("27");
+						break;
+					case TYPE8:
+						requestSelectLottery("23");
 						break;
 				}
 				swipeRefreshLayout.setRefreshing(false);
@@ -200,6 +216,16 @@ public class CollectActivity extends BaseActivity implements OnClickListener {
 		bundle.putString("type","0");
 		intent.putExtras(bundle);
 		startActivity(intent);
+	}
+
+	//设置标题信息
+	public List<LotteryTitle> setLotteryTitleData() {
+		LotteryTitle lotteryTitle;
+		for (int i = 0; i < lottery_title.length; i++) {
+			lotteryTitle = new LotteryTitle(lottery_ids[i],lottery_title[i],lottery_resid[i], false);
+			lottery_titleList.add(lotteryTitle);
+		}
+		return lottery_titleList;
 	}
 
 	public void requestCollection(){
@@ -316,20 +342,22 @@ public class CollectActivity extends BaseActivity implements OnClickListener {
 	}
 
 	public void setLotteryView(View view){
-		lottery_cq_ssc_layout 	= (RelativeLayout)view.findViewById(R.id.lottery_cq_ssc_layout);
-		lottery_tj_ssc_layout 	= (RelativeLayout)view.findViewById(R.id.lottery_tj_ssc_layout);
-		lottery_xj_ssc_layout 	= (RelativeLayout)view.findViewById(R.id.lottery_xj_ssc_layout);
-		lottery_gd11x5_layout 	= (RelativeLayout)view.findViewById(R.id.lottery_gd11x5_layout);
-		lottery_pk10_layout 	= (RelativeLayout)view.findViewById(R.id.lottery_pk10_layout);
-		lottery_sh11x5_layout 	= (RelativeLayout)view.findViewById(R.id.lottery_sh11x5_layout);
-		lottery_sd11x5_layout 	= (RelativeLayout)view.findViewById(R.id.lottery_sd11x5_layout);
-		lottery_cq_ssc_layout.setOnClickListener(this);
-		lottery_tj_ssc_layout.setOnClickListener(this);
-		lottery_xj_ssc_layout.setOnClickListener(this);
-		lottery_pk10_layout.setOnClickListener(this);
-		lottery_gd11x5_layout.setOnClickListener(this);
-		lottery_sh11x5_layout.setOnClickListener(this);
-		lottery_sd11x5_layout.setOnClickListener(this);
+		titleGridView = (MyGridView)view.findViewById(R.id.lottery_title_gridview);
+		titleGrildAdapter = new TitleGrildAdapter(this,lottery_titleList);
+		titleGridView.setAdapter(titleGrildAdapter);
+		titleGrildAdapter.notifyDataSetChanged();
+		titleGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				if(position < lottery_title.length-2){
+					requestSelectLottery(lottery_titleList.get(position).getLottery_id());
+					Message msg = new Message();
+					msg.what = 1;
+					recomdHandler.sendMessageDelayed(msg,500);
+					requstType = position+1;
+				}
+			}
+		});
 	}
 
 
@@ -341,55 +369,6 @@ public class CollectActivity extends BaseActivity implements OnClickListener {
 				break;
 			case R.id.choice_collect:
 				showLotterySelect(v);
-				break;
-			case R.id.lottery_cq_ssc_layout:
-				requestSelectLottery("1");
-				Message msg1 = new Message();
-				msg1.what = 1;
-				recomdHandler.sendMessageDelayed(msg1,500);
-				requstType = 1;
-				break;
-			case R.id.lottery_tj_ssc_layout:
-				requestSelectLottery("3");
-				Message msg2 = new Message();
-				msg2.what = 1;
-				recomdHandler.sendMessageDelayed(msg2,500);
-				requstType = 2;
-				break;
-			case R.id.lottery_xj_ssc_layout:
-				requestSelectLottery("7");
-				Message msg3 = new Message();
-				msg3.what = 1;
-				recomdHandler.sendMessageDelayed(msg3,500);
-				requstType = 3;
-				break;
-			case R.id.lottery_pk10_layout:
-				requestSelectLottery("27");
-				Message msg4 = new Message();
-				msg4.what = 1;
-				recomdHandler.sendMessageDelayed(msg4,500);
-				requstType = 4;
-				break;
-			case R.id.lottery_gd11x5_layout:
-				requestSelectLottery("9");
-				Message msg5 = new Message();
-				msg5.what = 1;
-				recomdHandler.sendMessageDelayed(msg5,500);
-				requstType = 5;
-				break;
-			case R.id.lottery_sh11x5_layout:
-				requestSelectLottery("22");
-				Message msg6 = new Message();
-				msg6.what = 1;
-				recomdHandler.sendMessageDelayed(msg6,500);
-				requstType = 6;
-				break;
-			case R.id.lottery_sd11x5_layout:
-				requestSelectLottery("10");
-				Message msg7 = new Message();
-				msg7.what = 1;
-				recomdHandler.sendMessageDelayed(msg7,500);
-				requstType = 7;
 				break;
 			case R.id.dataload_button:
 				requestCollection();

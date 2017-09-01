@@ -20,7 +20,7 @@ public class HttpStatusCode {
     public static final int     FREEZE            = -10002;
     public static final int     OVERTIME          = -10003;
     //    状态码描述
-    public static final String UNKNOWN_ERROR_DES    = "服务器开小差了，等会儿再试吧~";
+    public static final String UNKNOWN_ERROR_DES    = "登录失败";
     public static final String USER_PAS_DES         = "用户名密码不匹配";
     public static final String FREEZE_DES           = "账号已冻结";
     public static final String OVERTIME_DES         = "账号已过期";

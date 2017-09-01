@@ -82,9 +82,9 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
     private CopyEditAdpater     copyEditAdpater;
     private ImageView           btn_copy, btn_edit,btn_collect;
     private TextView            plan_accuracy, plan_cycle, plan_wrong;
-    private String              plan_id, s_id, scheme_name, lottery_name, plan_name, cls_name,is_jcp,type;            //计划id和对应第几个计划
-    private String              bestS_id, bestRate, rate;                                                 //最高命中率的计划和最高命中率,本计划命中率
-    private int                 countYes = 0, countNo = 0, countCyecles = 0;                              //统计正确率,错误率和周期
+    private String              plan_id, s_id, scheme_name, lottery_name, plan_name, cls_name,is_jcp,type;              //计划id和对应第几个计划
+    private String              bestS_id, bestRate, rate;                                                               //最高命中率的计划和最高命中率,本计划命中率
+    private int                 countYes = 0, countNo = 0, countCyecles = 0;                                            //统计正确率,错误率和周期
     private String              update_time;
     private SimpleDateFormat    format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
     private String              issue;
@@ -93,7 +93,6 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
     private String              ranges;
     private String              hit;
     private int                 index = 0;
-    private String[]            dangshi_play_id = {"10040", "10041", "10042", "10043", "10044", "10045", "10046"};
     private TextView            copy_ranges;
     private TextView            copy_context;
     private TextView            copy_plays;
@@ -283,6 +282,7 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
                         String hit          = jsonObject.getString("hit");
                         String issue        = jsonObject.getString("issue")+"期";
                         String nums_type    = jsonObject.getString("nums_type");
+                        String is_ds        = jsonObject.getString("is_ds");
                         //计算准确率
                         if (hit.equals("0")) {
                             countNo  += 1;
@@ -291,7 +291,7 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
                         }
                         hit = hit.replaceAll("-1", "进行中").replaceAll("1", "中").replaceAll("0", "未中");
                         setCopyMessage();
-                        if (isDanshi(play_id)) {
+                        if (is_ds.equals("1")) {
                             plan_num = dividerNum(plan_num);
                             SendMessage.getInstance().setSHUZU(ranges, nums_type, plan_num, issue + " " + nums, "  " + hit, index, true);
                         } else {
@@ -335,16 +335,6 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
                 btn_edit.setClickable(false);
             }
         });
-    }
-
-    //判断是否是单式
-    public boolean isDanshi(String play_id) {
-        for (int i = 0; i < dangshi_play_id.length; i++) {
-            if (play_id.equals(dangshi_play_id[i])) {
-                return true;
-            }
-        }
-        return false;
     }
 
     //显示选项复制弹框
@@ -497,7 +487,7 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
         update_time = edit_end_time.getText().toString();
         String copyString = "";
         copyString = copy_plan_title.getText().toString() + ":" + copy_content_title.getText().toString();
-        copyString += copy_content_title.getText().toString();
+        copyString += copy_content_title.getText().toString()+"\n";
         copyString += copylist.getText();
         copyString += getResources().getString(R.string.line);
         copyString += edit_end_text.getText().toString() + "\n";

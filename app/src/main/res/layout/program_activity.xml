@@ -44,6 +44,12 @@
                                             android:layout_width="match_parent"
                                             android:layout_height="180dp"
                                             android:visibility="gone"/>
+                                        <include
+                                            android:id="@+id/k3layout"
+                                            layout="@layout/k3layout"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="180dp"
+                                            android:visibility="gone"/>
                                 </RelativeLayout>
                                 <RelativeLayout
                                     android:id="@+id/recommend_layout"

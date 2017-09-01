@@ -119,19 +119,9 @@ public class PersonalCopy extends BaseActivity implements OnClickListener{
 		helpwindow.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#80000000")));
 		helpwindow.setOutsideTouchable(true);
 		helpwindow.update();
-		if (helpwindow.isShowing()) {
-			helpwindow.dismiss();
-		} else {
+		if (!helpwindow.isShowing()) {
 			helpwindow.showAtLocation(view, Gravity.CENTER, 0, 0);
 			helpwindow.setFocusable(true);
-			helpwindow.getContentView().setOnTouchListener(new View.OnTouchListener() {
-				@Override
-				public boolean onTouch(View view, MotionEvent motionEvent) {
-					helpwindow.setFocusable(false);
-					helpwindow.dismiss();
-					return false;
-				}
-			});
 		}
 		content_setting_close = (Button)view.findViewById(R.id.content_setting_close);
 		content_setting_close.setOnClickListener(new View.OnClickListener() {

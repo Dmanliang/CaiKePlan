@@ -9,13 +9,13 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -27,18 +27,16 @@ import com.example.base.Constants;
 import com.example.caikeplan.R;
 import com.example.caikeplan.logic.EntryContract;
 import com.example.caikeplan.logic.EntryPresenter;
+import com.example.caikeplan.logic.MyGridView;
 import com.example.caikeplan.logic.WifiAdmin;
-import com.example.caikeplan.logic.adapter.LotteryTitleAdapter;
 import com.example.caikeplan.logic.adapter.RankAdapter;
+import com.example.caikeplan.logic.adapter.TitleGrildAdapter;
 import com.example.caikeplan.logic.message.LotteryTitle;
 import com.example.caikeplan.logic.message.PlanBaseMessage;
 import com.example.caikeplan.logic.message.UserMessage;
 import com.example.getJson.HttpTask;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,7 +57,6 @@ public class RankActivity extends BaseActivity implements View.OnClickListener,E
     private List<PlanBaseMessage>   rankList = new ArrayList<>();
     private RankAdapter             rankAdapter;
     private View                    header;
-    private ImageView               num_one,num_two,num_three;
     private ImageView               rank_message;
     private TextView                num_one_plan,num_two_plan,num_three_plan,hot_count1,hot_count2,hot_count3;
     private TextView                toolbar_title;
@@ -70,9 +67,9 @@ public class RankActivity extends BaseActivity implements View.OnClickListener,E
     private EntryPresenter          mPresenter;
     private Map<String, String>     messagemap = new HashMap<>();
     private List<LotteryTitle>      mlistLotteryTitle = new ArrayList<>();
-    private String[]                lottery_title   = {"重庆时时彩", "天津时时彩", "新疆时时彩","北京PK10","上海11选5","广东11选5","山东11选5"};
-    private String[]                lottery_ids     = {"1","3","7","27","22","9","10"};
-    private ListView                lottery_listview;
+    private String[]                lottery_title   = {"重庆时时彩", "天津时时彩", "新疆时时彩","上海11选5","广东11选5","山东11选5","北京PK10","",""};
+    private String[]                lottery_ids     = {"1","3","7","22","9","10","27","",""};
+    private int[]                   lottery_resid   = {R.drawable.lottery_cq_ssc,R.drawable.lottery_tj_ssc,R.drawable.lottery_xj_ssc,R.drawable.lottery_sh_11x5,R.drawable.lottery_gd_11x5,R.drawable.lottery_sd_11x5,R.drawable.lottery_bj_pk10,0,0};
     //网络无法连接
     private RelativeLayout          nointernetLayout;
     private RelativeLayout          nodataLayout;
@@ -83,10 +80,12 @@ public class RankActivity extends BaseActivity implements View.OnClickListener,E
     private ConnectivityManager     manager;
     //自动连接网
     private WifiAdmin               wifiAdmin;
-    private PopupWindow             windowItem;
     private View                    loadview;
     private boolean				    isCheckData  = false;
     private int                     index = 0;
+    private List<LotteryTitle>	    lottery_titleList = new ArrayList<>();
+    private GridView                titleGridView;
+    private TitleGrildAdapter       titleGrildAdapter;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,9 +100,7 @@ public class RankActivity extends BaseActivity implements View.OnClickListener,E
     }
 
     public void requestHotData(int position){
-        Message msg = new Message();
-        msg.what = 2;
-        recomdHandler.sendMessage(msg);
+        index = position;
         HttpTask httpTask = new HttpTask();
         httpTask.execute(Constants.API+Constants.HOT_SCHEME+lottery_ids[position]);
         httpTask.setTaskHandler(new HttpTask.HttpTaskHandler() {
@@ -171,7 +168,6 @@ public class RankActivity extends BaseActivity implements View.OnClickListener,E
                 }
             }
         });
-        windowItem.dismiss();
     }
 
     public void goPlan(int position){
@@ -202,9 +198,6 @@ public class RankActivity extends BaseActivity implements View.OnClickListener,E
         plan_one_layout     =   (LinearLayout)header.findViewById(R.id.plan_one_layout);
         plan_two_layout     =   (LinearLayout)header.findViewById(R.id.plan_two_layout);
         plan_three_layout   =   (LinearLayout)header.findViewById(R.id.plan_three_layout);
-        num_one             =   (ImageView)header.findViewById(R.id.num_one);
-        num_two             =   (ImageView)header.findViewById(R.id.num_two);
-        num_three           =   (ImageView)header.findViewById(R.id.num_three);
         num_one_plan        =   (TextView)header.findViewById(R.id.num_one_plan);
         num_two_plan        =   (TextView)header.findViewById(R.id.num_two_plan);
         num_three_plan      =   (TextView)header.findViewById(R.id.num_three_plan);
@@ -216,6 +209,7 @@ public class RankActivity extends BaseActivity implements View.OnClickListener,E
         reload_button       =   (Button)findViewById(R.id.reload_button);
         dataload_button     =   (Button)findViewById(R.id.dataload_button);
         no_internet_text    =   (TextView)findViewById(R.id.no_internet_text);
+        mlistLotteryTitle = setLotteryTitleData();
         reload_button.setOnClickListener(this);
         dataload_button.setOnClickListener(this);
         toolbar_title.setText(lottery_title[index]);
@@ -231,7 +225,6 @@ public class RankActivity extends BaseActivity implements View.OnClickListener,E
         title_layout.setOnClickListener(this);
         title_arrow.setVisibility(View.VISIBLE);
         setSwipeRefreshLayout();
-        mlistLotteryTitle = setLotteryTitleData();
         ranklistview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -262,18 +255,6 @@ public class RankActivity extends BaseActivity implements View.OnClickListener,E
 
             }
         });
-    }
-
-    //加载数据弹框
-    public void showItem() {
-        loadview = RankActivity.this.getLayoutInflater().inflate(R.layout.loadingdata, null,false);
-        windowItem = new PopupWindow(loadview, LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT, true);
-        windowItem.setOutsideTouchable(true);
-        windowItem.update();
-        if (!windowItem.isShowing()) {
-            windowItem.showAtLocation(loadview, Gravity.CENTER, 0, 0);
-            windowItem.setFocusable(true);
-        }
     }
 
     public void setSwipeRefreshLayout(){
@@ -323,7 +304,7 @@ public class RankActivity extends BaseActivity implements View.OnClickListener,E
     public List<LotteryTitle> setLotteryTitleData() {
         LotteryTitle lotteryTitle;
         for (int i = 0; i < lottery_title.length; i++) {
-            lotteryTitle = new LotteryTitle(lottery_ids[i],lottery_title[i], false);
+            lotteryTitle = new LotteryTitle(lottery_ids[i],lottery_title[i],lottery_resid[i], false);
             mlistLotteryTitle.add(lotteryTitle);
         }
         return mlistLotteryTitle;
@@ -331,7 +312,7 @@ public class RankActivity extends BaseActivity implements View.OnClickListener,E
 
     //选择彩种计划头列表
     public void showLotteryTitle() {
-        lottery_window = RankActivity.this.getLayoutInflater().inflate(R.layout.lottery_listview, null,false);
+        lottery_window = RankActivity.this.getLayoutInflater().inflate(R.layout.lottery_choice, null,false);
         titleWindow = new PopupWindow(lottery_window, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
         titleWindow.setTouchable(true);
         titleWindow.setOutsideTouchable(true);
@@ -349,36 +330,28 @@ public class RankActivity extends BaseActivity implements View.OnClickListener,E
                 }
             });
         }
-        lottery_listview = (ListView) lottery_window.findViewById(R.id.lottery_listview);
-        final LotteryTitleAdapter ltAdapter = new LotteryTitleAdapter(RankActivity.this, mlistLotteryTitle);
-        lottery_listview.setAdapter(ltAdapter);
-        ltAdapter.notifyDataSetChanged();
-        lottery_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                toolbar_title.setText(mlistLotteryTitle.get(position).getLottery_title());
-                index = position;
-                if (!mlistLotteryTitle.get(position).isFocus()) {
-                    resetFocues();
-                    mlistLotteryTitle.get(position).setFocus(true);
-                    ltAdapter.notifyDataSetChanged();
-                }
-                ltAdapter.notifyDataSetChanged();
-                requestHotData(position);
-                Message msg = new Message();
-                msg.what = 3;
-                recomdHandler.sendMessageDelayed(msg,500);
-            }
-        });
+        setLotteryView();
         int xOffset = program_toolbar.getWidth() / 2 - lottery_window.getMeasuredWidth() / 2;
         titleWindow.showAsDropDown(program_toolbar, xOffset, 0);
     }
 
-    //重设选中标题信息
-    public void resetFocues() {
-        for (int i = 0; i < mlistLotteryTitle.size(); i++) {
-            mlistLotteryTitle.get(i).setFocus(false);
-        }
+    public void setLotteryView(){
+        titleGridView = (MyGridView)lottery_window.findViewById(R.id.lottery_title_gridview);
+        titleGrildAdapter = new TitleGrildAdapter(this,mlistLotteryTitle);
+        titleGridView.setAdapter(titleGrildAdapter);
+        titleGrildAdapter.notifyDataSetChanged();
+        titleGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(position < lottery_title.length-2){
+                    toolbar_title.setText(mlistLotteryTitle.get(position).getLottery_title());
+                    requestHotData(position);
+                    Message msg = new Message();
+                    msg.what = 3;
+                    recomdHandler.sendMessageDelayed(msg,500);
+                }
+            }
+        });
     }
 
     @Override
@@ -421,7 +394,6 @@ public class RankActivity extends BaseActivity implements View.OnClickListener,E
                     setHotGridView();
                     break;
                 case 2:
-                    showItem();
                     break;
                 case 3:
                     titleWindow.dismiss();
@@ -519,14 +491,12 @@ public class RankActivity extends BaseActivity implements View.OnClickListener,E
     }
 
     private void setDatalayout(){
-        windowItem.dismiss();
         swipeRefreshLayout.setVisibility(View.GONE);
         nodataLayout.setVisibility(View.VISIBLE);
         nointernetLayout.setVisibility(View.GONE);
     }
 
     private void isDataAvailable(){
-        windowItem.dismiss();
         swipeRefreshLayout.setVisibility(View.VISIBLE);
         nodataLayout.setVisibility(View.GONE);
         nointernetLayout.setVisibility(View.GONE);

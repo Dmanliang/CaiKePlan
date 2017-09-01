@@ -16,13 +16,15 @@ public class UserMessage {
     private String              phone;
     private String              power_add;
     private String              parent_id;
+    private String              use_count;
+    private String              all_count;
     private List<PersonMessage> personlist = new ArrayList<>();
     private List<NoticeMessage> noticeMessageList = new ArrayList<>();
     public UserMessage(){
 
     }
 
-    public UserMessage(String username,String user_id,String token,String role_id,String due_time,String phone,String power_add,String parent_id){
+    public UserMessage(String username,String user_id,String token,String role_id,String due_time,String phone,String power_add,String parent_id,String use_count,String all_count){
         this.username = username;
         this.user_id  = user_id;
         this.token    = token;
@@ -31,6 +33,24 @@ public class UserMessage {
         this.phone    = phone;
         this.power_add= power_add;
         this.parent_id= parent_id;
+        this.use_count= use_count;
+        this.all_count= all_count;
+    }
+
+    public String getUse_count() {
+        return use_count;
+    }
+
+    public void setUse_count(String use_count) {
+        this.use_count = use_count;
+    }
+
+    public String getAll_count() {
+        return all_count;
+    }
+
+    public void setAll_count(String all_count) {
+        this.all_count = all_count;
     }
 
     public List<NoticeMessage> getNoticeMessageList() {

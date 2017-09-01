@@ -134,6 +134,8 @@ public class CollectListAdapter extends BaseAdapter{
 				viewholder.plan_name.setText("(上海11选5"+mList.get(position).getPlan_name()+")");
 			}else if(mList.get(position).getLottery_id()==10){
 				viewholder.plan_name.setText("(山东11选5"+mList.get(position).getPlan_name()+")");
+			}else if(mList.get(position).getLottery_id()==23){
+				viewholder.plan_name.setText("(江苏快3"+mList.get(position).getPlan_name()+")");
 			}
 			if(mList.get(position).getIsCollected()){
 				viewholder.DelectStar.setChecked(true);

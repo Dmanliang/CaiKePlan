@@ -6,7 +6,7 @@
     <ListView
         android:id="@+id/lottery_listview"
         android:layout_width="match_parent"
-        android:layout_height="225dp"
+        android:layout_height="wrap_content"
         android:dividerHeight="0.1dp"
         android:divider="@color/whileDivider"
         android:background="#fff"

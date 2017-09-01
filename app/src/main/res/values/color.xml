@@ -7,7 +7,7 @@
     <color name="blue">#0000ff</color>
     <color name="trans_blue">#7f4A708B</color>
     <color name="tras_black">#7f000000</color>
-
+    <color name="line">#ffd3dde6</color>
     <!-- 透明 -->
     <color name="transparent">#00000000</color>
     <color name="hintColor">#e6e6e6</color>

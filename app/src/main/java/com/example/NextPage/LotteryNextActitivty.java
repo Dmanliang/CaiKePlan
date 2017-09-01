@@ -101,7 +101,6 @@ public class LotteryNextActitivty extends BaseActivity implements OnClickListene
 		}
 	};
 
-
 	//获取字段
 	public void getData(){
 		Bundle bundle 	= getIntent().getExtras();
@@ -189,8 +188,10 @@ public class LotteryNextActitivty extends BaseActivity implements OnClickListene
 							newsBean.setEndthree(endThree);
 							newsBean.setSingledouble(SingleDouble1+"|"+SingleDouble2);
 							newsBean.setType("1");
-						}else{
+						}else if(lottery_id.equals("27")){
 							newsBean.setType("2");
+						}else if(lottery_id.equals("23")){
+							newsBean.setType("3");
 						}
 						list.add(newsBean);
 					}
@@ -209,17 +210,11 @@ public class LotteryNextActitivty extends BaseActivity implements OnClickListene
 		});
 	}
 
-
 	//设置列表
 	public void setListView(){
 		adapter = new NextPageAdapter(LotteryNextActitivty.this, newsBeanList);
 		mListview.setAdapter(adapter);
 		adapter.notifyDataSetChanged();
-	}
-
-	//计算开奖码大小单双组别
-	public void setDoubleSingle(int i) {
-
 	}
 
 	//点击事件监听

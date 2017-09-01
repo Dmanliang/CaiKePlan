@@ -87,6 +87,7 @@ public class DataActivity extends BaseActivity implements View.OnClickListener{
     private String[]                playType            =   {"个位分析","十位分析","百位分析","千位分析","万位分析","前二分析","后二分析","前三分析","中三分析","后三分析","前四分析","后四分析","五星分析"};
     private String[]                locs                =   {"00001","00010","00100","01000","10000","11000","00011","11100","01110","00111","11110","01111","11111"};
     private String[]                issues              =   {"最近30期","最近50期","最近100期","最近200期"};
+    private int[]                   lottery_resid       = {R.drawable.lottery_cq_ssc,R.drawable.lottery_tj_ssc,R.drawable.lottery_xj_ssc};
     private int[]                   tables              =   {30,50,100,200};
     //网络无法连接
     private RelativeLayout          nointernetLayout;
@@ -282,9 +283,9 @@ public class DataActivity extends BaseActivity implements View.OnClickListener{
         LotteryTitle lotteryTitle;
         for (int i = 0; i < lottery_title.length; i++) {
             if(i == 0){
-                lotteryTitle = new LotteryTitle(lottery_ids[i],lottery_title[i], true);
+                lotteryTitle = new LotteryTitle(lottery_ids[i],lottery_title[i],lottery_resid[i], true);
             }else{
-                lotteryTitle = new LotteryTitle(lottery_ids[i],lottery_title[i], false);
+                lotteryTitle = new LotteryTitle(lottery_ids[i],lottery_title[i],lottery_resid[i], false);
             }
             mlistLotteryTitle.add(lotteryTitle);
         }

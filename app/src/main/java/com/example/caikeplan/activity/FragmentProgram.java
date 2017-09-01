@@ -80,6 +80,7 @@ public class FragmentProgram extends Activity implements OnClickListener {
     private String[]                        HeZhi           = {"6码3期", "6码4期", "7码3期", "7码4期", "7码5期"};
     private String[]                        lottery_title   = {"  重庆时时彩", "  天津时时彩", "  新疆时时彩"};
     private String[]                        lottery_ids     = {"1","3","7"};
+    private int[]                           lottery_resid   = {R.drawable.lottery_cq_ssc,R.drawable.lottery_tj_ssc,R.drawable.lottery_xj_ssc};
     private List<LotteryTitle>              mlistLotteryTitle;
     private android.widget.ListView         lottery_listview;
     private PopupWindow                     titleWindow;
@@ -391,7 +392,7 @@ public class FragmentProgram extends Activity implements OnClickListener {
     public void setLotteryTitleData(){
         LotteryTitle lotteryTitle;
         for(int i = 0;i < lottery_title.length ; i++){
-            lotteryTitle = new LotteryTitle(lottery_ids[i],lottery_title[i],false);
+            lotteryTitle = new LotteryTitle(lottery_ids[i],lottery_title[i],lottery_resid[i],false);
             mlistLotteryTitle.add(lotteryTitle);
         }
     }

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+    <RelativeLayout
+        android:id="@+id/relativeItem"
+        android:layout_width="match_parent"
+        android:layout_height="95dp" >
+        <LinearLayout
+            android:id="@+id/linearTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="14dp"
+            android:layout_marginTop="20dp"
+            >
+            <TextView
+                android:id="@+id/lty_cq_nextpage_issue_k3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="第20170103002期"
+                android:textColor="@color/blacktabText"
+                android:textSize="15dp"
+                android:layout_marginLeft="2dp"/>
+
+            <TextView
+                android:id="@+id/lty_cq_nextpage_time_k3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="2017-01-03 09:30"
+                android:textColor="#999999"
+                android:textSize="15dp"
+                android:layout_marginLeft="5dp"/>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/layoutCenter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/linearTitle"
+            android:layout_marginLeft="9dp"
+            android:layout_marginTop="19dp">
+            <ImageView
+                android:id="@+id/lottery_list_type3_ball1"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/type3_ball_1"
+                android:gravity="center"/>
+            <ImageView
+                android:id="@+id/lottery_list_type3_ball2"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/type3_ball_2"
+                android:layout_toRightOf="@+id/lottery_list_type3_ball1"
+                android:layout_marginLeft="20dp"
+                android:gravity="center"/>
+            <ImageView
+                android:id="@+id/lottery_list_type3_ball3"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/type3_ball_3"
+                android:layout_toRightOf="@+id/lottery_list_type3_ball2"
+                android:layout_marginLeft="20dp"
+                android:gravity="center"/>
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

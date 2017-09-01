@@ -22,6 +22,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -41,6 +42,7 @@ import com.example.caikeplan.logic.MyGridView;
 import com.example.caikeplan.logic.adapter.LotteryTitleAdapter;
 import com.example.caikeplan.logic.adapter.PlanAdapter;
 import com.example.caikeplan.logic.TipView;
+import com.example.caikeplan.logic.adapter.TitleGrildAdapter;
 import com.example.caikeplan.logic.message.LotteryTitle;
 import com.example.caikeplan.logic.message.PlanBaseMessage;
 import com.example.caikeplan.logic.message.PlanTypeMessage;
@@ -69,6 +71,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
     private RelativeLayout  program_toolbar;
     private RelativeLayout  toolbar_container;
     private RelativeLayout  pk10layout;
+    private RelativeLayout  k3layout;
     private RelativeLayout  lotterylayout;
     private RelativeLayout  lookthrough_layout;
     private ImageView       back;
@@ -79,24 +82,31 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
     private TextView        toolbar_set;
     private TextView        toolbar_save;
     private ImageView       btn_copy_plan;
-    private ImageView       btn_video,btn_video_pk10;
+    private ImageView       btn_video,btn_video_pk10,btn_video_k3;
     private ScrollView      scroll;
+    private ImageView       history_ssc,history_pk10,history_k3;
     private ImageView       lottery_open;
     private ImageView       lottery_open_pk10;
+    private ImageView       lottery_open_k3;
     private TextView        textplan;
     private TextView        homeTitle;
     private TextView        homeTitle_pk10;
+    private TextView        homeTitle_k3;
     private TextView        home_date_end;
     private TextView        home_date_end_pk10;
+    private TextView        home_date_end_k3;
     private TextView        balls_1, balls_2, balls_3, balls_4, balls_5;
     private ImageView       type2_ball1,type2_ball2,type2_ball3,type2_ball4,type2_ball5,type2_ball6,type2_ball7,type2_ball8,type2_ball9,type2_ball10;
-    private TextView        doubleSingle1, doubleSingle2, doubleSingle3;
+    private ImageView       type3_ball1,type3_ball2,type3_ball3;
     private TextView        home_date;
     private TextView        home_date_pk10;
+    private TextView        home_date_k3;
     private TextView        text_time;
     private TextView        text_time_pk10;
+    private TextView        text_time_k3;
     private ProgressBar     openTimeProgress;
     private ProgressBar     openTimeProgress_pk10;
+    private ProgressBar     openTimeProgress_k3;
     private MyGridView      planGridView;
     private MyGridView      lookGridView;
   //  private MyGridView      hotGridView;
@@ -132,14 +142,15 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
     private String                  play_id;                    //玩法id
     private String                  plan_id;                    //计划id
     private String                  lottery_name    = "重庆时时彩";
-    private String[]                lottery_title   = {"重庆时时彩", "天津时时彩", "新疆时时彩","北京PK10","上海11选5","广东11选5","山东11选5"};
+    private String[]                lottery_title   = {"重庆时时彩", "天津时时彩", "新疆时时彩","上海11选5","广东11选5","山东11选5","北京PK10","",""};
+    private String[]                lottery_ids     = {"1","3","7","22","9","10","27","",""};
+    private int[]                   lottery_resid   = {R.drawable.lottery_cq_ssc,R.drawable.lottery_tj_ssc,R.drawable.lottery_xj_ssc,R.drawable.lottery_sh_11x5,R.drawable.lottery_gd_11x5,R.drawable.lottery_sd_11x5,R.drawable.lottery_bj_pk10,0,0};
     private String[]                types           = {"定位", "直选", "组选", "大小", "单双", "和值", "单式"};
-    private String[]                lottery_ids     = {"1","3","7","27","22","9","10"};
     private int[]                   pknums={R.drawable.type2_ball_1,R.drawable.type2_ball_2,R.drawable.type2_ball_3,R.drawable.type2_ball_4,
                                     R.drawable.type2_ball_5,R.drawable.type2_ball_6, R.drawable.type2_ball_7,R.drawable.type2_ball_8,R.drawable.type2_ball_9,R.drawable.type2_ball_10};
-    private List<LotteryTitle>      mlistLotteryTitle;
+    private int[]                   k3nums={R.drawable.type3_ball_1,R.drawable.type3_ball_2,R.drawable.type3_ball_3,R.drawable.type3_ball_4,R.drawable.type3_ball_5,R.drawable.type3_ball_6};
+    private List<LotteryTitle>      mlistLotteryTitle = new ArrayList<>();
     private PopupWindow             titleWindow,videoWindow;
-    private android.widget.ListView lottery_listview;
     private View        lottery_window,video_window;
     private WebView     video_webview;
     private ImageView   video_close;
@@ -162,20 +173,23 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
     private String      tempPlan_id     = "1-10001-3-4";
     private int         index=0;
     private int         lookindex=0;
-    private PlanTypeMessage planTypeMessage = new PlanTypeMessage();
+    private PlanTypeMessage     planTypeMessage = new PlanTypeMessage();
     private PlanTypeMessage.BitBean bitBean = new PlanTypeMessage.BitBean();
-    private XCache      xCache;
-    private int         cacheindex=0;
-    private boolean     isComing        = false;
+    private XCache              xCache;
+    private int                 cacheindex=0;
+    private boolean             isComing        = false;
     //网络无法连接
-    private RelativeLayout  nointernetLayout;
-    private RelativeLayout  nodataLayout;
-    private Button          reload_button;
-    private TextView        no_internet_text;
+    private RelativeLayout      nointernetLayout;
+    private RelativeLayout      nodataLayout;
+    private Button              reload_button;
+    private TextView            no_internet_text;
     //监测网络状
     private ConnectivityManager manager;
     //自动连接网
     private WifiAdmin           wifiAdmin;
+    private List<LotteryTitle>	lottery_titleList = new ArrayList<>();
+    private GridView            titleGridView;
+    private TitleGrildAdapter   titleGrildAdapter;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -219,88 +233,101 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
         }else{
             cacheindex=0;
         }
-        lookthrough_layout  =   (RelativeLayout) findViewById(R.id.lookthrough_layout);
-        title_layout        =   (LinearLayout)   findViewById(R.id.title_layout);
-        scroll              =   (ScrollView)     findViewById(R.id.scroll);
-        program_toolbar     =   (RelativeLayout) findViewById(R.id.program_toolbar);
-        pk10layout          =   (RelativeLayout) findViewById(R.id.pk10layout);
-        lotterylayout       =   (RelativeLayout) findViewById(R.id.lotterylayout);
-        program_back        =   (LinearLayout)   findViewById(R.id.program_back);
-        back                =   (ImageView)      findViewById(R.id.back);
-        back_text           =   (TextView)       findViewById(R.id.back_text);
-        play_select         =   (TextView)       findViewById(R.id.play_select);
-        toolbar_title       =   (TextView)       findViewById(R.id.toolbar_title);
-        title_arrow         =   (ImageView)      findViewById(R.id.title_arrow);
-        toolbar_set         =   (TextView)       findViewById(R.id.toolbar_set);
-        toolbar_save        =   (TextView)       findViewById(R.id.toolbar_save);
-        btn_copy_plan       =   (ImageView)      findViewById(R.id.btn_copy_plan);
-        lottery_open        =   (ImageView)      findViewById(R.id.lottery_open);
-        lottery_open_pk10   =   (ImageView)      findViewById(R.id.lottery_open_pk10);
-        btn_video           =   (ImageView)      findViewById(R.id.btn_video);
-        btn_video_pk10      =   (ImageView)      findViewById(R.id.btn_video_pk10);
-        textplan            =   (TextView)       findViewById(R.id.textplan);
-        homeTitle           =   (TextView)       findViewById(R.id.home_title);
-        homeTitle_pk10      =   (TextView)       findViewById(R.id.home_title_pk10);
-        home_date_end       =   (TextView)       findViewById(R.id.home_date_end);
-        home_date_end_pk10  =   (TextView)       findViewById(R.id.home_date_end_pk10);
-        balls_1             =   (TextView)       findViewById(R.id.balls_1);
-        balls_2             =   (TextView)       findViewById(R.id.balls_2);
-        balls_3             =   (TextView)       findViewById(R.id.balls_3);
-        balls_4             =   (TextView)       findViewById(R.id.balls_4);
-        balls_5             =   (TextView)       findViewById(R.id.balls_5);
-        type2_ball1         =   (ImageView)     findViewById(R.id.type2_ball1);
-        type2_ball2         =   (ImageView)     findViewById(R.id.type2_ball2);
-        type2_ball3         =   (ImageView)     findViewById(R.id.type2_ball3);
-        type2_ball4         =   (ImageView)     findViewById(R.id.type2_ball4);
-        type2_ball5         =   (ImageView)     findViewById(R.id.type2_ball5);
-        type2_ball6         =   (ImageView)     findViewById(R.id.type2_ball6);
-        type2_ball7         =   (ImageView)     findViewById(R.id.type2_ball7);
-        type2_ball8         =   (ImageView)     findViewById(R.id.type2_ball8);
-        type2_ball9         =   (ImageView)     findViewById(R.id.type2_ball9);
-        type2_ball10        =   (ImageView)     findViewById(R.id.type2_ball10);
-        doubleSingle1       =   (TextView)       findViewById(R.id.doubleSingle1);
-        doubleSingle2       =   (TextView)       findViewById(R.id.doubleSingle2);
-        doubleSingle3       =   (TextView)       findViewById(R.id.doubleSingle3);
-        home_date           =   (TextView)       findViewById(R.id.home_date);
-        home_date_pk10      =   (TextView)       findViewById(R.id.home_date_pk10);
-        text_time           =   (TextView)       findViewById(R.id.text_time);
-        text_time_pk10      =   (TextView)       findViewById(R.id.text_time_pk10);
-        openTimeProgress    =   (ProgressBar)    findViewById(R.id.openTimeProgress);
-        openTimeProgress_pk10    =   (ProgressBar)    findViewById(R.id.openTimeProgress_pk10);
-        planGridView        =   (MyGridView)     findViewById(R.id.plan_gridview);
-        lookGridView        =   (MyGridView)     findViewById(R.id.look_gridview);
+        lookthrough_layout  =   (RelativeLayout)findViewById(R.id.lookthrough_layout);
+        title_layout        =   (LinearLayout)findViewById(R.id.title_layout);
+        scroll              =   (ScrollView)findViewById(R.id.scroll);
+        program_toolbar     =   (RelativeLayout)findViewById(R.id.program_toolbar);
+        pk10layout          =   (RelativeLayout)findViewById(R.id.pk10layout);
+        k3layout            =   (RelativeLayout)findViewById(R.id.k3layout);
+        lotterylayout       =   (RelativeLayout)findViewById(R.id.lotterylayout);
+        program_back        =   (LinearLayout)findViewById(R.id.program_back);
+        back                =   (ImageView)findViewById(R.id.back);
+        back_text           =   (TextView)findViewById(R.id.back_text);
+        play_select         =   (TextView)findViewById(R.id.play_select);
+        toolbar_title       =   (TextView)findViewById(R.id.toolbar_title);
+        title_arrow         =   (ImageView)findViewById(R.id.title_arrow);
+        toolbar_set         =   (TextView)findViewById(R.id.toolbar_set);
+        toolbar_save        =   (TextView)findViewById(R.id.toolbar_save);
+        btn_copy_plan       =   (ImageView)findViewById(R.id.btn_copy_plan);
+        lottery_open        =   (ImageView)findViewById(R.id.lottery_open);
+        lottery_open_pk10   =   (ImageView)findViewById(R.id.lottery_open_pk10);
+        lottery_open_k3     =   (ImageView)findViewById(R.id.lottery_open_k3);
+        btn_video           =   (ImageView)findViewById(R.id.btn_video);
+        btn_video_pk10      =   (ImageView)findViewById(R.id.btn_video_pk10);
+        btn_video_k3        =   (ImageView)findViewById(R.id.btn_video_k3);
+        textplan            =   (TextView)findViewById(R.id.textplan);
+        homeTitle           =   (TextView)findViewById(R.id.home_title);
+        homeTitle_pk10      =   (TextView)findViewById(R.id.home_title_pk10);
+        homeTitle_k3        =   (TextView)findViewById(R.id.home_title_k3);
+        home_date_end       =   (TextView)findViewById(R.id.home_date_end);
+        home_date_end_pk10  =   (TextView)findViewById(R.id.home_date_end_pk10);
+        home_date_end_k3    =   (TextView)findViewById(R.id.home_date_end_k3);
+        balls_1             =   (TextView)findViewById(R.id.balls_1);
+        balls_2             =   (TextView)findViewById(R.id.balls_2);
+        balls_3             =   (TextView)findViewById(R.id.balls_3);
+        balls_4             =   (TextView)findViewById(R.id.balls_4);
+        balls_5             =   (TextView)findViewById(R.id.balls_5);
+        type2_ball1         =   (ImageView)findViewById(R.id.type2_ball1);
+        type2_ball2         =   (ImageView)findViewById(R.id.type2_ball2);
+        type2_ball3         =   (ImageView)findViewById(R.id.type2_ball3);
+        type2_ball4         =   (ImageView)findViewById(R.id.type2_ball4);
+        type2_ball5         =   (ImageView)findViewById(R.id.type2_ball5);
+        type2_ball6         =   (ImageView)findViewById(R.id.type2_ball6);
+        type2_ball7         =   (ImageView)findViewById(R.id.type2_ball7);
+        type2_ball8         =   (ImageView)findViewById(R.id.type2_ball8);
+        type2_ball9         =   (ImageView)findViewById(R.id.type2_ball9);
+        type2_ball10        =   (ImageView)findViewById(R.id.type2_ball10);
+        type3_ball1         =   (ImageView)findViewById(R.id.type3_ball1);
+        type3_ball2         =   (ImageView)findViewById(R.id.type3_ball2);
+        type3_ball3         =   (ImageView)findViewById(R.id.type3_ball3);
+        home_date           =   (TextView)findViewById(R.id.home_date);
+        home_date_pk10      =   (TextView)findViewById(R.id.home_date_pk10);
+        home_date_k3        =   (TextView)findViewById(R.id.home_date_k3);
+        text_time           =   (TextView)findViewById(R.id.text_time);
+        text_time_pk10      =   (TextView)findViewById(R.id.text_time_pk10);
+        text_time_k3        =   (TextView)findViewById(R.id.text_time_k3);
+        history_ssc         =   (ImageView)findViewById(R.id.history_ssc);
+        history_pk10        =   (ImageView)findViewById(R.id.history_pk10);
+        history_k3          =   (ImageView)findViewById(R.id.history_k3);
+        openTimeProgress    =   (ProgressBar)findViewById(R.id.openTimeProgress);
+        openTimeProgress_pk10    =   (ProgressBar)findViewById(R.id.openTimeProgress_pk10);
+        openTimeProgress_k3    =   (ProgressBar)findViewById(R.id.openTimeProgress_k3);
+        planGridView        =   (MyGridView)findViewById(R.id.plan_gridview);
+        lookGridView        =   (MyGridView)findViewById(R.id.look_gridview);
         //hotGridView         =   (MyGridView)     findViewById(R.id.hot_gridview);
-        switch_plan         =   (RelativeLayout) findViewById(R.id.switch_plan);
-        toolbar_title       =   (TextView)       findViewById(R.id.toolbar_title);
-        tipView1            =   (TipView)        findViewById(R.id.tip1);
-        tipView2            =   (TipView)        findViewById(R.id.tip2);
-        tipView3            =   (TipView)        findViewById(R.id.tip3);
-        tipView4            =   (TipView)        findViewById(R.id.tip4);
-        nointernetLayout    =   (RelativeLayout) findViewById(R.id.reload_internet);
-        nodataLayout        =   (RelativeLayout) findViewById(R.id.no_data);
-        reload_button       =   (Button)         findViewById(R.id.reload_button);
-        no_internet_text    =   (TextView)  findViewById(R.id.no_internet_text);
+        switch_plan         =   (RelativeLayout)findViewById(R.id.switch_plan);
+        toolbar_title       =   (TextView)findViewById(R.id.toolbar_title);
+        tipView1            =   (TipView)findViewById(R.id.tip1);
+        tipView2            =   (TipView)findViewById(R.id.tip2);
+        tipView3            =   (TipView)findViewById(R.id.tip3);
+        tipView4            =   (TipView)findViewById(R.id.tip4);
+        nointernetLayout    =   (RelativeLayout)findViewById(R.id.reload_internet);
+        nodataLayout        =   (RelativeLayout)findViewById(R.id.no_data);
+        reload_button       =   (Button)findViewById(R.id.reload_button);
+        no_internet_text    =   (TextView)findViewById(R.id.no_internet_text);
         reload_button.setOnClickListener(this);
         title_layout.setOnClickListener(this);
         switch_plan.setOnClickListener(this);
         toolbar_title.setOnClickListener(this);
         title_arrow.setOnClickListener(this);
         btn_copy_plan.setOnClickListener(this);
-        pk10layout.setOnClickListener(this);
-        lotterylayout.setOnClickListener(this);
         btn_video.setOnClickListener(this);
         btn_video_pk10.setOnClickListener(this);
+        btn_video_k3.setOnClickListener(this);
+        history_ssc.setOnClickListener(this);
+        history_pk10.setOnClickListener(this);
+        history_k3.setOnClickListener(this);
         title_arrow.setVisibility(View.VISIBLE);
         btn_copy_plan.setVisibility(View.VISIBLE);
         lotterylayout.setVisibility(View.VISIBLE);
         pk10layout.setVisibility(View.GONE);
+        k3layout.setVisibility(View.GONE);
+        mlistLotteryTitle = setLotteryTitleData();
         initSwipeRefreshLayout();
         requestData();
         //requestPlanList();
         setLookGridView();
         setPlanGridView();
-        mlistLotteryTitle = new ArrayList<>();
-        mlistLotteryTitle = setLotteryTitleData();
         SendMessage.getInstance().setLotteryName(lottery_name);
     }
 
@@ -673,6 +700,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
             processtime = secd + min * 60;
             openTimeProgress.setMax(600);
             openTimeProgress_pk10.setMax(300);
+            openTimeProgress_k3.setMax(600);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -1020,15 +1048,25 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
             }
             homeTitle_pk10.setText(lottery_name);
             home_date_pk10.setText("全天共开" + allissues + "期，当前" + th + "期，剩余" + left + "期");
+        }else if(lotteryId.equals("23")){
+            type3_ball1.setBackground(ContextCompat.getDrawable(this, k3nums[Integer.parseInt(numList[0]) - 1]));
+            type3_ball2.setBackground(ContextCompat.getDrawable(this, k3nums[Integer.parseInt(numList[1]) - 1]));
+            type3_ball3.setBackground(ContextCompat.getDrawable(this, k3nums[Integer.parseInt(numList[2]) - 1]));
+            if(!isNextOpen){
+                home_date_end_k3.setText("第 " + lastTime + " 期");
+                lottery_open_k3.setVisibility(View.VISIBLE);
+            }else{
+                home_date_end_k3.setText("第 " + lastTime + " 期已开");
+                lottery_open_k3.setVisibility(View.GONE);
+            }
+            homeTitle_k3.setText(lottery_name);
+            home_date_k3.setText("全天共开" + allissues + "期，当前" + th + "期，剩余" + left + "期");
         }else{
             balls_1.setText(numList[0]);
             balls_2.setText(numList[1]);
             balls_3.setText(numList[2]);
             balls_4.setText(numList[3]);
             balls_5.setText(numList[4]);
-            ps = Integer.parseInt(numList[2]);
-            db = Integer.parseInt(numList[3]);
-            sg = Integer.parseInt(numList[4]);
             if(!isNextOpen){
                 home_date_end.setText("第 " + lastTime + " 期");
                 lottery_open.setVisibility(View.VISIBLE);
@@ -1038,7 +1076,6 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
             }
             homeTitle.setText(lottery_name);
             home_date.setText("全天共开" + allissues + "期，当前" + th + "期，剩余" + left + "期");
-            setDoubleSingle();
         }
     }
 
@@ -1055,43 +1092,6 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
         planList.clear();
         planAdapter.notifyDataSetChanged();
         textplan.setText("选择玩法");
-    }
-
-    //计算开奖码大小单双组别
-    public void setDoubleSingle() {
-        if (db % 2 == 0) {
-            if (db >= 5) {
-                doubleSingle1.setText(big + doub);
-            } else {
-                doubleSingle1.setText(little + doub);
-            }
-        } else {
-            if (db >= 5) {
-                doubleSingle1.setText(big + sige);
-            } else {
-                doubleSingle1.setText(little + sige);
-            }
-        }
-        if (sg % 2 == 0) {
-            if (sg >= 5) {
-                doubleSingle2.setText(big + doub);
-            } else {
-                doubleSingle2.setText(little + doub);
-            }
-        } else {
-            if (sg >= 5) {
-                doubleSingle2.setText(big + sige);
-            } else {
-                doubleSingle2.setText(little + sige);
-            }
-        }
-        if (ps == db && ps == sg) {
-            doubleSingle3.setText("豹子");
-        } else if (ps != db && ps != sg && db != sg) {
-            doubleSingle3.setText("组六");
-        } else {
-            doubleSingle3.setText("组三");
-        }
     }
 
     //设置选择器
@@ -1124,11 +1124,10 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
 
     //选择彩种计划头列表
     public void showLotteryTitle() {
-        lottery_window = ProgramActivity.this.getLayoutInflater().inflate(R.layout.lottery_listview, null,false);
+        lottery_window = ProgramActivity.this.getLayoutInflater().inflate(R.layout.lottery_choice, null,false);
         titleWindow = new PopupWindow(lottery_window, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
         titleWindow.setTouchable(true);
         titleWindow.setOutsideTouchable(true);
-      //  titleWindow.setAnimationStyle(R.style.popup_window_anim2);
         lottery_window.setBackgroundColor(Color.parseColor("#80000000"));
         if (titleWindow.isShowing()) {
             titleWindow.dismiss();
@@ -1143,28 +1142,28 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
                 }
             });
         }
-        lottery_listview = (android.widget.ListView) lottery_window.findViewById(R.id.lottery_listview);
-        final LotteryTitleAdapter ltAdapter = new LotteryTitleAdapter(ProgramActivity.this, mlistLotteryTitle);
-        lottery_listview.setAdapter(ltAdapter);
-        ltAdapter.notifyDataSetChanged();
-        lottery_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                toolbar_title.setText(mlistLotteryTitle.get(position).getLottery_title());
-                if (!mlistLotteryTitle.get(position).isFocus()) {
-                    resetFocues();
-                    mlistLotteryTitle.get(position).setFocus(true);
-                    ltAdapter.notifyDataSetChanged();
-                }
-                ltAdapter.notifyDataSetChanged();
-                EnterPlan(position);
-                Message msg = new Message();
-                msg.what = 6;
-                recomdHandler.sendMessageDelayed(msg,500);
-            }
-        });
+        setLotteryView();
         int xOffset = program_toolbar.getWidth() / 2 - lottery_window.getMeasuredWidth() / 2;
         titleWindow.showAsDropDown(program_toolbar, xOffset, 0);
+    }
+
+    public void setLotteryView(){
+        titleGridView = (MyGridView)lottery_window.findViewById(R.id.lottery_title_gridview);
+        titleGrildAdapter = new TitleGrildAdapter(this,mlistLotteryTitle);
+        titleGridView.setAdapter(titleGrildAdapter);
+        titleGrildAdapter.notifyDataSetChanged();
+        titleGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(position < lottery_title.length-2){
+                    toolbar_title.setText(mlistLotteryTitle.get(position).getLottery_title());
+                    EnterPlan(position);
+                    Message msg = new Message();
+                    msg.what = 6;
+                    recomdHandler.sendMessageDelayed(msg,500);
+                }
+            }
+        });
     }
 
     public void showVideo(){
@@ -1173,6 +1172,8 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
             url = Constants.API+Constants.PK10_VIDEO+lotteryId;
         }else if(lotteryId.equals("8") && lotteryId.equals("9") && lotteryId.equals("10")){
             url = Constants.API+Constants.GD11X5_VIDEO+lotteryId;
+        }else if(lotteryId.equals("23")){
+            url = Constants.API+Constants.K3_VIDEO+lotteryId;
         }else{
             url = Constants.API+Constants.SSC_VIDEO+lotteryId;
         }
@@ -1241,18 +1242,11 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
         videoWindow.showAsDropDown(program_toolbar, xOffset, 0);
     }
 
-    //重设选中标题信息
-    public void resetFocues() {
-        for (int i = 0; i < mlistLotteryTitle.size(); i++) {
-            mlistLotteryTitle.get(i).setFocus(false);
-        }
-    }
-
     //设置标题信息
     public List<LotteryTitle> setLotteryTitleData() {
         LotteryTitle lotteryTitle;
         for (int i = 0; i < lottery_title.length; i++) {
-            lotteryTitle = new LotteryTitle(lottery_ids[i],lottery_title[i], false);
+            lotteryTitle = new LotteryTitle(lottery_ids[i],lottery_title[i],lottery_resid[i], false);
             mlistLotteryTitle.add(lotteryTitle);
         }
         return mlistLotteryTitle;
@@ -1293,17 +1287,29 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
     }
 
     public void setPlanData(int position){
-        if(position == 3){
+        if(position == 6){
             lotteryId = lottery_ids[position];
             setURL(lotteryId, getPlay_cls() + "", SendMessage.getInstance().getMac());
             SendMessage.getInstance().setLotteryId(Integer.parseInt(lottery_ids[position]));
             SendMessage.getInstance().setLotteryName(lottery_title[position]);
             lottery_name = lottery_title[position];
             lotterylayout.setVisibility(View.GONE);
+            k3layout.setVisibility(View.GONE);
             pk10layout.setVisibility(View.VISIBLE);
             resetData();
             requestData();
-        }else{
+        }/*else if(position == 7){
+            lotteryId = lottery_ids[position];
+            setURL(lotteryId, getPlay_cls() + "", SendMessage.getInstance().getMac());
+            SendMessage.getInstance().setLotteryId(Integer.parseInt(lottery_ids[position]));
+            SendMessage.getInstance().setLotteryName(lottery_title[position]);
+            lottery_name = lottery_title[position];
+            lotterylayout.setVisibility(View.GONE);
+            k3layout.setVisibility(View.VISIBLE);
+            pk10layout.setVisibility(View.GONE);
+            resetData();
+            requestData();
+        }*/else if(position>=0 && position<6){
             lotteryId = lottery_ids[position];
             setURL(lotteryId, getPlay_cls() + "", SendMessage.getInstance().getMac());
             SendMessage.getInstance().setLotteryId(Integer.parseInt(lottery_ids[position]));
@@ -1311,6 +1317,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
             lottery_name = lottery_title[position];
             lotterylayout.setVisibility(View.VISIBLE);
             pk10layout.setVisibility(View.GONE);
+            k3layout.setVisibility(View.GONE);
             resetData();
             requestData();
         }
@@ -1418,7 +1425,37 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
                 requestTime();
                 requestOpenCurrentData();
             }
-        }else{
+        }else if(lotteryId.equals("23")){
+            openTimeProgress_k3.setProgress((int) processtime--);
+            //输出显示
+            if (secd <= 60 && secd > 0 && min >= 10) {
+                secd--;
+                if (secd >= 10) {
+                    text_time_k3.setText(min + ":" + secd);
+                } else {
+                    text_time_k3.setText(min + ":0" + secd);
+                }
+            } else if (secd <= 60 && secd > 0 && min < 10 && min >= 0) {
+                secd--;
+                if (secd >= 10) {
+                    text_time_k3.setText("0" + min + ":" + secd);
+                } else {
+                    text_time_k3.setText("0" + min + ":0" + secd);
+                }
+            } else if (min > 0 && secd == 0) {
+                min--;
+                secd = 59;
+                if (min >= 10) {
+                    text_time_k3.setText(min + ":" + secd);
+                } else {
+                    text_time_k3.setText("0" + min + ":" + secd);
+                }
+            } else if (secd == 0 && min == 0) {
+                text_time_k3.setText("00:00");
+                requestTime();
+                requestOpenCurrentData();
+            }
+        } else{
             openTimeProgress.setProgress((int) processtime--);
             //输出显示
             if (secd <= 60 && secd > 0 && min >= 10) {
@@ -1482,7 +1519,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
             case R.id.tip4:
                 setRecommend((tipView4.getCurTipIndex()-1+tipView4.getTipList().size())%tipView4.getTipList().size()+6);
                 break;
-            case R.id.pk10layout:
+            case R.id.history_pk10:
                 Intent intent1 = new Intent(ProgramActivity.this, LotteryNextActitivty.class);
                 Bundle bundle1 = new Bundle();
                 bundle1.putString("lottery_id",lotteryId);
@@ -1490,7 +1527,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
                 intent1.putExtras(bundle1);
                 startActivity(intent1);
                 break;
-            case R.id.lotterylayout:
+            case R.id.history_ssc:
                 Intent intent2 = new Intent(ProgramActivity.this, LotteryNextActitivty.class);
                 Bundle bundle2 = new Bundle();
                 bundle2.putString("lottery_id",lotteryId);
@@ -1498,12 +1535,22 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
                 intent2.putExtras(bundle2);
                 startActivity(intent2);
                 break;
+            case R.id.history_k3:
+                Intent intent3 = new Intent(ProgramActivity.this, LotteryNextActitivty.class);
+                Bundle bundle3 = new Bundle();
+                bundle3.putString("lottery_id",lotteryId);
+                bundle3.putString("lottery_name",SendMessage.getInstance().getLotteryName());
+                intent3.putExtras(bundle3);
+                startActivity(intent3);
+                break;
             case R.id.btn_video:
                 showVideo();
                 break;
             case R.id.btn_video_pk10:
                 showVideo();
                 break;
+            case R.id.btn_video_k3:
+                showVideo();
             case R.id.reload_button:
                 no_internet_text.setText("正在重新加载网络,请稍等!");
                 wifiAdmin = new WifiAdmin(ProgramActivity.this);

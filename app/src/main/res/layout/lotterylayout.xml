@@ -103,38 +103,13 @@
                 android:textColor="@color/white"
                 android:textSize="17sp" />
         </RelativeLayout>
-        <LinearLayout
-            android:id="@+id/playsLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/history_ssc"
+            android:layout_width="80dp"
+            android:layout_height="27dp"
+            android:background="@drawable/icon_history"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="16dp"
-            android:layout_centerVertical="true"
-            android:orientation="horizontal">
-            <TextView
-                android:id="@+id/doubleSingle1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:textColor="@color/grayText2"
-                android:text="大单"/>
-            <TextView
-                android:id="@+id/doubleSingle2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:textColor="@color/grayText2"
-                android:layout_marginLeft="11dp"
-                android:text="小双"/>
-            <TextView
-                android:id="@+id/doubleSingle3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:textColor="@color/grayText2"
-                android:layout_marginLeft="11dp"
-                android:text="组三"/>
-        </LinearLayout>
+            android:layout_centerVertical="true"/>
     </RelativeLayout>
     <LinearLayout
         android:id="@+id/lineaertime"

@@ -118,7 +118,6 @@ public class LoginActivity extends XActivity implements View.OnClickListener,Ent
         edit_provider.setOnEditorActionListener(this);
         edit_user.setText(username);
         edit_password.setText(password);
-        edit_provider.setText(realCode);
     }
 
     @Override
@@ -198,6 +197,8 @@ public class LoginActivity extends XActivity implements View.OnClickListener,Ent
     @Override
     public void onMessage(String message) {
         ToastUtil.getShortToastByString(this,message);
+        showcode.setImageBitmap(Code.getInstance().createBitmap());
+        realCode = Code.getInstance().getCode().toLowerCase();
     }
 
     @Override

@@ -26,10 +26,10 @@
         <LinearLayout
             android:layout_width="74dp"
             android:layout_height="27dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="35dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="35dp"
             android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
             android:orientation="horizontal"
             android:background="@drawable/bg_ad_skip">
             <Button
