@@ -1,11 +1,14 @@
 package com.example.caikeplan.activity;
 
+import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.CookieManager;
+import android.webkit.SslErrorHandler;
+import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -44,6 +47,7 @@ public class BannerLinkActivity extends BaseActivity {
             }
         });
         mWebView.requestFocusFromTouch();
+        mWebView.requestFocus();
         WebSettings setting = mWebView.getSettings();
         setting.setJavaScriptCanOpenWindowsAutomatically(true);
         setting.setDomStorageEnabled(true);
@@ -60,11 +64,12 @@ public class BannerLinkActivity extends BaseActivity {
         setting.setRenderPriority(WebSettings.RenderPriority.HIGH);  //提高渲染的优先级
         setting.setDomStorageEnabled(true);
         setting.setDatabaseEnabled(true);               //支持数据库
-        setting.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);//关闭webview中缓存
+ //       setting.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);//关闭webview中缓存
         setting.setAllowFileAccess(true);               //设置可以访问文件
         setting.setNeedInitialFocus(true);              //当webview调用requestFocus时为webview设置节点
         setting.setLoadsImagesAutomatically(true);      //支持自动加载图片
         setting.setDefaultTextEncodingName("utf-8");    //设置编码格式
+        mWebView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE | WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         mWebView.addJavascriptInterface(this, "android");
         //Webview兼容cookie
@@ -73,8 +78,23 @@ public class BannerLinkActivity extends BaseActivity {
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                view.loadUrl(url);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    view.loadUrl(request.getUrl().toString());
+                } else {
+                    view.loadUrl(request.toString());
+                }
                 return false;
+            }
+
+            @Override
+            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+                handler.proceed();
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                view.getSettings().setJavaScriptEnabled(true);
+                super.onPageFinished(view, url);
             }
         });
         mWebView.loadUrl(url);

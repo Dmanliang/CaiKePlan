@@ -33,12 +33,12 @@ import com.example.caikeplan.logic.ToastUtil;
 import com.example.caikeplan.logic.adapter.CopyAdapter;
 import com.example.caikeplan.logic.adapter.CopyAddAdapter;
 import com.example.caikeplan.logic.adapter.PlanAdapter;
+import com.example.caikeplan.logic.message.MainListBean;
 import com.example.caikeplan.logic.message.PlanBaseMessage;
 import com.example.caikeplan.logic.message.PlanMessage;
 import com.example.caikeplan.logic.message.PlanTypeMessage;
 import com.example.caikeplan.logic.message.SendMessage;
 import com.example.getJson.HttpTask;
-import com.example.mainlist.MainListBean;
 import com.example.personal.PersonalCopy;
 import com.youth.xframe.cache.XCache;
 

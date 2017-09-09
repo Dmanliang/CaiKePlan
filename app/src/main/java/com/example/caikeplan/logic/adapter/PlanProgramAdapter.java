@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -72,7 +73,7 @@ public class PlanProgramAdapter extends BaseAdapter{
             viewholder.hit 				        = 	(TextView) convertView.findViewById(R.id.program_results);
             viewholder.program_results_image    =   (ImageView) convertView.findViewById(R.id.program_results_image);
          //   viewholder.plans_numLayout          =   (ScrollView)convertView.findViewById(R.id.plans_numLayout);
-            viewholder.programLayout            =   (RelativeLayout)convertView.findViewById(R.id.programLayout);
+            viewholder.programLayout            =   (LinearLayout)convertView.findViewById(R.id.programLayout);
             viewholder.openNum                  =   (RelativeLayout)convertView.findViewById(R.id.openNum);
             viewholder.nums_results             =   (RelativeLayout)convertView.findViewById(R.id.nums_results);
             convertView.setTag(viewholder);
@@ -136,7 +137,7 @@ public class PlanProgramAdapter extends BaseAdapter{
         public TextView         program_nums, issue, program_plans,ranges,hit;
         public ImageView        program_results_image;
      //   public ScrollView       plans_numLayout;
-        public RelativeLayout   programLayout;
+        public LinearLayout     programLayout;
         public RelativeLayout   openNum;
         public RelativeLayout   nums_results;
     }

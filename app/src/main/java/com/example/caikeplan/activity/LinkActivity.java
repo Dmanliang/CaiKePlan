@@ -34,6 +34,7 @@ public class LinkActivity extends BaseActivity {
         final String url   = getIntent().getExtras().getString("url");
         linkwebView.requestFocusFromTouch();
         WebSettings setting = linkwebView.getSettings();
+        linkwebView.requestFocus();
         setting.setJavaScriptCanOpenWindowsAutomatically(true);
         setting.setDomStorageEnabled(true);
         setting.setUseWideViewPort(true);       //关键点
@@ -62,7 +63,11 @@ public class LinkActivity extends BaseActivity {
         linkwebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                view.loadUrl(url);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    view.loadUrl(request.getUrl().toString());
+                } else {
+                    view.loadUrl(request.toString());
+                }
                 return false;
             }
         });

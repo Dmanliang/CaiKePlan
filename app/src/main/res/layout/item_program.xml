@@ -2,43 +2,47 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:background="#fff"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:descendantFocusability="blocksDescendants">
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/programLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
         android:background="#fff">
         <TextView
             android:id="@+id/program_ranges"
-            android:layout_width="88dp"
+            android:layout_width="0dp"
             android:layout_height="36dp"
+            android:layout_weight="1"
             android:textSize="13sp"
             android:textColor="@color/blackText"
+            android:layout_gravity="center"
             android:gravity="center"
             android:layout_marginLeft="1dp"
-            android:layout_marginTop="2dp"
             android:background="@drawable/shape_phone_red_layout"/>
         <TextView
             android:id="@+id/program_plans"
-            android:layout_width="110dp"
+            android:layout_width="0dp"
             android:layout_height="36dp"
+            android:layout_weight="1.5"
             android:textSize="13sp"
             android:textColor="@color/blueText5"
+            android:layout_gravity="center"
             android:gravity="center"
             android:layout_toRightOf="@+id/program_ranges"
             android:layout_marginLeft="2dp"
-            android:layout_marginTop="2dp"
             android:background="@drawable/shape_shadow"/>
         <RelativeLayout
             android:id="@+id/openNum"
-            android:layout_width="110dp"
+            android:layout_width="0dp"
+            android:layout_weight="2"
             android:layout_height="36dp"
+            android:gravity="center"
+            android:layout_gravity="center"
             android:background="@drawable/shape_shadow"
             android:layout_toRightOf="@+id/program_plans"
-            android:layout_marginTop="2dp"
             android:layout_marginLeft="2dp">
-
             <TextView
                 android:id="@+id/program_nums"
                 android:layout_width="wrap_content"
@@ -49,7 +53,6 @@
                 android:layout_marginLeft="5dp"
                 android:textSize="13sp"
                 android:textColor="@color/blackText"/>
-
             <TextView
                 android:id="@+id/program_issue"
                 android:layout_width="wrap_content"
@@ -61,12 +64,14 @@
         </RelativeLayout>
         <RelativeLayout
             android:id="@+id/nums_results"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="36dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_gravity="center"
             android:layout_toRightOf="@+id/openNum"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="1dp"
-            android:layout_marginTop="2dp"
             android:background="@drawable/shape_shadow">
             <TextView
                 android:id="@+id/program_results"
@@ -108,7 +113,7 @@
                 android:paddingEnd="13dp"
                 android:lineSpacingExtra="5dp"/>
         </com.scu.miomin.shswiperefresh.view.ShareScrollView>-->
-    </RelativeLayout>
+    </LinearLayout>
 
 
 </RelativeLayout>

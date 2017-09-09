@@ -1,4 +1,4 @@
-package com.example.mainlist;
+package com.example.caikeplan.logic.message;
 
 import com.example.caikeplan.logic.message.SendMessage;
 
