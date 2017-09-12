@@ -9,7 +9,13 @@
         layout="@layout/toolbar"
         android:layout_width="match_parent"
         android:layout_height="70dp" />
-    <RelativeLayout
+    <WebView
+        android:id="@+id/data_webview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/mainback"
+        />
+    <!--<RelativeLayout
         android:id="@+id/data_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -139,15 +145,10 @@
             android:divider="@color/blueStork"
             android:layout_marginBottom="1dp"
             />
-    </RelativeLayout>
+    </RelativeLayout>-->
     <include
         layout="@layout/reload_internet"
         android:id="@+id/reload_internet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-    <include
-        layout="@layout/no_data"
-        android:id="@+id/no_data"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"/>
 </LinearLayout>

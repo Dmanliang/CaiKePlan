@@ -144,6 +144,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
     private String                  lottery_name    = "重庆时时彩";
     private String[]                lottery_title   = {"重庆时时彩", "天津时时彩", "新疆时时彩","上海11选5","广东11选5","山东11选5","北京PK10","",""};
     private String[]                lottery_ids     = {"1","3","7","22","9","10","27","",""};
+    private String[]                lottery_type    = {"1","1","1","3","3","3","10","",""};
     private int[]                   lottery_resid   = {R.drawable.lottery_cq_ssc,R.drawable.lottery_tj_ssc,R.drawable.lottery_xj_ssc,R.drawable.lottery_sh_11x5,R.drawable.lottery_gd_11x5,R.drawable.lottery_sd_11x5,R.drawable.lottery_bj_pk10,0,0};
     private String[]                types           = {"定位", "直选", "组选", "大小", "单双", "和值", "单式"};
     private int[]                   pknums={R.drawable.type2_ball_1,R.drawable.type2_ball_2,R.drawable.type2_ball_3,R.drawable.type2_ball_4,
@@ -1246,7 +1247,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
     public List<LotteryTitle> setLotteryTitleData() {
         LotteryTitle lotteryTitle;
         for (int i = 0; i < lottery_title.length; i++) {
-            lotteryTitle = new LotteryTitle(lottery_ids[i],lottery_title[i],lottery_resid[i], false);
+            lotteryTitle = new LotteryTitle(lottery_ids[i],lottery_title[i],lottery_type[i],lottery_resid[i], false);
             mlistLotteryTitle.add(lotteryTitle);
         }
         return mlistLotteryTitle;

@@ -50,5 +50,6 @@ public class Constants {
     public static final String  GD11X5_VIDEO    ="/static/11x5/index.html?lottery_id=";                     //11选5开奖视频
     public static final String  K3_VIDEO        ="/static/k3/index.html?lottery_id=";                       //快3开奖视频
     public static final String  ALL_TOOLS       ="/static/tool/index.html";                                 //总工具列表
+    public static final String  ZST_DATA        ="/static/tool/zoushitu.html?lottery_id=";                  //走势图
 
 }

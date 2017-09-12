@@ -72,7 +72,7 @@ public class RankAdapter extends BaseAdapter {
             if (position % 2 == 0) {//设置每个子项的背景颜色
                 viewholder.item_rank_layout.setBackgroundResource(R.color.pinkback);
             } else {
-                viewholder.item_rank_layout.setBackgroundResource(R.color.whileBack);
+                viewholder.item_rank_layout.setBackgroundResource(R.color.whileText);
             }
             viewholder.item_name.setText(list.get(position+3).getScheme_name()+list.get(position+3).getPlan_name().substring(0,2));
             viewholder.item_id.setText(list.get(position+3).getId());
