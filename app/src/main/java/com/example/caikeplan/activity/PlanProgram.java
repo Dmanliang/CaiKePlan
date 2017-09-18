@@ -259,7 +259,7 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
     public void requestPlanResult() {
         reSetData();
         HttpTask httpTask = new HttpTask();
-        httpTask.execute(Constants.API + Constants.PLAN_RUSULT + plan_id + "&s_id=" + s_id + "&page_size=29");
+        httpTask.execute(Constants.API + Constants.PLAN_RUSULT + plan_id + "&s_id=" + s_id + "&page_size=59");
         httpTask.setTaskHandler(new HttpTask.HttpTaskHandler() {
             @Override
             public void taskSuccessful(String json) {
@@ -433,7 +433,7 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
         edit_end_time = (EditText) view.findViewById(R.id.edit_end_time);
         copylist = (EditText) view.findViewById(R.id.copy_list);
         edit_end_text = (EditText) view.findViewById(R.id.edit_end_text);
-        copy_plan_title.setText("聚彩盆" + "(" + SendMessage.getInstance().getLotteryName() + ")");
+        copy_plan_title.setText("聚财盆" + "(" + SendMessage.getInstance().getLotteryName() + ")");
         copy_content_title.setFocusable(true);
         copy_content_title.setFocusableInTouchMode(true);
         copy_content_title.requestFocus();

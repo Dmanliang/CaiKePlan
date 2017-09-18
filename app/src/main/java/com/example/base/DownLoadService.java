@@ -34,7 +34,7 @@ public class DownLoadService extends Service {
     private DownloadManager manager;
     private DownloadCompleteReceiver receiver;
     private String url;
-    private String DOWNLOADPATH = "/彩客计划/apk/";
+    private String DOWNLOADPATH = "/聚财盆/apk/";
 
     private void initDownManager() {
         manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
@@ -48,8 +48,8 @@ public class DownLoadService extends Service {
         down.setMimeType(mimeString);
         down.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
         down.setVisibleInDownloadsUi(true);
-        down.setDestinationInExternalPublicDir(DOWNLOADPATH,"彩客计划.apk");
-        down.setTitle("彩客计划");
+        down.setDestinationInExternalPublicDir(DOWNLOADPATH,"聚财盆.apk");
+        down.setTitle("聚财盆");
         manager.enqueue(down);
         registerReceiver(receiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
     }
@@ -57,7 +57,7 @@ public class DownLoadService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         url = intent.getStringExtra("downloadurl");
-        String path = Environment.getExternalStorageDirectory().getAbsolutePath()+ DOWNLOADPATH + "彩客计划.apk";
+        String path = Environment.getExternalStorageDirectory().getAbsolutePath()+ DOWNLOADPATH + "聚财盆.apk";
         File file = new File(path);
         if(file.exists()){
             deleteFileWithPath(path);

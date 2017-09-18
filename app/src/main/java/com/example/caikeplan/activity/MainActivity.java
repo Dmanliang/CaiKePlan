@@ -115,7 +115,7 @@ public class MainActivity extends TabActivity {
 		final AlertDialog.Builder normalDialog =
 				new AlertDialog.Builder(MainActivity.this);
 		normalDialog.setIcon(R.drawable.logo);
-		normalDialog.setTitle("聚彩盆新版本");
+		normalDialog.setTitle("聚财盆新版本");
 		normalDialog.setMessage("有新版本是否更新？");
 		normalDialog.setCancelable(false);
 		normalDialog.setPositiveButton("确定",
@@ -154,7 +154,7 @@ public class MainActivity extends TabActivity {
 		final AlertDialog.Builder normalDialog =
 				new AlertDialog.Builder(MainActivity.this);
 		normalDialog.setIcon(R.drawable.logo);
-		normalDialog.setTitle("聚彩盆新版本");
+		normalDialog.setTitle("聚财盆新版本");
 		normalDialog.setMessage("有新版本是否更新？");
 		normalDialog.setCancelable(false);
 		normalDialog.setPositiveButton("更新",

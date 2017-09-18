@@ -196,7 +196,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+         //   getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         }
         initViews();
         //开奖倒计时
@@ -383,7 +383,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
                         break;
                     case SHSwipeRefreshLayout.START:
                         requestData();
-                        requestPlanContent();
+                        textplan.setText("玩法选择");
                         swipeRefreshLayout.setRefreshViewText("正在刷新");
                         break;
                 }
@@ -413,6 +413,12 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
         requestOpenCurrentData();
         requestRecommend();
         requestPlanContent();
+    }
+
+    public void requestRefreshData(){
+        requestTime();
+        requestOpenCurrentData();
+        requestRecommend();
     }
 
 
@@ -1092,7 +1098,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
         isChanger       =   false;
         planList.clear();
         planAdapter.notifyDataSetChanged();
-        textplan.setText("选择玩法");
+        textplan.setText("玩法选择");
     }
 
     //设置选择器

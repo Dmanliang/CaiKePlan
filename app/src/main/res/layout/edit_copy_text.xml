@@ -47,7 +47,7 @@
                     android:id="@+id/copy_plan_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="聚彩盆"
+                    android:text="聚财盆"
                     android:textColor="@color/blackText"
                     android:textSize="13sp"
                     android:layout_marginLeft="14dp"
@@ -211,7 +211,7 @@
                     android:layout_marginLeft="14dp"
                     android:layout_marginTop="14dp"
                     android:gravity="center_vertical"
-                    android:text="聚彩盆 仅供参考"
+                    android:text="聚财盆 仅供参考"
                     android:ellipsize="end"
                     android:maxLines="1"
                     />

@@ -36,7 +36,7 @@ import rx.functions.Action1;
  * Created by dell on 2017/3/2.
  */
 
-public class LoadingAdvertiseActivity extends Activity{
+public class LoadingAdvertiseActivity extends BaseActivity{
 
     private int                 delayTime =4;//广告倒计时
     private ImageView           welcomView,adImg;
@@ -47,14 +47,7 @@ public class LoadingAdvertiseActivity extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-          /*  getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN);*/
-        }
-        setContentView(R.layout.loading_advertise_activity);
+        setView(R.layout.loading_advertise_activity);
         initView();
     }
 

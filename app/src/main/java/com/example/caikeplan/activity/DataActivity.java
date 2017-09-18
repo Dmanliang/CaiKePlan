@@ -113,16 +113,16 @@ public class DataActivity extends BaseActivity implements View.OnClickListener{
         setting.setUseWideViewPort(true);               //关键点
         setting.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
         setting.setDisplayZoomControls(true);
-        setting.setJavaScriptEnabled(true);             // 设置支持javascript脚本
-        setting.setAllowFileAccess(true);               // 允许访问文件
-        setting.setLoadWithOverviewMode(true);          // 缩放至屏幕的大小
-        setting.setBuiltInZoomControls(true);           // 设置显示缩放按钮
-        setting.setSupportZoom(true);                   // 支持缩放
-        setting.setUseWideViewPort(true);               //将图片调整到适合webview的大小
-        setting.setAppCacheEnabled(false);              //加缓存
+        setting.setJavaScriptEnabled(true);             //  设置支持javascript脚本
+        setting.setAllowFileAccess(true);               //  允许访问文件
+        setting.setLoadWithOverviewMode(true);          //  缩放至屏幕的大小
+        setting.setBuiltInZoomControls(true);           //  设置显示缩放按钮
+        setting.setSupportZoom(true);                   //  支持缩放
+        setting.setUseWideViewPort(true);               //  将图片调整到适合webview的大小
+        setting.setAppCacheEnabled(false);              //  加缓存
         setting.setRenderPriority(WebSettings.RenderPriority.HIGH);  //提高渲染的优先级
         setting.setDomStorageEnabled(true);
-        setting.setDatabaseEnabled(true);               //支持数据库
+        setting.setDatabaseEnabled(true);               //  支持数据库
         setting.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);//关闭webview中缓存
         setting.setAllowFileAccess(true);               //设置可以访问文件
         setting.setNeedInitialFocus(true);              //当webview调用requestFocus时为webview设置节点
@@ -204,13 +204,6 @@ public class DataActivity extends BaseActivity implements View.OnClickListener{
             mlistLotteryTitle.add(lotteryTitle);
         }
         return mlistLotteryTitle;
-    }
-
-    //重设选中标题信息
-    public void resetFocues() {
-        for (int i = 0; i < mlistLotteryTitle.size(); i++) {
-            mlistLotteryTitle.get(i).setFocus(false);
-        }
     }
 
     public void EnterPlan(int position){
