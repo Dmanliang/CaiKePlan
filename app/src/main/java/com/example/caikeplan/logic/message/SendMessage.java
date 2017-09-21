@@ -33,7 +33,7 @@ public class SendMessage {
 	private String				NextPageName;													//方案分页的标题名字
 	private String				LotteryName	=	"重庆时时彩";									//全局的彩种名字
 	private String				program_plan_id;
-	private int 				lottery_id;
+	private String 				lottery_id;
 	private int 				swich	  	= 0;												//开奖页倒计时的开关
 	private String 				ranges;
 	private String 				temphead,tempmid,tempend;
@@ -296,11 +296,11 @@ public class SendMessage {
 		return mac;
 	}
 
-	public void setLotteryId(int lottery_id) {
+	public void setLotteryId(String lottery_id) {
 		this.lottery_id = lottery_id;
 	}
 
-	public int getLotteryId() {
+	public String getLotteryId() {
 		return lottery_id;
 	}
 

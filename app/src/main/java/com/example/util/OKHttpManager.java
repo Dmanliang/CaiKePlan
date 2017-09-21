@@ -19,10 +19,11 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class OKHttpManager implements Callback {
+
     private OkHttpClient         mClient;
     private Map<String, String>  sMap;
     private String               token;
-    private OnNetRequestCallback mCallback;
+    private OnNetRequestCallback mCallback = null;
     private MHandler             mMHandler;
 
     public OKHttpManager() {
@@ -67,7 +68,7 @@ public class OKHttpManager implements Callback {
      * @param header     是否包含请求头
      */
     public void post(String url, Map<String, String> bodyParams, OnNetRequestCallback callback, boolean header) {
-        mCallback = callback;
+        this.mCallback = callback;
         Request.Builder builder = new Request.Builder();
         if (header) {
             builder.headers(headers());
@@ -84,7 +85,7 @@ public class OKHttpManager implements Callback {
      * @param callback 请求回调接口
      */
     public void get(String url, Map<String, String> params, OnNetRequestCallback callback) {
-        mCallback = callback;
+        this.mCallback = callback;
         Request request = new Request.Builder()
                 .url(attachParams(url, params))//拼接Url
                 .get()
@@ -112,7 +113,7 @@ public class OKHttpManager implements Callback {
 
 
     private static class MHandler extends Handler {
-        WeakReference<OKHttpManager> mReference;
+        WeakReference<OKHttpManager> mReference = null;
 
         public MHandler(OKHttpManager okHttpManager) {
             mReference = new WeakReference<>(okHttpManager);
@@ -121,16 +122,25 @@ public class OKHttpManager implements Callback {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (msg.what == FAILED) {
-                mReference.get().mCallback.onFailed((String) msg.obj);
-            } else if (msg.what == SUCCESS) {
-                mReference.get().mCallback.onSuccess((String) msg.obj);
-            } else {
-                mReference.get().mCallback.onSuccess((String) msg.obj);
+            try{
+                if (msg.what == FAILED) {
+                    if(mReference != null) {
+                        mReference.get().mCallback.onFailed((String) msg.obj);
+                    }
+                } else if (msg.what == SUCCESS) {
+                    if(mReference != null){
+                        mReference.get().mCallback.onSuccess((String) msg.obj);
+                    }
+                } else {
+                    if(mReference !=null) {
+                        mReference.get().mCallback.onSuccess((String) msg.obj);
+                    }
+                }
+            }catch (Exception e){
+                e.printStackTrace();
             }
         }
     }
-
 
     //网络请求之后的回调
     @Override

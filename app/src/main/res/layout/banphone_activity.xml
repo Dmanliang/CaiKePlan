@@ -5,14 +5,14 @@
     android:layout_height="match_parent"
     android:background="@drawable/icon_loginback">
     <ImageView
-        android:id="@+id/forgetpsw_close"
+        android:id="@+id/banphone_close"
         android:layout_width="15dp"
         android:layout_height="15dp"
-        android:background="@drawable/icon_close"
         android:layout_alignParentRight="true"
+        android:background="@drawable/icon_close"
         android:layout_margin="30dp"/>
     <ImageView
-        android:id="@+id/forgetpsw_logo"
+        android:id="@+id/banphone_logo"
         android:layout_height="144dp"
         android:layout_width="150dp"
         android:layout_centerHorizontal="true"
@@ -23,7 +23,7 @@
         android:id="@+id/edit_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/forgetpsw_logo"
+        android:layout_below="@+id/banphone_logo"
         android:layout_marginTop="32dp"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="34dp"
@@ -41,12 +41,11 @@
                 android:layout_marginLeft="15dp"
                 android:background="@drawable/icon_phone"/>
             <EditText
-                android:id="@+id/forgetpsw_phone"
+                android:id="@+id/edit_phone"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:textCursorDrawable="@null"
                 android:background="@null"
-                android:ellipsize="end"
                 android:layout_centerVertical="true"
                 android:hint="请输入手机号码"
                 android:layout_toRightOf="@+id/icon_phone"
@@ -55,6 +54,16 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
                 android:singleLine="true"
+                android:ellipsize="end"
+                />
+            <TextView
+                android:id="@+id/phones_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"
                 />
         </RelativeLayout>
         <RelativeLayout
@@ -70,25 +79,24 @@
                 android:layout_marginLeft="15dp"
                 android:background="@drawable/icon_verification"/>
             <EditText
-                android:id="@+id/forgetpsw_code"
+                android:id="@+id/edit_code"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:textCursorDrawable="@null"
                 android:background="@null"
                 android:ellipsize="end"
-                android:numeric="integer"
                 android:layout_centerVertical="true"
                 android:hint="请输入验证码"
                 android:layout_toRightOf="@+id/icon_code"
                 android:textColorHint="@color/whileDivider"
                 android:textSize="15sp"
                 android:layout_marginLeft="15dp"
-                android:layout_toLeftOf="@+id/forgetpsw_button_code"
                 android:singleLine="true"
-                android:maxLength="10"
+                android:imeOptions="actionGo"
+                android:layout_toLeftOf="@+id/button_code"
                 />
             <Button
-                android:id="@+id/forgetpsw_button_code"
+                android:id="@+id/button_code"
                 android:layout_width="81dp"
                 android:layout_height="27dp"
                 android:layout_alignParentRight="true"
@@ -99,43 +107,12 @@
                 android:textColor="@color/whileText"
                 android:textSize="14sp"/>
         </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:background="@drawable/shape_input"
-            android:layout_marginTop="10dp">
-            <ImageView
-                android:id="@+id/icon_password"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="15dp"
-                android:background="@drawable/icon_password"/>
-            <EditText
-                android:id="@+id/forgetpsw_new_password"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:textCursorDrawable="@null"
-                android:background="@null"
-                android:ellipsize="end"
-                android:layout_centerVertical="true"
-                android:hint="请输入新密码"
-                android:layout_toRightOf="@+id/icon_password"
-                android:textColorHint="@color/whileDivider"
-                android:textSize="15sp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:inputType="textPassword"
-                android:singleLine="true"
-                android:imeOptions="actionGo"
-                android:maxLength="20"
-                />
-        </RelativeLayout>
+
     </LinearLayout>
     <Button
-        android:id="@+id/forgetpsw_button"
+        android:id="@+id/button_banphone"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="45dp"
         android:layout_marginLeft="34dp"
         android:layout_marginRight="34dp"
         android:layout_below="@+id/edit_layout"
@@ -151,18 +128,6 @@
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="50dp"/>
-  <!--  <RelativeLayout
-        android:id="@+id/loading"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/blackHalfAlphaBlack"
-        android:visibility="gone">
-
-        <ProgressBar
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_centerInParent="true"/>
-    </RelativeLayout>-->
     <include
         android:id="@+id/loading"
         layout="@layout/loadingdata"

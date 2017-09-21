@@ -34,6 +34,82 @@
             android:layout_height="45dp"
             android:background="@drawable/shape_input">
             <ImageView
+                android:id="@+id/icon_user"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp"
+                android:background="@drawable/icon_personal"/>
+            <EditText
+                android:id="@+id/register_edit_user"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:textCursorDrawable="@null"
+                android:background="@null"
+                android:ellipsize="end"
+                android:layout_centerVertical="true"
+                android:hint="请输入用户名"
+                android:layout_toRightOf="@+id/icon_user"
+                android:textColorHint="@color/whileDivider"
+                android:textSize="15sp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:singleLine="true"
+                />
+            <TextView
+                android:id="@+id/username_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"
+                />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/shape_input"
+            android:layout_marginTop="10dp">
+            <ImageView
+                android:id="@+id/icon_password"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp"
+                android:background="@drawable/icon_password"/>
+            <EditText
+                android:id="@+id/register_edit_password"
+                android:layout_width="match_parent"
+                android:inputType="textPassword"
+                android:layout_height="30dp"
+                android:background="@null"
+                android:ellipsize="end"
+                android:layout_centerVertical="true"
+                android:hint="登录密码(6-20位)"
+                android:layout_toRightOf="@+id/icon_password"
+                android:textColorHint="@color/whileDivider"
+                android:textSize="15sp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:singleLine="true"
+                android:maxLength="20"
+                />
+            <ImageView
+                android:id="@+id/register_icon_eye"
+                android:layout_width="16dp"
+                android:layout_height="10dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"
+                android:background="@drawable/icon_display"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/shape_input"
+            android:layout_marginTop="10dp">
+            <ImageView
                 android:id="@+id/icon_phone"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
@@ -41,7 +117,7 @@
                 android:layout_marginLeft="15dp"
                 android:background="@drawable/icon_phone"/>
             <EditText
-                android:id="@+id/edit_phone"
+                android:id="@+id/register_edit_phone"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:textCursorDrawable="@null"
@@ -79,7 +155,7 @@
                 android:layout_marginLeft="15dp"
                 android:background="@drawable/icon_verification"/>
             <EditText
-                android:id="@+id/edit_code"
+                android:id="@+id/register_edit_code"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:textCursorDrawable="@null"
@@ -94,9 +170,10 @@
                 android:singleLine="true"
                 android:imeOptions="actionGo"
                 android:layout_toLeftOf="@+id/button_code"
+                android:numeric="integer"
                 />
             <Button
-                android:id="@+id/button_code"
+                android:id="@+id/reigster_button_code"
                 android:layout_width="81dp"
                 android:layout_height="27dp"
                 android:layout_alignParentRight="true"
@@ -128,16 +205,10 @@
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="50dp"/>
-    <RelativeLayout
+    <include
         android:id="@+id/loading"
-        android:layout_width="match_parent"
+        layout="@layout/loadingdata"
         android:layout_height="match_parent"
-        android:background="@color/blackHalfAlphaBlack"
-        android:visibility="gone">
-
-        <ProgressBar
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_centerInParent="true"/>
-    </RelativeLayout>
+        android:layout_width="match_parent"
+        />
 </RelativeLayout>

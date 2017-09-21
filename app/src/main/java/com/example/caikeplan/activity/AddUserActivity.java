@@ -110,8 +110,9 @@ public class AddUserActivity extends BaseActivity implements View.OnClickListene
                         Map<String, String> map = new HashMap<>();
                         map.put("username",username);
                         map.put("type","0");
-                        map.put("token",UserMessage.getInstance().getToken());
                         mPresenter.validuser(map);
+                    }else{
+                        username_check.setText("");
                     }
                 }
             }

@@ -19,10 +19,14 @@ import com.example.caikeplan.logic.EntryContract;
 import com.example.caikeplan.logic.EntryPresenter;
 import com.example.caikeplan.logic.message.UserMessage;
 import com.example.collect.CollectActivity;
+import com.example.getJson.HttpTask;
 import com.example.personal.PersonalAbout;
 import com.example.personal.PersonalCopy;
+import com.example.util.Util;
 import com.youth.xframe.base.XActivity;
 import com.youth.xframe.cache.XCache;
+
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,13 +52,14 @@ public class PersonalActivity extends XActivity implements View.OnClickListener,
     private     RelativeLayout      resetpswLayout;
     private     RelativeLayout      copycontentLayout;
     private     RelativeLayout      freeLayout;
+    private     RelativeLayout      recharge_layout;
     private     TextView            toolbar_title;
     private     TextView            all_count;
     private     ImageView           message;
     private     EntryPresenter      mPresenter;
     private     Map<String, String> messagemap = new HashMap<>();
     private     XCache              xCache;
-
+    private     String              due_time;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +96,7 @@ public class PersonalActivity extends XActivity implements View.OnClickListener,
         resetpswLayout      = (RelativeLayout)findViewById(R.id.resetpsw_layout);
         copycontentLayout   = (RelativeLayout)findViewById(R.id.copycontent_layout);
         freeLayout          = (RelativeLayout)findViewById(R.id.free_layout);
+        recharge_layout     = (RelativeLayout)findViewById(R.id.recharge_layout);
         toolbar_title       = (TextView)findViewById(R.id.toolbar_title);
         username            = (TextView)findViewById(R.id.username);
         message             = (ImageView)findViewById(R.id.message);
@@ -100,7 +106,6 @@ public class PersonalActivity extends XActivity implements View.OnClickListener,
         all_count           = (TextView)findViewById(R.id.all_count);
         versiontext.setText("当前版本:"+getVersion());
         toolbar_title.setText("设置");
-        all_count.setText(UserMessage.getInstance().getUse_count()+"/"+UserMessage.getInstance().getAll_count());
         username.setText(UserMessage.getInstance().getUsername());
         endtime.setText(UserMessage.getInstance().getDue_time());
         message.setVisibility(View.VISIBLE);
@@ -115,6 +120,7 @@ public class PersonalActivity extends XActivity implements View.OnClickListener,
         freeLayout.setOnClickListener(this);
         exitlogin.setOnClickListener(this);
         message.setOnClickListener(this);
+        recharge_layout.setOnClickListener(this);
         mPresenter = new EntryPresenter(this,this);
         if(UserMessage.getInstance().getPower_add().equals("0")){
             adduserLayout.setVisibility(View.GONE);
@@ -126,12 +132,44 @@ public class PersonalActivity extends XActivity implements View.OnClickListener,
         }else{
             peopleLayout.setVisibility(View.GONE);
         }
+        if(UserMessage.getInstance().getRole_id().equals("1") || UserMessage.getInstance().getRole_id().equals("3")){
+            recharge_layout.setVisibility(View.VISIBLE);
+        }else{
+            recharge_layout.setVisibility(View.GONE);
+        }
     }
 
     public void requestMessage(){
         messagemap.put("user_id",UserMessage.getInstance().getUser_id());
         messagemap.put("token",UserMessage.getInstance().getToken());
         mPresenter.message(messagemap);
+    }
+
+    public void requsetDueTime(){
+        HttpTask httpTask = new HttpTask();
+        httpTask.execute(Constants.API + Constants.RECHARGE_DUETIME+"?user_id="+UserMessage.getInstance().getUser_id());
+        httpTask.setTaskHandler(new HttpTask.HttpTaskHandler() {
+            @Override
+            public void taskSuccessful(String json) {
+                try{
+                    JSONObject jsonObject = new JSONObject(json);
+                    String success  = jsonObject.getString("success");
+                    if(success.equals("1")) {
+                        due_time = jsonObject.getString("due_time");
+                        UserMessage.getInstance().setDue_time(due_time);
+                    }else if(success.equals("-1")){
+                        Util.ShowMessageDialog(PersonalActivity.this);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void taskFailed() {
+
+            }
+        });
     }
 
 
@@ -164,6 +202,9 @@ public class PersonalActivity extends XActivity implements View.OnClickListener,
                 break;
             case R.id.free_layout:
                 startActivity(new Intent(PersonalActivity.this, PersonalDisclaimer.class));
+                break;
+            case R.id.recharge_layout:
+                startActivity(new Intent(PersonalActivity.this,RechargeActivity.class));
                 break;
             case R.id.exitlogin:
                 Intent intentexit = new Intent(PersonalActivity.this, LoginActivity.class);
@@ -226,7 +267,9 @@ public class PersonalActivity extends XActivity implements View.OnClickListener,
     @Override
     protected void onResume() {
         requestMessage();
+        requsetDueTime();
         all_count.setText(UserMessage.getInstance().getUse_count()+"/"+UserMessage.getInstance().getAll_count());
+        endtime.setText(UserMessage.getInstance().getDue_time());
         super.onResume();
     }
 

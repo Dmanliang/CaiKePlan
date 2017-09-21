@@ -114,10 +114,16 @@ public class PersonalCopy extends BaseActivity implements OnClickListener{
 
 	//显示选项复制弹框
 	public void showItem(View view) {
+		int flag = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+				| View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+				| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+				| View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+				| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
 		view = PersonalCopy.this.getLayoutInflater().inflate(R.layout.content_setting, null);
 		helpwindow = new PopupWindow(view, LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT, true);
 		helpwindow.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#80000000")));
 		helpwindow.setOutsideTouchable(true);
+		view.setSystemUiVisibility(flag);
 		helpwindow.update();
 		if (!helpwindow.isShowing()) {
 			helpwindow.showAtLocation(view, Gravity.CENTER, 0, 0);

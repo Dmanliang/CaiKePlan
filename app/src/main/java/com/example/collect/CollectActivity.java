@@ -1,7 +1,9 @@
 package com.example.collect;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -10,6 +12,7 @@ import org.json.JSONObject;
 import com.example.base.Constants;
 import com.example.caikeplan.R;
 import com.example.caikeplan.activity.BaseActivity;
+import com.example.caikeplan.activity.CopyPlan;
 import com.example.caikeplan.activity.PlanProgram;
 import com.example.caikeplan.activity.RankActivity;
 import com.example.caikeplan.logic.MyGridView;
@@ -18,6 +21,9 @@ import com.example.caikeplan.logic.message.LotteryTitle;
 import com.example.caikeplan.logic.message.PlanBaseMessage;
 import com.example.caikeplan.logic.message.UserMessage;
 import com.example.getJson.HttpTask;
+import com.example.util.OKHttpManager;
+import com.example.util.OnNetRequestCallback;
+import com.example.util.Util;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -54,6 +60,7 @@ public class CollectActivity extends BaseActivity implements OnClickListener {
 	public  static final int 	TYPE8 = 8;
 	private SwipeRefreshLayout  swipeRefreshLayout;
 	private RelativeLayout      nodataLayout;
+	private RelativeLayout      loading;
 	private RelativeLayout      main_toolbar;
 	private RelativeLayout 		noCollect;
 	private LinearLayout		program_back;
@@ -86,6 +93,7 @@ public class CollectActivity extends BaseActivity implements OnClickListener {
 		mListview 			= 	(ListView)findViewById(R.id.program_collect_listview);
 		main_toolbar    	=   (RelativeLayout)findViewById(R.id.toolbar_container);
 		nodataLayout    	=   (RelativeLayout)findViewById(R.id.no_data);
+		loading    			=   (RelativeLayout)findViewById(R.id.loading);
 		choice_collect 		= 	(ImageView)findViewById(R.id.choice_collect);
 		toolbar_title		=	(TextView)findViewById(R.id.toolbar_title);
 		noCollect			=	(RelativeLayout)findViewById(R.id.no_collect);
@@ -230,91 +238,112 @@ public class CollectActivity extends BaseActivity implements OnClickListener {
 	}
 
 	public void requestCollection(){
-		HttpTask httpTask = new HttpTask();
-		httpTask.execute(Constants.API+Constants.FIND_FAVORITE + UserMessage.getInstance().getUser_id());
-		httpTask.setTaskHandler(new HttpTask.HttpTaskHandler() {
+		enable(false);
+		OKHttpManager okHttpManager = new OKHttpManager();
+		okHttpManager.setToken(UserMessage.getInstance().getToken());
+		Map<String,String> map = new HashMap<>();
+		map.put("user_id",UserMessage.getInstance().getUser_id());
+		okHttpManager.post(Constants.API+Constants.FIND_FAVORITE, map, new OnNetRequestCallback() {
 			@Override
-			public void taskSuccessful(String json) {
-				JSONObject jsonObject;
-				CollectBean newsBean;
-				try {
-					jsonObject = new JSONObject(json);
-					JSONArray jsonArray = jsonObject.getJSONArray("data");
-					ArrayList<CollectBean> list = new ArrayList<>();
-					for (int i = 0; i < jsonArray.length(); i++) {
-						jsonObject = jsonArray.getJSONObject(i);
-						String plan_id 		= 	jsonObject.getString("plan_id");
-						String play_id 		= 	jsonObject.getString("play_id");
-						int lottery_id 		= 	jsonObject.getInt("lottery_id");
-						String log_id 		= 	jsonObject.getString("log_id");
-						String plan_name 	= 	jsonObject.getString("plan_name");
-						String s_id			= 	jsonObject.getString("s_id");
-						String schemem_name	= 	jsonObject.getString("scheme_name");
-						String lottery_name = 	jsonObject.getString("lottery_name");
-						String cls_name		=	jsonObject.getString("cls_name");
-						newsBean = new CollectBean(lottery_name,cls_name,plan_id,play_id,log_id,plan_name,s_id,schemem_name,lottery_id,true);
-						list.add(newsBean);
-					}
-					newsBeanList.clear();
-					newsBeanList.addAll(list);
-					adapter.notifyDataSetChanged();
-					checkDataState(true);
-					checkCollectState();
-				} catch (JSONException e) {
-					checkDataState(false);
-					e.printStackTrace();
-				}
+			public void onFailed(String reason) {
+				checkDataState(false);
+				enable(true);
 			}
 
 			@Override
-			public void taskFailed() {
-				checkDataState(false);
+			public void onSuccess(String response) {
+				JSONObject jsonObject;
+				CollectBean newsBean;
+				try {
+					jsonObject = new JSONObject(response);
+					String success  = jsonObject.getString("success");
+					if(success.equals("1")) {
+						JSONArray jsonArray = jsonObject.getJSONArray("data");
+						ArrayList<CollectBean> list = new ArrayList<>();
+						for (int i = 0; i < jsonArray.length(); i++) {
+							jsonObject = jsonArray.getJSONObject(i);
+							String plan_id 		= 	jsonObject.getString("plan_id");
+							String play_id 		= 	jsonObject.getString("play_id");
+							String lottery_id   = 	jsonObject.getString("lottery_id");
+							String log_id 		= 	jsonObject.getString("log_id");
+							String plan_name 	= 	jsonObject.getString("plan_name");
+							String s_id			= 	jsonObject.getString("s_id");
+							String schemem_name	= 	jsonObject.getString("scheme_name");
+							String lottery_name = 	jsonObject.getString("lottery_name");
+							String cls_name		=	jsonObject.getString("cls_name");
+							newsBean = new CollectBean(lottery_name,cls_name,plan_id,play_id,log_id,plan_name,s_id,schemem_name,lottery_id,true);
+							list.add(newsBean);
+						}
+						newsBeanList.clear();
+						newsBeanList.addAll(list);
+						adapter.notifyDataSetChanged();
+						checkDataState(true);
+						checkCollectState();
+						enable(true);
+					}else if(success.equals("-1")){
+						Util.ShowMessageDialog(CollectActivity.this);
+						enable(true);
+					}
+				} catch (JSONException e) {
+					checkDataState(false);
+					enable(false);
+					e.printStackTrace();
+				}
 			}
-		});
+		},true);
 	}
 
 	public void requestSelectLottery(String lotteryid){
-		HttpTask httpTask = new HttpTask();
-		httpTask.execute(Constants.API+Constants.FIND_FAVORITE + UserMessage.getInstance().getUser_id() + "&lottery_id="+lotteryid);
-		httpTask.setTaskHandler(new HttpTask.HttpTaskHandler() {
+		OKHttpManager okHttpManager = new OKHttpManager();
+		okHttpManager.setToken(UserMessage.getInstance().getToken());
+		Map<String,String> map = new HashMap<>();
+		map.put("user_id",UserMessage.getInstance().getUser_id());
+		map.put("lottery_id",lotteryid);
+		okHttpManager.post(Constants.API + Constants.FIND_FAVORITE, map, new OnNetRequestCallback() {
 			@Override
-			public void taskSuccessful(String json) {
+			public void onFailed(String reason) {
+				checkDataState(false);
+			}
+
+			@Override
+			public void onSuccess(String response) {
 				JSONObject jsonObject;
 				CollectBean newsBean;
 				try {
-					jsonObject = new JSONObject(json);
-					JSONArray jsonArray = jsonObject.getJSONArray("data");
-					ArrayList<CollectBean> list = new ArrayList<>();
-					for (int i = 0; i < jsonArray.length(); i++) {
-						jsonObject = jsonArray.getJSONObject(i);
-						String plan_id 		= 	jsonObject.getString("plan_id");
-						String play_id 		= 	jsonObject.getString("play_id");
-						int lottery_id 		= 	jsonObject.getInt("lottery_id");
-						String log_id 		= 	jsonObject.getString("log_id");
-						String plan_name 	= 	jsonObject.getString("plan_name");
-						String s_id			= 	jsonObject.getString("s_id");
-						String schemem_name	= 	jsonObject.getString("scheme_name");
-						String lottery_name = 	jsonObject.getString("lottery_name");
-						String cls_name		=	jsonObject.getString("cls_name");
-						newsBean = new CollectBean(lottery_name,cls_name,plan_id,play_id,log_id,plan_name,s_id,schemem_name,lottery_id,true);
-						list.add(newsBean);
+					jsonObject = new JSONObject(response);
+					String success  = jsonObject.getString("success");
+					if(success.equals("1")) {
+						JSONArray jsonArray = jsonObject.getJSONArray("data");
+						ArrayList<CollectBean> list = new ArrayList<>();
+						for (int i = 0; i < jsonArray.length(); i++) {
+							jsonObject = jsonArray.getJSONObject(i);
+							String plan_id 		= 	jsonObject.getString("plan_id");
+							String play_id 		= 	jsonObject.getString("play_id");
+							String lottery_id   = 	jsonObject.getString("lottery_id");
+							String log_id 		= 	jsonObject.getString("log_id");
+							String plan_name 	= 	jsonObject.getString("plan_name");
+							String s_id			= 	jsonObject.getString("s_id");
+							String schemem_name	= 	jsonObject.getString("scheme_name");
+							String lottery_name = 	jsonObject.getString("lottery_name");
+							String cls_name		=	jsonObject.getString("cls_name");
+							newsBean = new CollectBean(lottery_name,cls_name,plan_id,play_id,log_id,plan_name,s_id,schemem_name,lottery_id,true);
+							list.add(newsBean);
+						}
+						newsBeanList.clear();
+						newsBeanList.addAll(list);
+						adapter.notifyDataSetChanged();
+						checkDataState(true);
+						checkCollectState();
+					}else if(success.equals("-1")){
+						Util.ShowMessageDialog(CollectActivity.this);
 					}
-					newsBeanList.clear();
-					newsBeanList.addAll(list);
-					adapter.notifyDataSetChanged();
-					checkDataState(true);
-					checkCollectState();
+
 				} catch (JSONException e) {
 					checkDataState(false);
 					e.printStackTrace();
 				}
 			}
-
-			@Override
-			public void taskFailed() {
-				checkDataState(false);
-			}
-		});
+		},true);
 	}
 
 	//显示彩种选择
@@ -422,5 +451,13 @@ public class CollectActivity extends BaseActivity implements OnClickListener {
 	private void isDataAvailable(){
 		swipeRefreshLayout.setVisibility(View.VISIBLE);
 		nodataLayout.setVisibility(View.GONE);
+	}
+
+	private void enable(boolean enable) {
+		if (enable) {
+			loading.setVisibility(View.GONE);
+		} else {
+			loading.setVisibility(View.VISIBLE);
+		}
 	}
 }

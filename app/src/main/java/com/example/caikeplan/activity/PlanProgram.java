@@ -38,6 +38,8 @@ import com.example.caikeplan.logic.message.UserMessage;
 import com.example.caikeplan.logic.scrollview.BorderScrollView;
 import com.example.getJson.HttpTask;
 import com.example.personal.PersonalCopy;
+import com.example.util.OKHttpManager;
+import com.example.util.OnNetRequestCallback;
 import com.youth.xframe.cache.XCache;
 
 import org.json.JSONArray;
@@ -49,7 +51,9 @@ import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by dell on 2017/5/19.
@@ -76,10 +80,8 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
     private View                copyView, header,loadview;
     private Bundle              bundle;
     private ListView            planlistView;
-    private android.widget.ListView copy_list;
     private List<PlanMessage>   mList = new ArrayList<>();
     private PlanProgramAdapter  planProgramAdapter;
-    private CopyEditAdpater     copyEditAdpater;
     private ImageView           btn_copy, btn_edit,btn_collect;
     private TextView            plan_accuracy, plan_cycle, plan_wrong;
     private String              plan_id, s_id, scheme_name, lottery_name, plan_name, cls_name,is_jcp,type;              //计划id和对应第几个计划
@@ -87,11 +89,6 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
     private int                 countYes = 0, countNo = 0, countCyecles = 0;                                            //统计正确率,错误率和周期
     private String              update_time;
     private SimpleDateFormat    format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-    private String              issue;
-    private String              plans;
-    private String              nums;
-    private String              ranges;
-    private String              hit;
     private int                 index = 0;
     private TextView            copy_ranges;
     private TextView            copy_context;
@@ -103,6 +100,7 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
     private String              textPlays;
     private String              textNum;
     private TextView            plan;
+    private RelativeLayout      loading;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -118,6 +116,7 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
         getDataType();
         swipeRefreshLayout  = (SwipeRefreshLayout)findViewById(R.id.swipe_refresh_plan);
         plan_toolbar        = (RelativeLayout) findViewById(R.id.plan_toolbar);
+        loading             = (RelativeLayout)findViewById(R.id.loading);
         toolbar_container   = (RelativeLayout) findViewById(R.id.toolbar_container);
         program_back        = (LinearLayout) findViewById(R.id.program_back);
         back                = (ImageView) findViewById(R.id.back);
@@ -162,41 +161,46 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
     }
 
     //添加收藏
-    public void requestAddURL1(String user_id, int lottery_id, String plan_id,String s_id,String is_jcp) {
-        String url;
-        url = Constants.API+Constants.PLAN_FAVORITE + user_id + "&lottery_id=" + lottery_id + "&plan_id=" + plan_id + "&s_id="+s_id +"&is_jcp=" +is_jcp ;
-        HttpTask addhttpTask = new HttpTask();
-        addhttpTask.execute(url);
-        addhttpTask.setTaskHandler(new HttpTask.HttpTaskHandler() {
+    public void requestAddURL1(String user_id, String plan_id,String s_id,String is_jcp) {
+        OKHttpManager httpManager = new OKHttpManager();
+        Map<String,String> map = new HashMap<>();
+        map.put("user_id",user_id);
+        map.put("plan_id",plan_id);
+        map.put("s_id",s_id);
+        map.put("is_jcp",is_jcp);
+        httpManager.setToken(UserMessage.getInstance().getToken());
+        httpManager.post(Constants.API + Constants.PLAN_FAVORITE, map, new OnNetRequestCallback() {
             @Override
-            public void taskSuccessful(String json) {
-                ToastUtil.getShortToastByString(PlanProgram.this,"收藏成功");
+            public void onFailed(String reason) {
+                ToastUtil.getShortToastByString(PlanProgram.this,"收藏失败");
             }
 
             @Override
-            public void taskFailed() {
-                ToastUtil.getShortToastByString(PlanProgram.this,"收藏失败");
+            public void onSuccess(String response) {
+                ToastUtil.getShortToastByString(PlanProgram.this,"收藏成功");
             }
-        });
+        },true);
     }
 
     //添加收藏
-    public void requestAddURL2(String user_id, int lottery_id, String plan_id,String s_id) {
-        String url;
-        url = Constants.API+Constants.PLAN_FAVORITE + user_id + "&lottery_id=" + lottery_id + "&plan_id=" + plan_id + "&s_id="+s_id;
-        HttpTask addhttpTask = new HttpTask();
-        addhttpTask.execute(url);
-        addhttpTask.setTaskHandler(new HttpTask.HttpTaskHandler() {
+    public void requestAddURL2(String user_id,String plan_id,String s_id) {
+        OKHttpManager httpManager = new OKHttpManager();
+        Map<String,String> map = new HashMap<>();
+        map.put("user_id",user_id);
+        map.put("plan_id",plan_id);
+        map.put("s_id",s_id);
+        httpManager.setToken(UserMessage.getInstance().getToken());
+        httpManager.post(Constants.API + Constants.PLAN_FAVORITE, map, new OnNetRequestCallback() {
             @Override
-            public void taskSuccessful(String json) {
-                ToastUtil.getShortToastByString(PlanProgram.this,"收藏成功");
+            public void onFailed(String reason) {
+                ToastUtil.getShortToastByString(PlanProgram.this,"收藏失败");
             }
 
             @Override
-            public void taskFailed() {
-                ToastUtil.getShortToastByString(PlanProgram.this,"收藏失败");
+            public void onSuccess(String response) {
+                ToastUtil.getShortToastByString(PlanProgram.this,"收藏成功");
             }
-        });
+        },true);
     }
     //获得请求参数
     public void getDataType() {
@@ -258,13 +262,25 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
     //请求计划分页数据
     public void requestPlanResult() {
         reSetData();
-        HttpTask httpTask = new HttpTask();
-        httpTask.execute(Constants.API + Constants.PLAN_RUSULT + plan_id + "&s_id=" + s_id + "&page_size=59");
-        httpTask.setTaskHandler(new HttpTask.HttpTaskHandler() {
+        enable(false);
+        OKHttpManager okHttpManager = new OKHttpManager();
+        Map<String,String> map = new HashMap<>();
+        map.put("plan_id",plan_id);
+        map.put("s_id",s_id);
+        map.put("page_size","59");
+        map.put("user_id",UserMessage.getInstance().getUser_id());
+        okHttpManager.setToken(UserMessage.getInstance().getToken());
+        okHttpManager.post(Constants.API + Constants.PLAN_RUSULT, map, new OnNetRequestCallback() {
             @Override
-            public void taskSuccessful(String json) {
+            public void onFailed(String reason) {
+                btn_copy.setClickable(false);
+                btn_edit.setClickable(false);
+            }
+
+            @Override
+            public void onSuccess(String response) {
                 try {
-                    JSONObject jsonObject = new JSONObject(json);
+                    JSONObject jsonObject = new JSONObject(response);
                     JSONArray data = jsonObject.getJSONArray("data");
                     bestRate = jsonObject.getString("mrate");
                     bestS_id = jsonObject.getString("ms_id");
@@ -322,41 +338,42 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
                     Message msg = new Message();
                     msg.what = 1;
                     recomdHandler.sendMessage(msg);
+                    enable(true);
                 } catch (Exception e) {
                     btn_copy.setClickable(false);
                     btn_edit.setClickable(false);
                     e.printStackTrace();
                 }
             }
-
-            @Override
-            public void taskFailed() {
-                btn_copy.setClickable(false);
-                btn_edit.setClickable(false);
-            }
-        });
+        },true);
     }
 
     //显示选项复制弹框
     public void showItem(View view, int pos) {
+        int flag = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
         view = PlanProgram.this.getLayoutInflater().inflate(R.layout.program_next_detailed_dialog, null);
         windowItem = new PopupWindow(view, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
         windowItem.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#80000000")));
         windowItem.setOutsideTouchable(true);
+        view.setSystemUiVisibility(flag);
         windowItem.update();
         if (windowItem.isShowing()) {
             windowItem.dismiss();
         } else {
             windowItem.showAtLocation(view, Gravity.CENTER, 0, 0);
             windowItem.setFocusable(true);
-            windowItem.getContentView().setOnTouchListener(new View.OnTouchListener() {
+           /* windowItem.getContentView().setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
                     windowItem.setFocusable(false);
                     windowItem.dismiss();
                     return false;
                 }
-            });
+            });*/
         }
         scrollView = (BorderScrollView)view.findViewById(R.id.myScrollView);
         copy_ranges    = (TextView) view.findViewById(R.id.copy_ranges);
@@ -400,13 +417,19 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
 
     //显示复制编辑弹框
     public void showCopyEdit() {
-        copyView = PlanProgram.this.getLayoutInflater().inflate(R.layout.edit_copy_text, null);
+        int flag = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+        copyView = PlanProgram.this.getLayoutInflater().inflate(R.layout.edit_copy_text, null,false);
         copyeditWindow = new PopupWindow(copyView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
-        //   copyeditWindow.setAnimationStyle(R.style.popup_window_anim);
+        copyeditWindow.setAnimationStyle(R.style.popup_window_anim);
         copyeditWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
         copyeditWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         copyView.setBackgroundColor(Color.parseColor("#80000000"));
         copyeditWindow.setOutsideTouchable(true);
+        copyView.setSystemUiVisibility(flag);
         copyeditWindow.update();
         if (!copyeditWindow.isShowing()) {
             copyeditWindow.showAtLocation(copyView, Gravity.CENTER, 0, 0);
@@ -635,9 +658,9 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
                 break;
             case R.id.btn_collect:
                 if(is_jcp.equals("1")){
-                    requestAddURL1(UserMessage.getInstance().getUser_id(),SendMessage.getInstance().getLotteryId(),plan_id,s_id,is_jcp);
+                    requestAddURL1(UserMessage.getInstance().getUser_id(),plan_id,s_id,is_jcp);
                 }else{
-                    requestAddURL2(UserMessage.getInstance().getUser_id(),SendMessage.getInstance().getLotteryId(),plan_id,s_id);
+                    requestAddURL2(UserMessage.getInstance().getUser_id(),plan_id,s_id);
                 }
                 break;
         }
@@ -663,5 +686,12 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
         }
     };
 
+    private void enable(boolean enable) {
+        if (enable) {
+            loading.setVisibility(View.GONE);
+        } else {
+            loading.setVisibility(View.VISIBLE);
+        }
+    }
 
 }

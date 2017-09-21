@@ -25,36 +25,10 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 public class BaseActivity extends AppCompatActivity{
 
-    private RelativeLayout  toolbar_container;
-    private ImageView       back;
-    private TextView        back_text;
-    private LinearLayout    program_back;
-    private TextView        play_select;
-    private TextView        toolbar_title;
-    private ImageView       title_arrow;
-    private TextView        toolbar_set;
-    private TextView        toolbar_save;
-    private ImageView       btn_copy_plan;
-
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        initToolBarView();
-    }
-
-    public void initToolBarView(){
-        toolbar_container   =   (RelativeLayout)findViewById(R.id.toolbar_container);
-        program_back        =   (LinearLayout)findViewById(R.id.program_back);
-        back                =   (ImageView)findViewById(R.id.back);
-        back_text           =   (TextView)findViewById(R.id.back_text);
-        play_select         =   (TextView)findViewById(R.id.play_select);
-        toolbar_title       =   (TextView)findViewById(R.id.toolbar_title);
-        title_arrow         =   (ImageView)findViewById(R.id.title_arrow);
-        toolbar_set         =   (TextView)findViewById(R.id.toolbar_set);
-        toolbar_save        =   (TextView)findViewById(R.id.toolbar_save);
-        btn_copy_plan       =   (ImageView)findViewById(R.id.btn_copy_plan);
     }
 
     public void setView(int layoutID) {

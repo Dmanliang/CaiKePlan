@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:clipToPadding="true">
+    <RelativeLayout
+        android:id="@+id/zhif_layout"
+        android:layout_width="match_parent"
+        android:layout_height="172dp"
+        android:background="@color/whileBack"
+        android:layout_alignParentBottom="true"
+        android:gravity="center">
+        <Button
+            android:id="@+id/zhifubao"
+            android:layout_width="135dp"
+            android:layout_height="81dp"
+            android:background="@drawable/icon_alipay"
+            android:layout_centerVertical="true"
+            />
+        <Button
+            android:id="@+id/weixin"
+            android:layout_width="135dp"
+            android:layout_height="81dp"
+            android:background="@drawable/icon_weixin"
+            android:layout_toRightOf="@+id/zhifubao"
+            android:layout_marginLeft="23dp"
+            android:layout_centerVertical="true"
+            />
+    </RelativeLayout>
+    <ImageView
+        android:id="@+id/zhifu_close"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:background="@drawable/close"
+        android:layout_alignRight="@+id/zhif_layout"
+        android:layout_alignTop="@+id/zhif_layout"
+        android:layout_margin="15dp"/>
+</RelativeLayout>

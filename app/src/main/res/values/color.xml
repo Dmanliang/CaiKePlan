@@ -50,6 +50,9 @@
     <color name="redlight">#ff2703</color>
     <color name="balckText">#333333</color>
     <color name="grayText1">#888888</color>
+    <color name="grayText2">#e8d1a0</color>
+    <color name="grayText3">#999999</color>
+    <color name="grayText4">#d9d9d9</color>
     <color name="blueTime">#3aa0ed</color>
     <color name="redCaiZhong">#cb2337</color>
     <color name="blueCaiZhong">#1baaf4</color>
@@ -61,13 +64,13 @@
     <color name="whileDivider3">#cac0ce</color>
     <color name="blackText">#666666</color>
     <color name="blackText2">#b8b8b8</color>
+    <color name="blackText3">#828282</color>
     <color name="grayText">#808080</color>
     <color name="whileItem">#f2f2f2</color>
     <color name="blueText">#53abee</color>
     <color name="grayDivider">#e6e6e6</color>
     <color name="blacktabText">#4d4d4d</color>
     <color name="bluetabText">#3ca0ec</color>
-    <color name="grayText2">#e8d1a0</color>
     <color name="blueText2">#e0f2ff</color>
     <color name="blueText3">#3ca0ec</color>
     <color name="blueText4">#2e74b5</color>

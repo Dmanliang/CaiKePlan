@@ -1,14 +1,21 @@
 package com.example.caikeplan.logic;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.support.v7.app.AlertDialog;
+import android.view.KeyEvent;
 
 import com.example.base.Constants;
 import com.example.base.HttpStatusCode;
+import com.example.caikeplan.activity.LoginActivity;
+import com.example.caikeplan.activity.RechargeActivity;
 import com.example.caikeplan.logic.message.NoticeMessage;
 import com.example.caikeplan.logic.message.PersonMessage;
 import com.example.caikeplan.logic.message.UserMessage;
 import com.example.util.OKHttpManager;
 import com.example.util.OnNetRequestCallback;
+import com.example.util.Util;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,6 +61,18 @@ public class EntryPresenter implements EntryContract.Presenter {
                         } else if(jsonObject.getInt("success") == HttpStatusCode.FREEZE){
                             mView.onMessage(HttpStatusCode.FREEZE_DES);
                         }else if(jsonObject.getInt("success") == HttpStatusCode.OVERTIME){
+                            JSONObject data = jsonObject.getJSONObject("data");
+                            String role_id = data.getString("role_id");
+                            String username = data.getString("username");
+                            String user_id = data.getString("user_id");
+                            UserMessage.getInstance().setRole_id(role_id);
+                            UserMessage.getInstance().setUsername(username);
+                            UserMessage.getInstance().setUser_id(user_id);
+                            if(role_id.equals("1") || role_id.equals("3")){
+                                ShowMessageDialog1();
+                            }else if(role_id.equals("2")){
+                                ShowMessageDialog2();
+                            }
                             mView.onMessage(HttpStatusCode.OVERTIME_DES);
                         }else{
                             mView.onMessage(jsonObject.getString("message"));
@@ -68,17 +87,17 @@ public class EntryPresenter implements EntryContract.Presenter {
             public void onSuccess(String response) {
                 try {
                     JSONObject o         = new JSONObject(response);
-                    String     data      = o.getString("data");
-                    String     username  = o.getJSONObject("data").getString("username");
-                    String     user_id   = o.getJSONObject("data").getString("user_id");
-                    String     token     = o.getJSONObject("data").getString("token");
-                    String     role_id   = o.getJSONObject("data").getString("role_id");
-                    String     due_time  = o.getJSONObject("data").getString("due_time");
-                    String     phone     = o.getJSONObject("data").getString("phone");
-                    String     power_add = o.getJSONObject("data").getString("power_add");
-                    String     parent_id = o.getJSONObject("data").getString("parent_id");
-                    String     use_count = o.getJSONObject("data").getString("use_count");
-                    String     all_count = o.getJSONObject("data").getString("all_count");
+                    JSONObject data      = o.getJSONObject("data");
+                    String     username  = data.getString("username");
+                    String     user_id   = data.getString("user_id");
+                    String     token     = data.getString("token");
+                    String     role_id   = data.getString("role_id");
+                    String     due_time  = data.getString("due_time");
+                    String     phone     = data.getString("phone");
+                    String     power_add = data.getString("power_add");
+                    String     parent_id = data.getString("parent_id");
+                    String     use_count = data.getString("use_count");
+                    String     all_count = data.getString("all_count");
                     UserMessage.getInstance().setUsername(username);
                     UserMessage.getInstance().setUser_id(user_id);
                     UserMessage.getInstance().setToken(token);
@@ -102,7 +121,7 @@ public class EntryPresenter implements EntryContract.Presenter {
     }
 
     @Override
-    public void register(Map<String, String> map) {
+    public void banphone(Map<String, String> map) {
         this.map = map;
         mView.showLoadingAnimation();
         instance.setToken(map.get("token"));
@@ -113,7 +132,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                 try {
                     JSONObject jsonObject = new JSONObject(reason);
                     if (jsonObject.getInt("success") == HttpStatusCode.UNKNOWN_ERROR) {
-                        mView.onMessage(HttpStatusCode.REGISTE_DES);
+                        mView.onMessage(HttpStatusCode.BINEPHONE_DES);
                     } else {
                         mView.onMessage(jsonObject.getString("message"));
                     }
@@ -214,6 +233,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                     JSONObject jsonObject = new JSONObject(reason);
                     if (jsonObject.getInt("success") == HttpStatusCode.UNKNOWN_ERROR) {
                         mView.onMessage(HttpStatusCode.PASSWORD_DES);
+                        Util.ShowMessageDialog(context);
                     } else {
                         mView.onMessage(jsonObject.getString("message"));
                     }
@@ -246,6 +266,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                     JSONObject jsonObject = new JSONObject(reason);
                     if (jsonObject.getInt("success") == HttpStatusCode.UNKNOWN_ERROR) {
                         mView.onMessage(HttpStatusCode.ADDUSER_DES);
+                        Util.ShowMessageDialog(context);
                     } else {
                         mView.onMessage(jsonObject.getString("message"));
                     }
@@ -270,7 +291,6 @@ public class EntryPresenter implements EntryContract.Presenter {
     @Override
     public void validuser(final Map<String, String> map) {
         this.map = map;
-        instance.setToken(map.get("token"));
         mView.showLoadingAnimation();
         instance.post(Constants.API2+Constants.VALID_USER, map, new OnNetRequestCallback() {
             @Override
@@ -312,7 +332,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                     }
                 }
             }
-        }, true);
+        }, false);
     }
 
     @Override
@@ -328,6 +348,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                     JSONObject jsonObject = new JSONObject(reason);
                     if (jsonObject.getInt("success") == HttpStatusCode.UNKNOWN_ERROR) {
                         mView.onMessage(HttpStatusCode.MANLIST_DES);
+                        Util.ShowMessageDialog(context);
                     } else {
                         mView.toFailAction(jsonObject.getString("message"));
                     }
@@ -377,6 +398,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                     JSONObject jsonObject = new JSONObject(reason);
                     if (jsonObject.getInt("success") == HttpStatusCode.UNKNOWN_ERROR) {
                         mView.onMessage(HttpStatusCode.UPDATE_DES);
+                        Util.ShowMessageDialog(context);
                     } else {
                         mView.toFailAction(jsonObject.getString("message"));
                     }
@@ -409,6 +431,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                     JSONObject jsonObject = new JSONObject(reason);
                     if (jsonObject.getInt("success") == HttpStatusCode.UNKNOWN_ERROR) {
                         mView.onMessage(HttpStatusCode.DELETE_DES);
+                        Util.ShowMessageDialog(context);
                     } else {
                         mView.toFailAction(jsonObject.getString("message"));
                     }
@@ -501,6 +524,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                     JSONObject jsonObject = new JSONObject(reason);
                     if (jsonObject.getInt("success") == HttpStatusCode.UNKNOWN_ERROR) {
                         mView.onMessage(HttpStatusCode.PASSWORD_DES);
+                        Util.ShowMessageDialog(context);
                     } else {
                         mView.onMessage(jsonObject.getString("message"));
                     }
@@ -520,5 +544,120 @@ public class EntryPresenter implements EntryContract.Presenter {
         }, true);
     }
 
+    @Override
+    public void register(Map<String, String> map) {
+        this.map = map;
+        mView.showLoadingAnimation();
+        instance.post(Constants.API2+Constants.REGISTER_USER, map, new OnNetRequestCallback() {
+            @Override
+            public void onFailed(String reason) {
+                mView.disableLoadingAnimation();
+                try {
+                    JSONObject jsonObject = new JSONObject(reason);
+                    if (jsonObject.getInt("success") == HttpStatusCode.UNKNOWN_ERROR) {
+                        mView.onMessage(HttpStatusCode.REGISTER_DES);
+                    } else {
+                        mView.onMessage(jsonObject.getString("message"));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
 
+            @Override
+            public void onSuccess(String response) {
+                try {
+                    JSONObject o         = new JSONObject(response);
+                    JSONObject data      = o.getJSONObject("data");
+                    String     username  = data.getString("username");
+                    String     user_id   = data.getString("user_id");
+                    String     token     = data.getString("token");
+                    String     role_id   = data.getString("role_id");
+                    String     due_time  = data.getString("due_time");
+                    String     phone     = data.getString("phone");
+                    String     power_add = data.getString("power_add");
+                    String     parent_id = "";
+                    String     use_count = "";
+                    String     all_count = "";
+                    UserMessage.getInstance().setUsername(username);
+                    UserMessage.getInstance().setUser_id(user_id);
+                    UserMessage.getInstance().setToken(token);
+                    UserMessage.getInstance().setRole_id(role_id);
+                    UserMessage.getInstance().setDue_time(due_time);
+                    UserMessage.getInstance().setPhone(phone);
+                    UserMessage.getInstance().setPower_add(power_add);
+                    UserMessage.getInstance().setParent_id(parent_id);
+                    UserMessage.getInstance().setUse_count(use_count);
+                    UserMessage.getInstance().setAll_count(all_count);
+                    if (mView != null) {
+                        mView.disableLoadingAnimation();
+                        ToastUtil.getShortToastByString(context,"注册成功!");
+                        mView.toHome(UserMessage.getInstance());
+                    }
+                } catch (JSONException e) {
+                    mView.disableLoadingAnimation();
+                    e.printStackTrace();
+                }
+            }
+        },false);
+    }
+
+    public void ShowMessageDialog1(){
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+        builder1.setTitle("系统提示")//设置对话框标题
+                .setMessage("账号已到期！")//设置显示的内容
+                .setPositiveButton("确定",new DialogInterface.OnClickListener() {//添加确定按钮
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {//确定按钮的响应事件
+                        context.startActivity(new Intent(context, RechargeActivity.class));
+                    }
+                }).setNegativeButton("返回",new DialogInterface.OnClickListener() {//添加返回按钮
+            @Override
+            public void onClick(DialogInterface dialog, int which) {//响应事件
+                dialog.dismiss();
+            }
+        });//在按键响应事件中显示此对话框
+        AlertDialog alertDialog = builder1.create();
+        alertDialog.setCancelable(false);
+        alertDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event)
+            {
+                if (keyCode == KeyEvent.KEYCODE_SEARCH) {
+                    return true;
+                }
+                else {
+                    return false; //默认返回 false
+                }
+            }
+        });
+        alertDialog.show();
+    }
+
+    public void ShowMessageDialog2(){
+        AlertDialog.Builder builder2 = new AlertDialog.Builder(context);
+        builder2.setTitle("系统提示")//设置对话框标题
+            .setMessage("账号已到期！")//设置显示的内容
+            .setPositiveButton("确定",new DialogInterface.OnClickListener() {//添加确定按钮
+                @Override
+                public void onClick(DialogInterface dialog, int which) {//确定按钮的响应事件
+                    dialog.dismiss();
+                }
+            });//在按键响应事件中显示此对话框
+        AlertDialog alertDialog = builder2.create();
+        alertDialog.setCancelable(false);
+        alertDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event)
+            {
+                if (keyCode == KeyEvent.KEYCODE_SEARCH) {
+                    return true;
+                }
+                else {
+                    return false; //默认返回 false
+                }
+            }
+        });
+        alertDialog.show();
+    }
 }

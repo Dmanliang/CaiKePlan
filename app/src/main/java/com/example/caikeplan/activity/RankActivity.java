@@ -35,6 +35,10 @@ import com.example.caikeplan.logic.message.LotteryTitle;
 import com.example.caikeplan.logic.message.PlanBaseMessage;
 import com.example.caikeplan.logic.message.UserMessage;
 import com.example.getJson.HttpTask;
+import com.example.util.OKHttpManager;
+import com.example.util.OnNetRequestCallback;
+import com.example.util.Util;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
@@ -50,7 +54,7 @@ public class RankActivity extends BaseActivity implements View.OnClickListener,E
 
     private SwipeRefreshLayout      swipeRefreshLayout;
     private RelativeLayout          program_toolbar;
-    private RelativeLayout          ranktoolbar;
+    private RelativeLayout          loading;
     private LinearLayout            title_layout;
     private ImageView               title_arrow;
     private ListView                ranklistview;
@@ -102,52 +106,63 @@ public class RankActivity extends BaseActivity implements View.OnClickListener,E
 
     public void requestHotData(int position){
         index = position;
-        HttpTask httpTask = new HttpTask();
-        httpTask.execute(Constants.API+Constants.HOT_SCHEME+lottery_ids[position]);
-        httpTask.setTaskHandler(new HttpTask.HttpTaskHandler() {
+        enable(false);
+        OKHttpManager httpManager = new OKHttpManager();
+        Map<String,String> map = new HashMap<>();
+        map.put("user_id",UserMessage.getInstance().getUser_id());
+        map.put("lottery_id",lottery_ids[position]);
+        httpManager.setToken(UserMessage.getInstance().getToken());
+        httpManager.post(Constants.API + Constants.HOT_SCHEME, map, new OnNetRequestCallback() {
             @Override
-            public void taskSuccessful(String json) {
+            public void onFailed(String reason) {
+                checkDataState(false);
+            }
+
+            @Override
+            public void onSuccess(String response) {
                 try {
-                    JSONObject jsonObject = new JSONObject(json);
-                    JSONArray data = jsonObject.getJSONArray("data");
-                    PlanBaseMessage planBaseMessage;
-                    ArrayList<PlanBaseMessage> newArray = new ArrayList<>();
-                    for (int i = 0; i < data.length(); i++) {
-                        jsonObject = data.getJSONObject(i);
-                        String scheme_name  = jsonObject.getString("scheme_name");
-                        String s_id         = jsonObject.getString("s_id");
-                        String plan_name    = jsonObject.getString("plan_name");
-                        String plan_id      = jsonObject.getString("plan_id");
-                        String cls_name     = jsonObject.getString("cls_name");
-                        String count        = jsonObject.getString("count");
-                        String lottery_name = jsonObject.getString("lottery_name");
-                        String lottery_id   = jsonObject.getString("lottery_id");
-                        String jcp          = jsonObject.getString("is_jcp");
-                        planBaseMessage     = new PlanBaseMessage(lottery_name,lottery_id, s_id, scheme_name, plan_id,plan_name,cls_name,count,jcp);
-                        if(i<9){
-                            planBaseMessage.setId("0"+(i+1)+"");
-                        }else{
-                            planBaseMessage.setId((i+1)+"");
+                    JSONObject jsonObject = new JSONObject(response);
+                    String success  = jsonObject.getString("success");
+                    if(success.equals("1")) {
+                        JSONArray data = jsonObject.getJSONArray("data");
+                        PlanBaseMessage planBaseMessage;
+                        ArrayList<PlanBaseMessage> newArray = new ArrayList<>();
+                        for (int i = 0; i < data.length(); i++) {
+                            jsonObject = data.getJSONObject(i);
+                            String scheme_name  = jsonObject.getString("scheme_name");
+                            String s_id         = jsonObject.getString("s_id");
+                            String plan_name    = jsonObject.getString("plan_name");
+                            String plan_id      = jsonObject.getString("plan_id");
+                            String cls_name     = jsonObject.getString("cls_name");
+                            String count        = jsonObject.getString("count");
+                            String lottery_name = jsonObject.getString("lottery_name");
+                            String lottery_id   = jsonObject.getString("lottery_id");
+                            String jcp          = jsonObject.getString("is_jcp");
+                            planBaseMessage     = new PlanBaseMessage(lottery_name,lottery_id, s_id, scheme_name, plan_id,plan_name,cls_name,count,jcp);
+                            if(i<9){
+                                planBaseMessage.setId("0"+(i+1)+"");
+                            }else{
+                                planBaseMessage.setId((i+1)+"");
+                            }
+                            newArray.add(planBaseMessage);
                         }
-                        newArray.add(planBaseMessage);
+                        rankList.clear();
+                        rankList.addAll(newArray);
+                        Message msg = new Message();
+                        msg.what = 1;
+                        recomdHandler.sendMessage(msg);
+                        checkDataState(true);
+                        enable(true);
+                    }else if(success.equals("-1")){
+                        Util.ShowMessageDialog(RankActivity.this);
                     }
-                    rankList.clear();
-                    rankList.addAll(newArray);
-                    Message msg = new Message();
-                    msg.what = 1;
-                    recomdHandler.sendMessage(msg);
-                    checkDataState(true);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                     checkDataState(false);
                 }
             }
-
-            @Override
-            public void taskFailed() {
-                checkDataState(false);
-            }
-        });
+        },true);
     }
 
     //设置热门列表
@@ -189,7 +204,7 @@ public class RankActivity extends BaseActivity implements View.OnClickListener,E
     public void initView(){
         swipeRefreshLayout  =   (SwipeRefreshLayout)findViewById(R.id.swipe_refresh_rank);
         program_toolbar     =   (RelativeLayout) findViewById(R.id.ranktoolbar);
-        ranktoolbar         =   (RelativeLayout)findViewById(R.id.ranktoolbar);
+        loading             =   (RelativeLayout) findViewById(R.id.loading);
         title_layout        =   (LinearLayout)findViewById(R.id.title_layout);
         ranklistview        =   (ListView)findViewById(R.id.ranklistview);
         toolbar_title       =   (TextView)findViewById(R.id.toolbar_title);
@@ -501,5 +516,13 @@ public class RankActivity extends BaseActivity implements View.OnClickListener,E
         swipeRefreshLayout.setVisibility(View.VISIBLE);
         nodataLayout.setVisibility(View.GONE);
         nointernetLayout.setVisibility(View.GONE);
+    }
+
+    private void enable(boolean enable) {
+        if (enable) {
+            loading.setVisibility(View.GONE);
+        } else {
+            loading.setVisibility(View.VISIBLE);
+        }
     }
 }

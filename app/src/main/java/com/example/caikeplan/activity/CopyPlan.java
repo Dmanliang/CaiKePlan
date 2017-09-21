@@ -3,6 +3,7 @@ package com.example.caikeplan.activity;
 import android.app.Activity;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -10,7 +11,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -38,8 +41,12 @@ import com.example.caikeplan.logic.message.PlanBaseMessage;
 import com.example.caikeplan.logic.message.PlanMessage;
 import com.example.caikeplan.logic.message.PlanTypeMessage;
 import com.example.caikeplan.logic.message.SendMessage;
+import com.example.caikeplan.logic.message.UserMessage;
 import com.example.getJson.HttpTask;
 import com.example.personal.PersonalCopy;
+import com.example.util.OKHttpManager;
+import com.example.util.OnNetRequestCallback;
+import com.example.util.Util;
 import com.youth.xframe.cache.XCache;
 
 import org.json.JSONArray;
@@ -48,7 +55,9 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by dell on 2017/5/22.
@@ -62,6 +71,7 @@ public class CopyPlan extends BaseActivity implements View.OnClickListener{
     private RelativeLayout      copylist_layout;
     private RelativeLayout      copyplan_toolbar;
     private RelativeLayout      toolbar_container;
+    private RelativeLayout      loading;
     private ImageView           back;
     private TextView            back_text;
     private LinearLayout        program_back;
@@ -130,6 +140,7 @@ public class CopyPlan extends BaseActivity implements View.OnClickListener{
         toolbar_container   =   (RelativeLayout)findViewById(R.id.toolbar_container);
         copylist_layout     =   (RelativeLayout)findViewById(R.id.copylist_layout);
         showmessage_layout  =   (RelativeLayout)findViewById(R.id.showmessage_layout);
+        loading             =   (RelativeLayout)findViewById(R.id.loading);
         program_back        =   (LinearLayout)findViewById(R.id.program_back);
         back                =   (ImageView)findViewById(R.id.back);
         back_text           =   (TextView)findViewById(R.id.back_text);
@@ -228,57 +239,68 @@ public class CopyPlan extends BaseActivity implements View.OnClickListener{
     public void requestPlanResult(){
         SendMessage.getInstance().getTest2().clear();
         titleindex=0;
-        HttpTask httpTask = new HttpTask();
-        httpTask.execute(Constants.API+Constants.COPY_PLAN+plan_s_ids);
-        httpTask.setTaskHandler(new HttpTask.HttpTaskHandler() {
+        enable(false);
+        OKHttpManager okHttpManager = new OKHttpManager();
+        okHttpManager.setToken(UserMessage.getInstance().getToken());
+        Map<String,String> map = new HashMap<>();
+        map.put("user_id",UserMessage.getInstance().getUser_id());
+        map.put("plan_s_ids",plan_s_ids);
+        okHttpManager.post(Constants.API + Constants.COPY_PLAN, map, new OnNetRequestCallback() {
             @Override
-            public void taskSuccessful(String json) {
+            public void onFailed(String reason) {
+
+            }
+
+            @Override
+            public void onSuccess(String response) {
                 try{
-                    JSONObject jsonObject = new JSONObject(json);
-                    JSONArray data = jsonObject.getJSONArray("data");
-                    PlanMessage planMessage;
-                    for (int i = 0; i < data.length(); i++) {
-                        jsonObject          = data.getJSONObject(i);
-                        String  plan_num    = jsonObject.getString("plan_num");
-                        String  nums        = jsonObject.getString("nums");
-                        String  play_id     = jsonObject.getString("play_id");
-                        String  lottery_id  = jsonObject.getString("lottery_id");
-                        String  ranges      = jsonObject.getString("ranges");
-                        String  plan_id     = jsonObject.getString("plan_id");
-                        String  hit         = jsonObject.getString("hit");
-                        String  issue       = jsonObject.getString("issue")+"期";
-                        String  nums_type   = jsonObject.getString("nums_type");
-                        hit     =	hit.replaceAll("-1", "进行中").replaceAll("1", "中").replaceAll("0", "未中");
-                        setCopyMessage();
-                        if(i%5==0 && i!=0){
-                            SendMessage.getInstance().setLotteryTitle(copyAddList.get(titleindex).getScheme_name());
-                            titleindex++;
+                    JSONObject jsonObject = new JSONObject(response);
+                    String success  = jsonObject.getString("success");
+                    if(success.equals("1")) {
+                        JSONArray data = jsonObject.getJSONArray("data");
+                        PlanMessage planMessage;
+                        for (int i = 0; i < data.length(); i++) {
+                            jsonObject          = data.getJSONObject(i);
+                            String  plan_num    = jsonObject.getString("plan_num");
+                            String  nums        = jsonObject.getString("nums");
+                            String  play_id     = jsonObject.getString("play_id");
+                            String  lottery_id  = jsonObject.getString("lottery_id");
+                            String  ranges      = jsonObject.getString("ranges");
+                            String  plan_id     = jsonObject.getString("plan_id");
+                            String  hit         = jsonObject.getString("hit");
+                            String  issue       = jsonObject.getString("issue")+"期";
+                            String  nums_type   = jsonObject.getString("nums_type");
+                            hit     =	hit.replaceAll("-1", "进行中").replaceAll("1", "中").replaceAll("0", "未中");
+                            setCopyMessage();
+                            if(i%5==0 && i!=0){
+                                SendMessage.getInstance().setLotteryTitle(copyAddList.get(titleindex).getScheme_name());
+                                titleindex++;
+                            }
+                            if(isDanshi(play_id)){
+                                plan_num    = dividerNum(plan_num);
+                                SendMessage.getInstance().setCopyPlan(ranges,nums_type,plan_num,issue+" "+nums,"  "+hit,i,true);
+                            }else{
+                                SendMessage.getInstance().setCopyPlan(ranges,nums_type,plan_num,issue+" "+nums,"  "+hit,i,false);
+                            }
+                            if(i== data.length()-1){
+                                SendMessage.getInstance().setLotteryTitle(copyAddList.get(titleindex).getScheme_name());
+                            }
+                            index++;
+                            planMessage = new PlanMessage(plan_num,nums,play_id,lottery_id,ranges,plan_id,hit,issue,nums_type);
+                            mList.add(planMessage);
                         }
-                        if(isDanshi(play_id)){
-                            plan_num    = dividerNum(plan_num);
-                            SendMessage.getInstance().setCopyPlan(ranges,nums_type,plan_num,issue+" "+nums,"  "+hit,i,true);
-                        }else{
-                            SendMessage.getInstance().setCopyPlan(ranges,nums_type,plan_num,issue+" "+nums,"  "+hit,i,false);
-                        }
-                        if(i== data.length()-1){
-                            SendMessage.getInstance().setLotteryTitle(copyAddList.get(titleindex).getScheme_name());
-                        }
-                        index++;
-                        planMessage = new PlanMessage(plan_num,nums,play_id,lottery_id,ranges,plan_id,hit,issue,nums_type);
-                        mList.add(planMessage);
+                        Message msg = new Message();
+                        msg.what = 4;
+                        recomdHandler.sendMessage(msg);
+                    }else if(success.equals("-1")){
+                        Util.ShowMessageDialog(CopyPlan.this);
                     }
-                    Message msg = new Message();
-                    msg.what = 4;
-                    recomdHandler.sendMessage(msg);
+                    enable(true);
                 }catch (Exception e){
                     e.printStackTrace();
                 }
             }
-
-            @Override
-            public void taskFailed() {
-            }
-        });
+        },true);
     }
 
     //对单式进行分割
@@ -372,141 +394,169 @@ public class CopyPlan extends BaseActivity implements View.OnClickListener{
     //请求热门计划数据
     public void requestHotPlan() {
         copyList.clear();
-        HttpTask httpTask = new HttpTask();
-        httpTask.execute(Constants.API + Constants.HOT_SCHEME + lotteryId);
-        httpTask.setTaskHandler(new HttpTask.HttpTaskHandler() {
+        OKHttpManager httpManager = new OKHttpManager();
+        Map<String,String> map = new HashMap<>();
+        map.put("lottery_id",lotteryId);
+        map.put("user_id",UserMessage.getInstance().getUser_id());
+        httpManager.setToken(UserMessage.getInstance().getToken());
+        httpManager.post(Constants.API + Constants.HOT_SCHEME, map, new OnNetRequestCallback() {
             @Override
-            public void taskSuccessful(String json) {
+            public void onFailed(String reason) {
+
+            }
+
+            @Override
+            public void onSuccess(String response) {
                 try {
-                    JSONObject jsonObject = new JSONObject(json);
-                    JSONArray data = jsonObject.getJSONArray("data");
-                    PlanBaseMessage planBaseMessage;
-                    for (int i = 0; i < data.length(); i++) {
-                        jsonObject = data.getJSONObject(i);
-                        String scheme_name  = jsonObject.getString("scheme_name");
-                        String s_id         = jsonObject.getString("s_id");
-                        String plan_id      = jsonObject.getString("plan_id");
-                        String plan_name    = jsonObject.getString("plan_name");
-                        String cls_name     = jsonObject.getString("cls_name");
-                        planBaseMessage = new PlanBaseMessage(SendMessage.getInstance().getLotteryName(),lotteryId, s_id, scheme_name+plan_name.substring(0,2), plan_id,plan_name,cls_name,"","0");
-                        copyList.add(planBaseMessage);
+                    JSONObject jsonObject = new JSONObject(response);
+                    String success  = jsonObject.getString("success");
+                    if(success.equals("1")) {
+                        JSONArray data = jsonObject.getJSONArray("data");
+                        PlanBaseMessage planBaseMessage;
+                        for (int i = 0; i < data.length(); i++) {
+                            jsonObject = data.getJSONObject(i);
+                            String scheme_name  = jsonObject.getString("scheme_name");
+                            String s_id         = jsonObject.getString("s_id");
+                            String plan_id      = jsonObject.getString("plan_id");
+                            String plan_name    = jsonObject.getString("plan_name");
+                            String cls_name     = jsonObject.getString("cls_name");
+                            planBaseMessage = new PlanBaseMessage(SendMessage.getInstance().getLotteryName(),lotteryId, s_id, scheme_name+plan_name.substring(0,2), plan_id,plan_name,cls_name,"","0");
+                            copyList.add(planBaseMessage);
+                        }
+                        Message msg = new Message();
+                        msg.what = 2;
+                        recomdHandler.sendMessage(msg);
+                    }else if(success.equals("-1")){
+                        Util.ShowMessageDialog(CopyPlan.this);
                     }
-                    Message msg = new Message();
-                    msg.what = 2;
-                    recomdHandler.sendMessage(msg);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
             }
-
-            @Override
-            public void taskFailed() {
-
-            }
-        });
+        },true);
     }
 
     public void requestPlanContent(){
         planAllSelectList.clear();
         options1Items.clear();
-        HttpTask httpTask = new HttpTask();
-        httpTask.execute(Constants.API+Constants.PLAN_CONTENT+lotteryId);
-        httpTask.setTaskHandler(new HttpTask.HttpTaskHandler() {
+        enable(false);
+        OKHttpManager okHttpManager = new OKHttpManager();
+        okHttpManager.setToken(UserMessage.getInstance().getToken());
+        Map<String,String> map = new HashMap<>();
+        map.put("lottery_id",lotteryId);
+        map.put("user_id",UserMessage.getInstance().getUser_id());
+        okHttpManager.post(Constants.API + Constants.PLAN_CONTENT, map, new OnNetRequestCallback() {
             @Override
-            public void taskSuccessful(String json) {
+            public void onFailed(String reason) {
+
+            }
+
+            @Override
+            public void onSuccess(String response) {
                 try {
-                    JSONObject jsonObject = new JSONObject(json);
-                    JSONArray data = jsonObject.getJSONArray("data");
-                    for(int h=0;h<data.length();h++){
-                        jsonObject = data.getJSONObject(h);
-                        JSONArray child= jsonObject.getJSONArray("child");
-                        for (int i = 0; i < child.length(); i++) {
-                            JSONObject object = child.getJSONObject(i);
-                            planSecondSelectList= new ArrayList<>();
-                            PlanTypeMessage planTypeMessage = new PlanTypeMessage();
-                            String cls_name = object.getString("name");
-                            planTypeMessage.setName(cls_name);
-                            JSONArray child1 = object.getJSONArray("child");
-                            for(int j = 0;j < child1.length();j++){
-                                JSONObject object1 = child1.getJSONObject(j);
-                                mainListBeen = new ArrayList<>();
-                                PlanTypeMessage.BitBean bitBean = new PlanTypeMessage.BitBean();
-                                String plan_name = object1.getString("name");
-                                bitBean.setName(plan_name);
-                                bitBean.newList();
-                                JSONArray child2 = object1.getJSONArray("child");
-                                for(int k = 0;k <child2.length();k++){
-                                    JSONObject object2= child2.getJSONObject(k);
-                                    MainListBean newsBean = new MainListBean();
-                                    String play_name = object2.getString("name");
-                                    newsBean.setPlay_name(play_name);
-                                    bitBean.getIssues_list().add(play_name);
-                                    String plan_id = object2.getString("id");
-                                    newsBean.setPlan_id(plan_id);
-                                    mainListBeen.add(newsBean);
+                    JSONObject jsonObject = new JSONObject(response);
+                    String success  = jsonObject.getString("success");
+                    if(success.equals("1")) {
+                        JSONArray data = jsonObject.getJSONArray("data");
+                        for(int h=0;h<data.length();h++){
+                            jsonObject = data.getJSONObject(h);
+                            JSONArray child= jsonObject.getJSONArray("child");
+                            for (int i = 0; i < child.length(); i++) {
+                                JSONObject object = child.getJSONObject(i);
+                                planSecondSelectList= new ArrayList<>();
+                                PlanTypeMessage planTypeMessage = new PlanTypeMessage();
+                                String cls_name = object.getString("name");
+                                planTypeMessage.setName(cls_name);
+                                JSONArray child1 = object.getJSONArray("child");
+                                for(int j = 0;j < child1.length();j++){
+                                    JSONObject object1 = child1.getJSONObject(j);
+                                    mainListBeen = new ArrayList<>();
+                                    PlanTypeMessage.BitBean bitBean = new PlanTypeMessage.BitBean();
+                                    String plan_name = object1.getString("name");
+                                    bitBean.setName(plan_name);
+                                    bitBean.newList();
+                                    JSONArray child2 = object1.getJSONArray("child");
+                                    for(int k = 0;k <child2.length();k++){
+                                        JSONObject object2= child2.getJSONObject(k);
+                                        MainListBean newsBean = new MainListBean();
+                                        String play_name = object2.getString("name");
+                                        newsBean.setPlay_name(play_name);
+                                        bitBean.getIssues_list().add(play_name);
+                                        String plan_id = object2.getString("id");
+                                        newsBean.setPlan_id(plan_id);
+                                        mainListBeen.add(newsBean);
+                                    }
+                                    planTypeMessage.getBitBeen().add(bitBean);
+                                    planSecondSelectList.add(mainListBeen);
                                 }
-                                planTypeMessage.getBitBeen().add(bitBean);
-                                planSecondSelectList.add(mainListBeen);
+                                planAllSelectList.add(planSecondSelectList);
+                                options1Items.add(planTypeMessage);
                             }
-                            planAllSelectList.add(planSecondSelectList);
-                            options1Items.add(planTypeMessage);
                         }
+                        setSelectTitle();
+                        Message msg = new Message();
+                        msg.what = 1;
+                        recomdHandler.sendMessage(msg);
+                    }else if(success.equals("-1")){
+                        Util.ShowMessageDialog(CopyPlan.this);
                     }
-                    setSelectTitle();
-                    Message msg = new Message();
-                    msg.what = 1;
-                    recomdHandler.sendMessage(msg);
+                    enable(true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-
-            @Override
-            public void taskFailed() {
-
-            }
-        });
+        },true);
     }
 
     //请求筛选后的计划玩法数据
     public void requestSelectPlanData(final int item1,final int item2,final int item3) {
         copyList.clear();
-        HttpTask httpTask = new HttpTask();
+        enable(false);
         if(planAllSelectList.size()!=0){
             plan_id = planAllSelectList.get(item1).get(item2).get(item3).getPlan_id();
         }
-        httpTask.execute(Constants.API + Constants.SCHEME_PLAN + plan_id);
-        httpTask.setTaskHandler(new HttpTask.HttpTaskHandler() {
+        OKHttpManager okHttpManager = new OKHttpManager();
+        okHttpManager.setToken(UserMessage.getInstance().getToken());
+        Map<String,String> map = new HashMap<>();
+        map.put("user_id",UserMessage.getInstance().getUser_id());
+        map.put("plan_id",plan_id);
+        okHttpManager.post(Constants.API + Constants.SCHEME_PLAN, map, new OnNetRequestCallback() {
             @Override
-            public void taskSuccessful(String json) {
+            public void onFailed(String reason) {
+
+            }
+
+            @Override
+            public void onSuccess(String response) {
                 try {
-                    JSONObject jsonObject = new JSONObject(json);
-                    JSONArray data = jsonObject.getJSONArray("data");
-                    PlanBaseMessage planBaseMessage;
-                    for (int i = 0; i < data.length(); i++) {
-                        jsonObject = data.getJSONObject(i);
-                        String scheme_name  = jsonObject.getString("scheme_name");
-                        String s_id         = jsonObject.getString("s_id");
-                        String plan_id      = jsonObject.getString("plan_id");
-                        String plan_name    = options2Items.get(item1).get(item2);
-                        String cls_name     = jsonObject.getString("cls_name");
-                        planBaseMessage = new PlanBaseMessage(SendMessage.getInstance().getLotteryName(),lotteryId, s_id, scheme_name+plan_name.toString().substring(0,2), plan_id,plan_name,cls_name,"","0");
-                        copyList.add(planBaseMessage);
+                    JSONObject jsonObject = new JSONObject(response);
+                    String success  = jsonObject.getString("success");
+                    if(success.equals("1")) {
+                        JSONArray data = jsonObject.getJSONArray("data");
+                        PlanBaseMessage planBaseMessage;
+                        for (int i = 0; i < data.length(); i++) {
+                            jsonObject = data.getJSONObject(i);
+                            String scheme_name  = jsonObject.getString("scheme_name");
+                            String s_id         = jsonObject.getString("s_id");
+                            String plan_id      = jsonObject.getString("plan_id");
+                            String plan_name    = options2Items.get(item1).get(item2);
+                            String cls_name     = jsonObject.getString("cls_name");
+                            planBaseMessage = new PlanBaseMessage(SendMessage.getInstance().getLotteryName(),lotteryId, s_id, scheme_name+plan_name.toString().substring(0,2), plan_id,plan_name,cls_name,"","0");
+                            copyList.add(planBaseMessage);
+                        }
+                        Message msg = new Message();
+                        msg.what = 2;
+                        recomdHandler.sendMessage(msg);
+                    }else if(success.equals("-1")){
+                        Util.ShowMessageDialog(CopyPlan.this);
                     }
-                    Message msg = new Message();
-                    msg.what = 2;
-                    recomdHandler.sendMessage(msg);
+                    enable(true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-
-            @Override
-            public void taskFailed() {
-
-            }
-        });
+        },true);
     }
 
     //设置玩法选择
@@ -537,6 +587,11 @@ public class CopyPlan extends BaseActivity implements View.OnClickListener{
 
     //显示复制编辑弹框
     public void showCopyEdit(){
+        int flag = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
         copyeditView = CopyPlan.this.getLayoutInflater().inflate(R.layout.edit_copy_text, null,false);
         copyeditWindow = new PopupWindow(copyeditView, LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT, true);
         copyeditWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
@@ -544,6 +599,7 @@ public class CopyPlan extends BaseActivity implements View.OnClickListener{
         copyeditWindow.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#80000000")));
         copyeditWindow.setAnimationStyle(R.style.popup_window_anim);
         copyeditWindow.setOutsideTouchable(true);
+        copyeditView.setSystemUiVisibility(flag);
         copyeditWindow.update();
         if (copyeditWindow.isShowing()) {
             copyeditWindow.dismiss();
@@ -595,7 +651,7 @@ public class CopyPlan extends BaseActivity implements View.OnClickListener{
 
     //加载数据弹框
     public void showItem(View view) {
-        view = CopyPlan.this.getLayoutInflater().inflate(R.layout.loadingdata, null);
+        view = CopyPlan.this.getLayoutInflater().inflate(R.layout.loadingdata, null,false);
         windowItem = new PopupWindow(view, LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT, true);
         windowItem.setOutsideTouchable(true);
         windowItem.update();
@@ -643,7 +699,6 @@ public class CopyPlan extends BaseActivity implements View.OnClickListener{
                 setCopyMessage();
                 requestCheckData();
                 requestPlanResult();
-                showItem(v);
                 break;
             case R.id.program_back:
                 finish();
@@ -657,7 +712,6 @@ public class CopyPlan extends BaseActivity implements View.OnClickListener{
                 ClipboardManager cms = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                 cms.setText(CopyAndSavePlan());
                 ToastUtil.getShortToastByString(CopyPlan.this,"复制成功！");
-                copyeditWindow.dismiss();
                 break;
         }
     }
@@ -687,7 +741,6 @@ public class CopyPlan extends BaseActivity implements View.OnClickListener{
                     }
                     break;
                 case 4:
-                    windowItem.dismiss();
                     showCopyEdit();
                     break;
             }
@@ -712,6 +765,14 @@ public class CopyPlan extends BaseActivity implements View.OnClickListener{
     public Date time() {
         Date date = new Date();
         return date;
+    }
+
+    private void enable(boolean enable) {
+        if (enable) {
+            loading.setVisibility(View.GONE);
+        } else {
+            loading.setVisibility(View.VISIBLE);
+        }
     }
 
 }

@@ -13,7 +13,7 @@ import java.util.Map;
 public interface EntryContract {
     interface Presenter extends BasePresenter {
         void login(Map<String, String> map);
-        void register(Map<String, String> map);
+        void banphone(Map<String, String> map);
         void sendCode(Map<String,String> map);
         void resetPassword(Map<String,String> map);
         void setNewPassword(Map<String,String> map);
@@ -24,6 +24,7 @@ public interface EntryContract {
         void deleteperson(Map<String,String> map);
         void message(Map<String,String> map);
         void updatePassword(Map<String,String> map);
+        void register(Map<String,String> map);
     }
 
     interface View extends BaseView {

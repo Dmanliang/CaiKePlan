@@ -9,49 +9,60 @@
         layout="@layout/toolbar"
         android:layout_width="match_parent"
         android:layout_height="70dp" />
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh_plan"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:guidance_text_color="@color/colorPrimary"
-        app:guidance_view_bg_color="@color/transparent"
-        app:load_text="加载更多"
-        app:progress_bar_color="@color/colorPrimary"
-        app:refresh_text="下拉刷新"
         android:layout_below="@+id/plan_toolbar">
-        <ListView
-            android:id="@+id/planlistView"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh_plan"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:dividerHeight="0dp"
-            android:divider="@null"
-            android:background="#fff"/>
-    </android.support.v4.widget.SwipeRefreshLayout>
-    <ImageView
-        android:id="@+id/btn_collect"
-        android:layout_width="51dp"
-        android:layout_height="51dp"
-        android:background="@drawable/selector_collection"
-        android:layout_above="@+id/btn_copy"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="30dp"
-        android:layout_marginBottom="4dp"/>
-    <ImageView
-        android:id="@+id/btn_copy"
-        android:layout_width="51dp"
-        android:layout_height="51dp"
-        android:background="@drawable/selector_copy"
-        android:layout_above="@+id/btn_edit"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="30dp"
-        android:layout_marginBottom="4dp"/>
-    <ImageView
-        android:id="@+id/btn_edit"
-        android:layout_width="51dp"
-        android:layout_height="51dp"
-        android:background="@drawable/btn_edit"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="30dp"
-        android:layout_marginBottom="30dp"/>
+            app:guidance_text_color="@color/colorPrimary"
+            app:guidance_view_bg_color="@color/transparent"
+            app:load_text="加载更多"
+            app:progress_bar_color="@color/colorPrimary"
+            app:refresh_text="下拉刷新">
+            <ListView
+                android:id="@+id/planlistView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:dividerHeight="0dp"
+                android:divider="@null"
+                android:background="#fff"/>
+        </android.support.v4.widget.SwipeRefreshLayout>
+        <ImageView
+            android:id="@+id/btn_collect"
+            android:layout_width="51dp"
+            android:layout_height="51dp"
+            android:background="@drawable/selector_collection"
+            android:layout_above="@+id/btn_copy"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="30dp"
+            android:layout_marginBottom="4dp"/>
+        <ImageView
+            android:id="@+id/btn_copy"
+            android:layout_width="51dp"
+            android:layout_height="51dp"
+            android:background="@drawable/selector_copy"
+            android:layout_above="@+id/btn_edit"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="30dp"
+            android:layout_marginBottom="4dp"/>
+        <ImageView
+            android:id="@+id/btn_edit"
+            android:layout_width="51dp"
+            android:layout_height="51dp"
+            android:background="@drawable/btn_edit"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="30dp"
+            android:layout_marginBottom="30dp"/>
+        <include
+            android:id="@+id/loading"
+            layout="@layout/loadingdata"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            />
+    </RelativeLayout>
+
 </RelativeLayout>

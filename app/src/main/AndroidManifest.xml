@@ -75,7 +75,7 @@
         <activity android:name=".activity.PlanProgram"/>
         <activity android:name=".activity.RankActivity"/>
         <activity android:name=".activity.LoginActivity" />
-        <activity android:name=".activity.RegisterActivity"/>
+        <activity android:name=".activity.BanPhoneActivity"/>
         <activity android:name=".activity.ForgetPswActivity" />
         <activity android:name=".activity.PersonalActivity" />
         <activity android:name=".activity.ResetPasswordActivity" />
@@ -89,10 +89,11 @@
         <activity android:name="com.example.personal.PersonalAbout" />
         <activity android:name="com.example.personal.PersonalCopy"/>
         <activity android:name="com.example.collect.CollectActivity"/>
-        <activity android:name="com.example.next.list.ProgramMainNext" />
         <activity android:name=".activity.PersonalDisclaimer" />
         <activity android:name=".activity.PersonalConnect" />
         <activity android:name=".activity.LinkActivity" />
+        <activity android:name=".activity.RegisterActivity" />
+        <activity android:name=".activity.RechargeActivity" />
 
         <!-- 聊天界面 -->
         <activity

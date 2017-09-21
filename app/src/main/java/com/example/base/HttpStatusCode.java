@@ -24,7 +24,8 @@ public class HttpStatusCode {
     public static final String USER_PAS_DES         = "用户名密码不匹配";
     public static final String FREEZE_DES           = "账号已冻结";
     public static final String OVERTIME_DES         = "账号已过期";
-    public static final String REGISTE_DES          = "手机绑定失败";
+    public static final String BINEPHONE_DES        = "手机绑定失败";
+    public static final String REGISTER_DES         = "注册失败";
     public static final String SENDCODE_DES         = "验证码发送失败";
     public static final String RESET_DES            = "密码重置失败";
     public static final String PASSWORD_DES         = "密码修改失败";

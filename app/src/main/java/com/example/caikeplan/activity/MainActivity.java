@@ -54,10 +54,7 @@ public class MainActivity extends TabActivity {
 	private int 				i 					= 0;
 	private TabHost 			tabhost;
 	private TabSpec 			tabSpec;
-	private static final int    EMPTY   = 0xFFFFFFFF;
-	private static final int    SUCCESS = 0xFFFFEEEE;
-	private String              downloadUrl,content,update_mode;
-	private boolean 			isUpdate = false;
+
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -74,7 +71,6 @@ public class MainActivity extends TabActivity {
 		tabhost 		= 	getTabHost();
 		mTabWidget 		= 	getTabWidget();            //获取TabWidget
 		mLayouInflater 	= 	getLayoutInflater();
-		requestUpdate();
 		initView();
 	}
 
@@ -108,135 +104,6 @@ public class MainActivity extends TabActivity {
 			TabItem tabItem = 	new TabItem(mTextviewArray[i], mImageViewArray[i], intent[i]);
 			tabItems.add(tabItem);
 		}
-	}
-
-	//更新弹窗
-	private void showChioceUpdateDialog(){
-		final AlertDialog.Builder normalDialog =
-				new AlertDialog.Builder(MainActivity.this);
-		normalDialog.setIcon(R.drawable.logo);
-		normalDialog.setTitle("聚财盆新版本");
-		normalDialog.setMessage("有新版本是否更新？");
-		normalDialog.setCancelable(false);
-		normalDialog.setPositiveButton("确定",
-				new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						if (!isUpdate) {
-							isUpdate = true;
-							RxPermissions.getInstance(MainActivity.this).request(Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe(new Action1<Boolean>() {
-								@Override
-								public void call(Boolean aBoolean) {
-									if (aBoolean) {
-										Intent service = new Intent(MainActivity.this, DownLoadService.class);
-										service.putExtra("downloadurl",downloadUrl);
-										ToastUtil.getShortToastByString(MainActivity.this, "正在下载中");
-										startService(service);
-									} else {
-										ToastUtil.getShortToastByString(MainActivity.this, "SD卡下载权限被拒绝");
-									}
-								}
-							});
-						}
-					}
-				});
-		normalDialog.setNegativeButton("关闭",
-				new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-					}
-				});
-		normalDialog.show();
-	}
-
-	//更新强制弹窗
-	private void showNoChioceUpdateDialog(){
-		final AlertDialog.Builder normalDialog =
-				new AlertDialog.Builder(MainActivity.this);
-		normalDialog.setIcon(R.drawable.logo);
-		normalDialog.setTitle("聚财盆新版本");
-		normalDialog.setMessage("有新版本是否更新？");
-		normalDialog.setCancelable(false);
-		normalDialog.setPositiveButton("更新",
-				new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						if (!isUpdate) {
-							isUpdate = true;
-							RxPermissions.getInstance(MainActivity.this).request(Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe(new Action1<Boolean>() {
-								@Override
-								public void call(Boolean aBoolean) {
-									if (aBoolean) {
-										Intent service = new Intent(MainActivity.this, DownLoadService.class);
-										service.putExtra("downloadurl",downloadUrl);
-										ToastUtil.getShortToastByString(MainActivity.this, "正在下载中");
-										startService(service);
-									} else {
-										ToastUtil.getShortToastByString(MainActivity.this, "SD卡下载权限被拒绝");
-									}
-								}
-							});
-						}
-					}
-				});
-		normalDialog.show();
-	}
-
-	private Handler mHandler = new Handler(){
-		@Override
-		public void handleMessage(Message msg) {
-			super.handleMessage(msg);
-			if (msg.what != EMPTY) {
-				String           localVersion   = Util.getVersion(MainActivity.this);
-				Bundle           bundles        = msg.getData();
-				String           serverVersion  = bundles.getString("version");
-				downloadUrl           			= bundles.getString("url");
-				content							= bundles.getString("content");
-				update_mode                     = bundles.getString("update_mode");
-				if (localVersion.compareTo(serverVersion) < 0 && update_mode.equals("1")) {
-					ToastUtil.getShortToastByString(MainActivity.this, "有新版本");
-					showChioceUpdateDialog();
-				}else if(localVersion.compareTo(serverVersion) < 0 && update_mode.equals("2")){
-					ToastUtil.getShortToastByString(MainActivity.this, "有新版本");
-					showNoChioceUpdateDialog();
-				}
-			}
-		}
-	};
-
-	//请求版本数据
-	public void requestUpdate(){
-		HttpTask httpTask = new HttpTask();
-		httpTask.execute(Constants.API+Constants.UPDATE);
-		httpTask.setTaskHandler(new HttpTask.HttpTaskHandler() {
-			@Override
-			public void taskSuccessful(String json) {
-				try {
-					JSONObject  root        = new JSONObject(json);
-					JSONArray   data       	= root.getJSONArray("data");
-					String     	versions 	= data.getJSONObject(0).getString("version_num");
-					String     	urls       	= data.getJSONObject(0).getString("download_url");
-					String 		content		= data.getJSONObject(0).getString("content");
-					String      update_mode = data.getJSONObject(0).getString("update_mode");
-					Message 	message     = mHandler.obtainMessage();
-					Bundle      bundle   	= new Bundle();
-					bundle.putString("version",versions);
-					bundle.putString("url",urls);
-					bundle.putString("content",content);
-					bundle.putString("update_mode",update_mode);
-					message.what = SUCCESS;
-					message.setData(bundle);
-					mHandler.sendMessage(message);
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			}
-
-			@Override
-			public void taskFailed() {
-
-			}
-		});
 	}
 
 	@Override

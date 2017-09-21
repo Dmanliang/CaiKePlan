@@ -43,7 +43,7 @@ public class LinkActivity extends BaseActivity {
         setting.setJavaScriptEnabled(true);             // 设置支持javascript脚本
         setting.setAllowFileAccess(true);               // 允许访问文件
         setting.setLoadWithOverviewMode(true);          // 缩放至屏幕的大小
-        setting.setBuiltInZoomControls(true);           // 设置显示缩放按钮
+        setting.setBuiltInZoomControls(false);          // 设置显示缩放按钮
         setting.setSupportZoom(true);                   // 支持缩放
         setting.setUseWideViewPort(true);               //将图片调整到适合webview的大小
         setting.setAppCacheEnabled(false);              //加缓存

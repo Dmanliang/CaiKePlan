@@ -1,17 +1,19 @@
 package com.example.caikeplan.activity;
 
-import android.app.Activity;
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
@@ -19,10 +21,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.base.AndroidBug5497Workaround;
 import com.example.base.Constants;
+import com.example.base.DownLoadService;
 import com.example.base.Validator;
 import com.example.caikeplan.R;
 import com.example.caikeplan.logic.Code;
@@ -31,16 +32,19 @@ import com.example.caikeplan.logic.EntryPresenter;
 import com.example.caikeplan.logic.ToastUtil;
 import com.example.caikeplan.logic.message.UserMessage;
 import com.example.getJson.HttpTask;
+import com.example.util.Util;
+import com.tbruyelle.rxpermissions.RxPermissions;
 import com.youth.xframe.base.XActivity;
 import com.youth.xframe.cache.XCache;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
+
+import rx.functions.Action1;
 
 import static android.text.TextUtils.isEmpty;
 import static com.example.util.Util.md5;
@@ -58,6 +62,7 @@ public class LoginActivity extends XActivity implements View.OnClickListener,Ent
     private ImageView               icon_eye;
     private Button                  button_login;
     private TextView                forget_password;
+    private TextView                register_user;
     private RelativeLayout          loading;
     //产生的验证码
     private String                  realCode;
@@ -65,6 +70,11 @@ public class LoginActivity extends XActivity implements View.OnClickListener,Ent
     private boolean                 ispswOpen = false;
     private String                  username="",password="";
     private XCache                  xCache;
+    private static final int        EMPTY   = 0xFFFFFFFF;
+    private static final int        SUCCESS = 0xFFFFEEEE;
+    private String                  downloadUrl,content,update_mode;
+    private boolean 			    isUpdate = false;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,8 +116,10 @@ public class LoginActivity extends XActivity implements View.OnClickListener,Ent
         icon_eye        =   (ImageView)findViewById(R.id.icon_eye);
         button_login    =   (Button)findViewById(R.id.button_login);
         forget_password =   (TextView)findViewById(R.id.forget_password);
+        register_user   =   (TextView)findViewById(R.id.register_user);
         loading         =   (RelativeLayout)findViewById(R.id.loading);
         showcode.setOnClickListener(this);
+        register_user.setOnClickListener(this);
         button_login.setOnClickListener(this);
         forget_password.setOnClickListener(this);
         icon_eye.setOnClickListener(this);
@@ -118,6 +130,7 @@ public class LoginActivity extends XActivity implements View.OnClickListener,Ent
         edit_provider.setOnEditorActionListener(this);
         edit_user.setText(username);
         edit_password.setText(password);
+        requestUpdate();
     }
 
     @Override
@@ -144,6 +157,10 @@ public class LoginActivity extends XActivity implements View.OnClickListener,Ent
                     icon_eye.setBackground(this.getResources().getDrawable(R.drawable.icon_display));
                     edit_password.setTransformationMethod(PasswordTransformationMethod.getInstance());
                 }
+                break;
+            case R.id.register_user:
+                Intent intent1 = new Intent(LoginActivity.this,RegisterActivity.class);
+                startActivity(intent1);
                 break;
         }
     }
@@ -205,7 +222,7 @@ public class LoginActivity extends XActivity implements View.OnClickListener,Ent
     public void toHome(UserMessage userMessage) {
         if(isEmpty(userMessage.getPhone()) && !userMessage.getRole_id().toString().equals("2")){
             ToastUtil.getShortToastByString(this,"为注册邮箱账号");
-            Intent registerIntent = new Intent(LoginActivity.this,RegisterActivity.class);
+            Intent registerIntent = new Intent(LoginActivity.this,BanPhoneActivity.class);
             Bundle bundle1 = new Bundle();
             bundle1.putString("user_id",userMessage.getUser_id());
             bundle1.putString("token",userMessage.getToken());
@@ -214,15 +231,6 @@ public class LoginActivity extends XActivity implements View.OnClickListener,Ent
         }else{
             Intent intent2 = new Intent(LoginActivity.this, MainActivity.class);
             intent2.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            Bundle bundle2= new Bundle();
-            bundle2.putString("user_id",userMessage.getUser_id());
-            bundle2.putString("username",userMessage.getUsername());
-            bundle2.putString("token",userMessage.getToken());
-            bundle2.putString("role_id",userMessage.getRole_id());
-            bundle2.putString("due_time",userMessage.getDue_time());
-            bundle2.putString("phone",userMessage.getPhone());
-            bundle2.putString("power_add",userMessage.getPower_add());
-            bundle2.putString("parent_id",userMessage.getParent_id());
             startActivity(intent2);
             ToastUtil.getShortToastByString(this,"登录成功");
         }
@@ -230,6 +238,163 @@ public class LoginActivity extends XActivity implements View.OnClickListener,Ent
     }
 
 
+    //更新弹窗
+    private void showChioceUpdateDialog(){
+        final AlertDialog.Builder normalDialog =
+                new AlertDialog.Builder(LoginActivity.this);
+        normalDialog.setIcon(R.drawable.logo);
+        normalDialog.setTitle("聚财盆新版本");
+        normalDialog.setMessage("有新版本是否更新？");
+        normalDialog.setCancelable(false);
+        normalDialog.setPositiveButton("确定",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (!isUpdate) {
+                            isUpdate = true;
+                            RxPermissions.getInstance(LoginActivity.this).request(Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe(new Action1<Boolean>() {
+                                @Override
+                                public void call(Boolean aBoolean) {
+                                    if (aBoolean) {
+                                        Intent service = new Intent(LoginActivity.this, DownLoadService.class);
+                                        service.putExtra("downloadurl",downloadUrl);
+                                        ToastUtil.getShortToastByString(LoginActivity.this, "正在下载中");
+                                        startService(service);
+                                    } else {
+                                        ToastUtil.getShortToastByString(LoginActivity.this, "SD卡下载权限被拒绝");
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+        normalDialog.setNegativeButton("关闭",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+        AlertDialog alertDialog = normalDialog.create();
+        alertDialog.setCancelable(false);
+        alertDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event)
+            {
+                if (keyCode == KeyEvent.KEYCODE_SEARCH) {
+                    return true;
+                }
+                else {
+                    return false; //默认返回 false
+                }
+            }
+        });
+        alertDialog.show();
+    }
+
+    //更新强制弹窗
+    private void showNoChioceUpdateDialog(){
+        final AlertDialog.Builder normalDialog =
+                new AlertDialog.Builder(LoginActivity.this);
+        normalDialog.setIcon(R.drawable.logo);
+        normalDialog.setTitle("聚财盆新版本");
+        normalDialog.setMessage("有新版本是否更新？");
+        normalDialog.setCancelable(false);
+        normalDialog.setPositiveButton("更新",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (!isUpdate) {
+                            isUpdate = true;
+                            RxPermissions.getInstance(LoginActivity.this).request(Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe(new Action1<Boolean>() {
+                                @Override
+                                public void call(Boolean aBoolean) {
+                                    if (aBoolean) {
+                                        Intent service = new Intent(LoginActivity.this, DownLoadService.class);
+                                        service.putExtra("downloadurl",downloadUrl);
+                                        ToastUtil.getShortToastByString(LoginActivity.this, "正在下载中");
+                                        startService(service);
+                                    } else {
+                                        ToastUtil.getShortToastByString(LoginActivity.this, "SD卡下载权限被拒绝");
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+        AlertDialog alertDialog = normalDialog.create();
+        alertDialog.setCancelable(false);
+        alertDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event)
+            {
+                if (keyCode == KeyEvent.KEYCODE_SEARCH) {
+                    return true;
+                }
+                else {
+                    return false; //默认返回 false
+                }
+            }
+        });
+        alertDialog.show();
+    }
+
+    private Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what != EMPTY) {
+                String           localVersion   = Util.getVersion(LoginActivity.this);
+                Bundle           bundles        = msg.getData();
+                String           serverVersion  = bundles.getString("version");
+                downloadUrl           			= bundles.getString("url");
+                content							= bundles.getString("content");
+                update_mode                     = bundles.getString("update_mode");
+                if (localVersion.compareTo(serverVersion) < 0 && update_mode.equals("1")) {
+                    ToastUtil.getShortToastByString(LoginActivity.this, "有新版本");
+                    showChioceUpdateDialog();
+                }else if(localVersion.compareTo(serverVersion) < 0 && update_mode.equals("2")){
+                    ToastUtil.getShortToastByString(LoginActivity.this, "有新版本");
+                    showNoChioceUpdateDialog();
+                }
+            }
+        }
+    };
+
+
+    //请求版本数据
+    public void requestUpdate(){
+        HttpTask httpTask = new HttpTask();
+        httpTask.execute(Constants.API+Constants.UPDATE);
+        httpTask.setTaskHandler(new HttpTask.HttpTaskHandler() {
+            @Override
+            public void taskSuccessful(String json) {
+                try {
+                    JSONObject root        = new JSONObject(json);
+                    JSONArray data       	= root.getJSONArray("data");
+                    String     	versions 	= data.getJSONObject(0).getString("version_num");
+                    String     	urls       	= data.getJSONObject(0).getString("download_url");
+                    String 		content		= data.getJSONObject(0).getString("content");
+                    String      update_mode = data.getJSONObject(0).getString("update_mode");
+                    Message message     = mHandler.obtainMessage();
+                    Bundle      bundle   	= new Bundle();
+                    bundle.putString("version",versions);
+                    bundle.putString("url",urls);
+                    bundle.putString("content",content);
+                    bundle.putString("update_mode",update_mode);
+                    message.what = SUCCESS;
+                    message.setData(bundle);
+                    mHandler.sendMessage(message);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void taskFailed() {
+
+            }
+        });
+    }
 
     @Override
     public void toSuccessAction(String message) {

@@ -142,6 +142,16 @@
         android:textColor="@color/whileBack"
         android:textSize="15sp"/>
     <TextView
+        android:id="@+id/register_user"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="注册账号"
+        android:textSize="14sp"
+        android:textColor="#d12d10"
+        android:layout_alignLeft="@+id/button_login"
+        android:layout_below="@+id/button_login"
+        android:layout_marginTop="20dp"/>
+    <TextView
         android:id="@+id/forget_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -158,16 +168,10 @@
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="50dp"/>
-    <RelativeLayout
+    <include
         android:id="@+id/loading"
-        android:layout_width="match_parent"
+        layout="@layout/loadingdata"
         android:layout_height="match_parent"
-        android:background="@color/blackHalfAlphaBlack"
-        android:visibility="gone">
-
-        <ProgressBar
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_centerInParent="true"/>
-    </RelativeLayout>
+        android:layout_width="match_parent"
+        />
 </RelativeLayout>

@@ -14,24 +14,25 @@ public class Constants {
     public static final String  PLAY_LIST       ="/lottery/find_lottery_play_list";                         //查询彩种玩法列表
     public static final String  PLAN            ="/plan/find_plan_list?lottery_id=";                        //获取玩法计划
     public static final String  PLAN_SCHEME     ="/plan/find_plan_scheme_list";                             //获取玩法计划方案
-    public static final String  PLAN_FAVORITE   ="/plan/add_plan_favorite?user_id=";                        //添加计划到收藏夹
-    public static final String  DELETE_PLAN     ="/plan/del_plan_favorite?user_id=";                        //从收藏夹删除计划
-    public static final String  FIND_FAVORITE   ="/plan/find_user_plan_favorite?user_id=";                  //查询用户收藏夹
-    public static final String  RECOMMEND       ="/plan/get_recommend?lottery_id=";                         //今日推荐
-    public static final String  HOT_SCHEME      ="/plan/get_hot_scheme?lottery_id=";                        //热门计划
+    public static final String  PLAN_FAVORITE   ="/plan/add_plan_favorite";                                 //添加计划到收藏夹
+    public static final String  DELETE_PLAN     ="/plan/del_plan_favorite";                                 //从收藏夹删除计划
+    public static final String  FIND_FAVORITE   ="/plan/find_user_plan_favorite";                           //查询用户收藏夹
+    public static final String  RECOMMEND       ="/plan/get_recommend";                                     //今日推荐
+    public static final String  HOT_SCHEME      ="/plan/get_hot_scheme";                                    //热门计划
     public static final String  DATA_MISS       ="/plan/get_missed?lottery_id=";                            //数据分析
-    public static final String  LAST_RESULT     ="/lottery/get_lottery_last_result?lottery_ids=";           //开奖数据
-    public static final String  OPEN_LOTTERY    ="/lottery/get_lottery_current_issue?lottery_ids=";         //下期开奖数据
-    public static final String  PLAN_RUSULT     ="/plan/find_plan_result_list?plan_id=";                    //查询计划(分页)
-    public static final String  SCHEME_PLAN     ="/plan/get_schemes_by_plan?plan_id=";                      //玩法对应的计划
-    public static final String  PLAN_CONTENT    ="/plan/get_plan_content?lottery_id=";                      //计划内容
+    public static final String  LAST_RESULT     ="/lottery/get_lottery_last_result";                        //开奖数据
+    public static final String  OPEN_LOTTERY    ="/lottery/get_lottery_current_issue";                      //下期开奖数据
+    public static final String  PLAN_RUSULT     ="/plan/find_plan_result_list";                             //查询计划(分页)
+    public static final String  SCHEME_PLAN     ="/plan/get_schemes_by_plan";                               //玩法对应的计划
+    public static final String  PLAN_CONTENT    ="/plan/get_plan_content";                                  //计划内容
     public static final String  PLAY_BY_CLS     ="/plan/get_play_by_cls?lottery_id=";                       //根据 play_cls 查询 play_id
     public static final String  PLAN_BY_PLAY    ="/plan/get_plan_by_play?lottery_id=";                      //根据 play_id 查询 plan_id
-    public static final String  COPY_PLAN       ="/plan/get_plan_list_many?plan_s_ids=";                    //查询计划
+    public static final String  COPY_PLAN       ="/plan/get_plan_list_many";                                //查询计划
     public static final String  ADV_IMAGE       ="/plan/carousel?n=";                                       //广告轮播图
     public static final String  UPDATE          ="/user/client_version_update?os=2";                        //版本更新
-    public static final String  LOTTERY_HISTOEY ="/lottery/find_lottery_result_list?lottery_id=";           //彩种开奖记录
+    public static final String  LOTTERY_HISTOEY ="/lottery/find_lottery_result_list";                       //彩种开奖记录
     public static final String  SERVER_TIME     ="/lottery/get_server_time";                                //服务器时间
+    public static final String  REGISTER_USER   = "/user/register_user";                                    //注册账号
     public static final String  VALID_USER      ="/user/valid_user";                                        //查看用户名或者手机是否存在
     public static final String  USER_LOGIN      ="/user/user_login";                                        //用户登入
     public static final String  BIND_PHONE      ="/user/bind_phone";                                        //绑定手机
@@ -51,5 +52,7 @@ public class Constants {
     public static final String  K3_VIDEO        ="/static/k3/index.html?lottery_id=";                       //快3开奖视频
     public static final String  ALL_TOOLS       ="/static/tool/index.html";                                 //总工具列表
     public static final String  ZST_DATA        ="/static/tool/zoushitu.html?lottery_id=";                  //走势图
+    public static final String  RECHARGE        ="/recharge_entrance";                                      //充值
+    public static final String  RECHARGE_DUETIME="/recharge_result/due_time";                               //充值完时间更新
 
 }

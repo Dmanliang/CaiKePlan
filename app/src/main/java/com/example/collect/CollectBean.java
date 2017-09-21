@@ -3,7 +3,7 @@ package com.example.collect;
 public class CollectBean {
 
 	private String 	plan_id;
-	private int 	lottery_id;
+	private String 	lottery_id;
 	private String 	play_id;
 	private String 	log_id;
 	private String 	plan_name;
@@ -13,7 +13,7 @@ public class CollectBean {
 	private String  cls_name;
 	private boolean isCollected;
 
-	public CollectBean(String lottery_name,String cls_name,String plan_id,String play_id,String log_id,String plan_name,String s_id,String scheme_name,int lottery_id,boolean isCollected){
+	public CollectBean(String lottery_name,String cls_name,String plan_id,String play_id,String log_id,String plan_name,String s_id,String scheme_name,String lottery_id,boolean isCollected){
 		this.lottery_name =lottery_name;
 		this.cls_name =	cls_name;
 		this.plan_id = plan_id;
@@ -70,10 +70,10 @@ public class CollectBean {
 	public void 	setPlan_id(String plan_id) {
 		this.plan_id = plan_id;
 	}
-	public int 	getLottery_id() {
+	public String getLottery_id() {
 		return lottery_id;
 	}
-	public void 	setLottery_id(int lottery_id) {
+	public void setLottery_id(String lottery_id) {
 		this.lottery_id = lottery_id;
 	}
 	public String 	getPlay_id() {

@@ -1,6 +1,7 @@
 package com.example.caikeplan.activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
@@ -10,7 +11,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -39,7 +42,6 @@ import com.example.caikeplan.logic.WifiAdmin;
 import com.example.caikeplan.logic.adapter.HotAdapter;
 import com.example.caikeplan.logic.adapter.LookAdapter;
 import com.example.caikeplan.logic.MyGridView;
-import com.example.caikeplan.logic.adapter.LotteryTitleAdapter;
 import com.example.caikeplan.logic.adapter.PlanAdapter;
 import com.example.caikeplan.logic.TipView;
 import com.example.caikeplan.logic.adapter.TitleGrildAdapter;
@@ -48,8 +50,12 @@ import com.example.caikeplan.logic.message.MainListBean;
 import com.example.caikeplan.logic.message.PlanBaseMessage;
 import com.example.caikeplan.logic.message.PlanTypeMessage;
 import com.example.caikeplan.logic.message.SendMessage;
+import com.example.caikeplan.logic.message.UserMessage;
 import com.example.caikeplan.logic.refresh.SHSwipeRefreshLayout;
 import com.example.getJson.HttpTask;
+import com.example.util.OKHttpManager;
+import com.example.util.OnNetRequestCallback;
+import com.example.util.Util;
 import com.youth.xframe.base.XActivity;
 import com.youth.xframe.cache.XCache;
 import org.json.JSONArray;
@@ -58,7 +64,9 @@ import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by dell on 2017/5/17.
@@ -136,7 +144,6 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
     private List<String>            tiplist2 = new ArrayList<>();
     private List<String>            tiplist3 = new ArrayList<>();
     private List<String>            tiplist4 = new ArrayList<>();
-    private String                  URL;                        //请求链接
     private String                  lotteryId = "1";            //彩种id
     private int                     play_cls = 1;               //彩种类别
     private String                  play_id;                    //玩法id
@@ -203,12 +210,6 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
         timerHandler.post(timeRunnable);
         //每60秒钟请求一次数据
         datasHandler.postDelayed(dataRunnable, 60000);
-    }
-
-    //请求链接
-    public void setURL(String lottery_id, String play_cls, String mac) {
-        URL = SendMessage.getInstance().getBestURL() + "/plan/find_plan_list?lottery_id=" + lottery_id
-                + "&play_cls=" + play_cls + "&mac=" + mac;
     }
 
     @Override
@@ -326,7 +327,6 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
         mlistLotteryTitle = setLotteryTitleData();
         initSwipeRefreshLayout();
         requestData();
-        //requestPlanList();
         setLookGridView();
         setPlanGridView();
         SendMessage.getInstance().setLotteryName(lottery_name);
@@ -409,18 +409,10 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
     //请求数据
     public void requestData() {
         requestTime();
-        setURL(getLotteryId(), getPlay_cls() + "", SendMessage.getInstance().getMac());
         requestOpenCurrentData();
         requestRecommend();
         requestPlanContent();
     }
-
-    public void requestRefreshData(){
-        requestTime();
-        requestOpenCurrentData();
-        requestRecommend();
-    }
-
 
     //添加浏览记录
     public void addLookItem(int position,List<PlanBaseMessage> addlist){
@@ -563,125 +555,148 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
 
     //请求推荐信息
     public void requestRecommend() {
-        HttpTask httpTask = new HttpTask();
-        httpTask.execute(Constants.API + Constants.RECOMMEND + lotteryId);
-        httpTask.setTaskHandler(new HttpTask.HttpTaskHandler() {
+        OKHttpManager okHttpManager = new OKHttpManager();
+        Map<String,String> map = new HashMap<>();
+        map.put("lottery_id",lotteryId);
+        okHttpManager.setToken(UserMessage.getInstance().getToken());
+        okHttpManager.post(Constants.API + Constants.RECOMMEND, map, new OnNetRequestCallback() {
             @Override
-            public void taskSuccessful(String json) {
+            public void onFailed(String reason) {
+                checkDataState(false);
+            }
+
+            @Override
+            public void onSuccess(String response) {
                 try {
-                    JSONObject jsonObject = new JSONObject(json);
+                    JSONObject jsonObject = new JSONObject(response);
                     JSONArray data = jsonObject.getJSONArray("data");
-                    ArrayList<PlanBaseMessage> list = new ArrayList<>();
-                    ArrayList<String> tlist1 = new ArrayList<>();
-                    ArrayList<String> tlist2 = new ArrayList<>();
-                    ArrayList<String> tlist3 = new ArrayList<>();
-                    ArrayList<String> tlist4 = new ArrayList<>();
-                    PlanBaseMessage planBaseMessage;
-                    for (int i = 0; i < data.length(); i++) {
-                        jsonObject = data.getJSONObject(i);
-                        String scheme_name  = jsonObject.getString("scheme_name");
-                        String s_id         = jsonObject.getString("s_id");
-                        String plan_id      = jsonObject.getString("plan_id");
-                        String plan_name    = jsonObject.getString("plan_name");
-                        String cls_name     = jsonObject.getString("cls_name");
-                        planBaseMessage     = new PlanBaseMessage(SendMessage.getInstance().getLotteryName(),lotteryId, s_id, scheme_name, plan_id, plan_name,cls_name,"","0");
-                        list.add(planBaseMessage);
-                        if(i==0 || i==1){
-                            tlist1.add(planBaseMessage.getScheme_name()+planBaseMessage.getCls_name());
-                        }else if(i==2 || i==3){
-                            tlist2.add(planBaseMessage.getScheme_name()+planBaseMessage.getCls_name());
-                        }else if(i==4 || i==5){
-                            tlist3.add(planBaseMessage.getScheme_name()+planBaseMessage.getCls_name());
-                        }else if(i==6 || i==7){
-                            tlist4.add(planBaseMessage.getScheme_name()+planBaseMessage.getCls_name());
+                    String success = jsonObject.getString("success");
+                    if(success.equals("1")){
+                        ArrayList<PlanBaseMessage> list = new ArrayList<>();
+                        ArrayList<String> tlist1 = new ArrayList<>();
+                        ArrayList<String> tlist2 = new ArrayList<>();
+                        ArrayList<String> tlist3 = new ArrayList<>();
+                        ArrayList<String> tlist4 = new ArrayList<>();
+                        PlanBaseMessage planBaseMessage;
+                        for (int i = 0; i < data.length(); i++) {
+                            jsonObject = data.getJSONObject(i);
+                            String scheme_name  = jsonObject.getString("scheme_name");
+                            String s_id         = jsonObject.getString("s_id");
+                            String plan_id      = jsonObject.getString("plan_id");
+                            String plan_name    = jsonObject.getString("plan_name");
+                            String cls_name     = jsonObject.getString("cls_name");
+                            planBaseMessage     = new PlanBaseMessage(SendMessage.getInstance().getLotteryName(),lotteryId, s_id, scheme_name, plan_id, plan_name,cls_name,"","0");
+                            list.add(planBaseMessage);
+                            if(i==0 || i==1){
+                                tlist1.add(planBaseMessage.getScheme_name()+planBaseMessage.getCls_name());
+                            }else if(i==2 || i==3){
+                                tlist2.add(planBaseMessage.getScheme_name()+planBaseMessage.getCls_name());
+                            }else if(i==4 || i==5){
+                                tlist3.add(planBaseMessage.getScheme_name()+planBaseMessage.getCls_name());
+                            }else if(i==6 || i==7){
+                                tlist4.add(planBaseMessage.getScheme_name()+planBaseMessage.getCls_name());
+                            }
                         }
+                        recommendList.clear();
+                        tiplist1.clear();
+                        tiplist2.clear();
+                        tiplist3.clear();
+                        tiplist4.clear();
+                        recommendList.addAll(list);
+                        tiplist1.addAll(tlist1);
+                        tiplist2.addAll(tlist2);
+                        tiplist3.addAll(tlist3);
+                        tiplist4.addAll(tlist4);
+                        Message msg = new Message();
+                        msg.what = 1;
+                        recomdHandler.sendMessage(msg);
+                        checkDataState(true);
+                    }else if(success.equals("-1")){
+                        Util.ShowMessageDialog(ProgramActivity.this);
                     }
-                    recommendList.clear();
-                    tiplist1.clear();
-                    tiplist2.clear();
-                    tiplist3.clear();
-                    tiplist4.clear();
-                    recommendList.addAll(list);
-                    tiplist1.addAll(tlist1);
-                    tiplist2.addAll(tlist2);
-                    tiplist3.addAll(tlist3);
-                    tiplist4.addAll(tlist4);
-                    Message msg = new Message();
-                    msg.what = 1;
-                    recomdHandler.sendMessage(msg);
-                    checkDataState(true);
                 } catch (Exception e) {
                     e.printStackTrace();
                     checkDataState(false);
                 }
             }
-
-            @Override
-            public void taskFailed() {
-                checkDataState(false);
-            }
-        });
+        },true);
     }
 
     //请求开奖数据
     public void requestOpenCurrentData() {
+        OKHttpManager okHttpManager1 = new OKHttpManager();
         //获取已开奖结果数据
-        HttpTask httpTask = new HttpTask();
-        httpTask.execute(Constants.API + Constants.LAST_RESULT + lotteryId);
-        httpTask.setTaskHandler(new HttpTask.HttpTaskHandler() {
+        Map<String,String> map1 = new HashMap<>();
+        map1.put("user_id",UserMessage.getInstance().getUser_id());
+        map1.put("lottery_ids",lotteryId);
+        okHttpManager1.setToken(UserMessage.getInstance().getToken());
+        okHttpManager1.post(Constants.API + Constants.LAST_RESULT, map1, new OnNetRequestCallback() {
             @Override
-            public void taskSuccessful(String json) {
+            public void onFailed(String reason) {
+                checkDataState(false);
+            }
+
+            @Override
+            public void onSuccess(String response) {
                 try {
-                    JSONObject jsonObject = new JSONObject(json);
+                    JSONObject jsonObject = new JSONObject(response);
                     JSONObject data = jsonObject.getJSONObject("data");
-                    JSONArray ls = data.getJSONArray(lotteryId);
-                    JSONObject lottery = ls.getJSONObject(0);
-                    isue_last = lottery.optString("issue");
-                    nums = lottery.optString("nums");
-                    expect_time = lottery.optString("expect_time");
-                    left = lottery.optString("left");
-                    th = lottery.optString("th");
-                    allissues = Integer.parseInt(left) + Integer.parseInt(th);
-                    numList = nums.split(",");
-                    showData();
-                    checkDataState(true);
+                    String success  = jsonObject.getString("success");
+                    if(success.equals("1")) {
+                        JSONArray ls = data.getJSONArray(lotteryId);
+                        JSONObject lottery = ls.getJSONObject(0);
+                        isue_last = lottery.optString("issue");
+                        nums = lottery.optString("nums");
+                        expect_time = lottery.optString("expect_time");
+                        left = lottery.optString("left");
+                        th = lottery.optString("th");
+                        allissues = Integer.parseInt(left) + Integer.parseInt(th);
+                        numList = nums.split(",");
+                        showData();
+                        checkDataState(true);
+                    }else if(success.equals("-1")){
+                        Util.ShowMessageDialog(ProgramActivity.this);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                     checkDataState(false);
                 }
             }
+        },true);
 
-            @Override
-            public void taskFailed() {
-                checkDataState(false);
-            }
-        });
-
+        OKHttpManager okHttpManager2 = new OKHttpManager();
         //获取当前开奖数据
-        HttpTask httpTask1 = new HttpTask();
-        httpTask1.execute(Constants.API + Constants.OPEN_LOTTERY + lotteryId);
-        httpTask1.setTaskHandler(new HttpTask.HttpTaskHandler() {
+        Map<String,String> map2 = new HashMap<>();
+        map2.put("user_id",UserMessage.getInstance().getUser_id());
+        map2.put("lottery_ids",lotteryId);
+        okHttpManager2.setToken(UserMessage.getInstance().getToken());
+        okHttpManager2.post(Constants.API + Constants.OPEN_LOTTERY, map2, new OnNetRequestCallback() {
             @Override
-            public void taskSuccessful(String json) {
+            public void onFailed(String reason) {
+                checkDataState(false);
+            }
+
+            @Override
+            public void onSuccess(String response) {
                 try {
-                    JSONObject jsonObject = new JSONObject(json);
-                    JSONObject data = jsonObject.getJSONObject("data");
-                    JSONObject id = data.getJSONObject(lotteryId);
-                    isue_now = id.optString("issue");
-                    expect_time_now = id.optString("expect_time");
-                    setNowMessage(isue_now,expect_time_now);
-                    checkDataState(true);
+                    JSONObject jsonObject = new JSONObject(response);
+                    String success  = jsonObject.getString("success");
+                    if(success.equals("1")) {
+                        JSONObject data = jsonObject.getJSONObject("data");
+                        JSONObject id = data.getJSONObject(lotteryId);
+                        isue_now = id.getString("issue");
+                        expect_time_now = id.getString("expect_time");
+                        setNowMessage(isue_now,expect_time_now);
+                        checkDataState(true);
+                    }else if(success.equals("-1")){
+                        Util.ShowMessageDialog(ProgramActivity.this);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                     checkDataState(false);
                 }
             }
-
-            @Override
-            public void taskFailed() {
-                checkDataState(false);
-            }
-        });
+        },true);
     }
 
     //设置倒计时和开奖中数据
@@ -757,71 +772,79 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
         mainListBeen.clear();
         options2Items.clear();
         options3Items.clear();
-        HttpTask httpTask = new HttpTask();
-        httpTask.execute(Constants.API+Constants.PLAN_CONTENT+lotteryId);
-        httpTask.setTaskHandler(new HttpTask.HttpTaskHandler() {
+        OKHttpManager okHttpManager = new OKHttpManager();
+        Map<String,String> map = new HashMap<>();
+        map.put("user_id",UserMessage.getInstance().getUser_id());
+        map.put("lottery_id",lotteryId);
+        okHttpManager.setToken(UserMessage.getInstance().getToken());
+        okHttpManager.post(Constants.API + Constants.PLAN_CONTENT, map, new OnNetRequestCallback() {
             @Override
-            public void taskSuccessful(String json) {
+            public void onFailed(String reason) {
+                checkDataState(false);
+            }
+
+            @Override
+            public void onSuccess(String response) {
                 try {
-                    JSONObject jsonObject = new JSONObject(json);
-                    JSONArray data = jsonObject.getJSONArray("data");
-                    ArrayList<PlanTypeMessage>              options1      = new ArrayList<>();
-                    List<List<List<MainListBean>>>          planAllList   = new ArrayList<>();
-                    for(int h=0;h<data.length();h++){
-                        jsonObject = data.getJSONObject(h);
-                        JSONArray child= jsonObject.getJSONArray("child");
-                        for (int i = 0; i < child.length(); i++) {
-                            JSONObject object = child.getJSONObject(i);
-                            planSecondSelectList= new ArrayList<>();
-                            PlanTypeMessage planTypeMessage = new PlanTypeMessage();
-                            String cls_name = object.getString("name");
-                            planTypeMessage.setName(cls_name);
-                            JSONArray child1 = object.getJSONArray("child");
-                            for(int j = 0;j < child1.length();j++){
-                                JSONObject object1 = child1.getJSONObject(j);
-                                mainListBeen = new ArrayList<>();
-                                PlanTypeMessage.BitBean bitBean = new PlanTypeMessage.BitBean();
-                                String plan_name = object1.getString("name");
-                                bitBean.setName(plan_name);
-                                bitBean.newList();
-                                JSONArray child2 = object1.getJSONArray("child");
-                                for(int k = 0;k <child2.length();k++){
-                                    JSONObject object2= child2.getJSONObject(k);
-                                    MainListBean newsBean = new MainListBean();
-                                    String play_name = object2.getString("name");
-                                    newsBean.setPlay_name(play_name);
-                                    bitBean.getIssues_list().add(play_name);
-                                    String plan_id = object2.getString("id");
-                                    newsBean.setPlan_id(plan_id);
-                                    mainListBeen.add(newsBean);
+                    JSONObject jsonObject = new JSONObject(response);
+                    String success  = jsonObject.getString("success");
+                    if(success.equals("1")) {
+                        JSONArray data = jsonObject.getJSONArray("data");
+                        ArrayList<PlanTypeMessage>              options1      = new ArrayList<>();
+                        List<List<List<MainListBean>>>          planAllList   = new ArrayList<>();
+                        for(int h=0;h<data.length();h++){
+                            jsonObject = data.getJSONObject(h);
+                            JSONArray child= jsonObject.getJSONArray("child");
+                            for (int i = 0; i < child.length(); i++) {
+                                JSONObject object = child.getJSONObject(i);
+                                planSecondSelectList= new ArrayList<>();
+                                PlanTypeMessage planTypeMessage = new PlanTypeMessage();
+                                String cls_name = object.getString("name");
+                                planTypeMessage.setName(cls_name);
+                                JSONArray child1 = object.getJSONArray("child");
+                                for(int j = 0;j < child1.length();j++){
+                                    JSONObject object1 = child1.getJSONObject(j);
+                                    mainListBeen = new ArrayList<>();
+                                    PlanTypeMessage.BitBean bitBean = new PlanTypeMessage.BitBean();
+                                    String plan_name = object1.getString("name");
+                                    bitBean.setName(plan_name);
+                                    bitBean.newList();
+                                    JSONArray child2 = object1.getJSONArray("child");
+                                    for(int k = 0;k <child2.length();k++){
+                                        JSONObject object2= child2.getJSONObject(k);
+                                        MainListBean newsBean = new MainListBean();
+                                        String play_name = object2.getString("name");
+                                        newsBean.setPlay_name(play_name);
+                                        bitBean.getIssues_list().add(play_name);
+                                        String plan_id = object2.getString("id");
+                                        newsBean.setPlan_id(plan_id);
+                                        mainListBeen.add(newsBean);
+                                    }
+                                    planTypeMessage.getBitBeen().add(bitBean);
+                                    planSecondSelectList.add(mainListBeen);
                                 }
-                                planTypeMessage.getBitBeen().add(bitBean);
-                                planSecondSelectList.add(mainListBeen);
+                                planAllList.add(planSecondSelectList);
+                                options1.add(planTypeMessage);
                             }
-                            planAllList.add(planSecondSelectList);
-                            options1.add(planTypeMessage);
                         }
+                        planAllSelectList.clear();
+                        options1Items.clear();
+                        planAllSelectList.addAll(planAllList);
+                        options1Items.addAll(options1);
+                        setSelectTitle();
+                        Message msg = new Message();
+                        msg.what = 4;
+                        recomdHandler.sendMessage(msg);
+                        checkDataState(true);
+                    }else if(success.equals("-1")){
+                        Util.ShowMessageDialog(ProgramActivity.this);
                     }
-                    planAllSelectList.clear();
-                    options1Items.clear();
-                    planAllSelectList.addAll(planAllList);
-                    options1Items.addAll(options1);
-                    setSelectTitle();
-                    Message msg = new Message();
-                    msg.what = 4;
-                    recomdHandler.sendMessage(msg);
-                    checkDataState(true);
                 } catch (Exception e) {
                     e.printStackTrace();
                     checkDataState(false);
                 }
             }
-
-            @Override
-            public void taskFailed() {
-                checkDataState(false);
-            }
-        });
+        },true);
     }
 
     //请求计划玩法数据
@@ -903,45 +926,52 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
     //请求筛选后的计划玩法数据
     public void requestSelectPlanData(final int item1,final int item2,final int item3) {
         planList.clear();
-        HttpTask httpTask = new HttpTask();
         String plan_id ="";
         if(planAllSelectList.size()!=0){
             plan_id = planAllSelectList.get(item1).get(item2).get(item3).getPlan_id();
         }
-        httpTask.execute(Constants.API + Constants.SCHEME_PLAN + plan_id);
-        httpTask.setTaskHandler(new HttpTask.HttpTaskHandler() {
+        OKHttpManager httpManager = new OKHttpManager();
+        Map<String,String> map = new HashMap<>();
+        map.put("user_id",UserMessage.getInstance().getUser_id());
+        map.put("plan_id",plan_id);
+        httpManager.setToken(UserMessage.getInstance().getToken());
+        httpManager.post(Constants.API + Constants.SCHEME_PLAN, map, new OnNetRequestCallback() {
             @Override
-            public void taskSuccessful(String json) {
+            public void onFailed(String reason) {
+                checkDataState(false);
+            }
+
+            @Override
+            public void onSuccess(String response) {
                 try {
-                    JSONObject jsonObject = new JSONObject(json);
-                    JSONArray data = jsonObject.getJSONArray("data");
-                    PlanBaseMessage planBaseMessage;
-                    for (int i = 0; i < data.length(); i++) {
-                        jsonObject = data.getJSONObject(i);
-                        String scheme_name  = jsonObject.getString("scheme_name");
-                        String s_id         = jsonObject.getString("s_id");
-                        String plan_id      = jsonObject.getString("plan_id");
-                        String cls_name     = jsonObject.getString("cls_name");
-                        String plan_name    = options2Items.get(item1).get(item2)+options3Items.get(item1).get(item2).get(item3);
-                        planBaseMessage     = new PlanBaseMessage(SendMessage.getInstance().getLotteryName(),lotteryId, s_id, scheme_name, plan_id,plan_name,cls_name,"","0");
-                        planList.add(planBaseMessage);
+                    JSONObject jsonObject = new JSONObject(response);
+                    String success  = jsonObject.getString("success");
+                    if(success.equals("1")) {
+                        JSONArray data = jsonObject.getJSONArray("data");
+                        PlanBaseMessage planBaseMessage;
+                        for (int i = 0; i < data.length(); i++) {
+                            jsonObject = data.getJSONObject(i);
+                            String scheme_name  = jsonObject.getString("scheme_name");
+                            String s_id         = jsonObject.getString("s_id");
+                            String plan_id      = jsonObject.getString("plan_id");
+                            String cls_name     = jsonObject.getString("cls_name");
+                            String plan_name    = options2Items.get(item1).get(item2)+options3Items.get(item1).get(item2).get(item3);
+                            planBaseMessage     = new PlanBaseMessage(SendMessage.getInstance().getLotteryName(),lotteryId, s_id, scheme_name, plan_id,plan_name,cls_name,"","0");
+                            planList.add(planBaseMessage);
+                        }
+                        Message msg = new Message();
+                        msg.what = 5;
+                        recomdHandler.sendMessage(msg);
+                        checkDataState(true);
+                    }else if(success.equals("-1")){
+                        Util.ShowMessageDialog(ProgramActivity.this);
                     }
-                    Message msg = new Message();
-                    msg.what = 5;
-                    recomdHandler.sendMessage(msg);
-                    checkDataState(true);
                 } catch (Exception e) {
                     e.printStackTrace();
                     checkDataState(false);
                 }
             }
-
-            @Override
-            public void taskFailed() {
-                checkDataState(false);
-            }
-        });
-
+        },true);
     }
 
     //更新UI线程信息
@@ -1268,22 +1298,29 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
     //请求服务器时间
     public void requestTime(){
         HttpTask httpTask = new HttpTask();
-        httpTask.execute(Constants.API+Constants.SERVER_TIME);
+        httpTask.execute(Constants.API + Constants.SERVER_TIME);
         httpTask.setTaskHandler(new HttpTask.HttpTaskHandler() {
             @Override
             public void taskSuccessful(String json) {
                 try {
                     JSONObject jsonObject = new JSONObject(json);
                     JSONObject data = jsonObject.getJSONObject("data");
-                    server_time     = data.getString("server_time");
+                    String success  = jsonObject.getString("success");
+                    if(success.equals("1")){
+                        server_time     = data.getString("server_time");
+                        checkDataState(true);
+                    }else if(success.equals("-1")){
+                        Util.ShowMessageDialog(ProgramActivity.this);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
+                    checkDataState(false);
                 }
             }
 
             @Override
             public void taskFailed() {
-
+                checkDataState(false);
             }
         });
     }
@@ -1296,8 +1333,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
     public void setPlanData(int position){
         if(position == 6){
             lotteryId = lottery_ids[position];
-            setURL(lotteryId, getPlay_cls() + "", SendMessage.getInstance().getMac());
-            SendMessage.getInstance().setLotteryId(Integer.parseInt(lottery_ids[position]));
+            SendMessage.getInstance().setLotteryId(lottery_ids[position]);
             SendMessage.getInstance().setLotteryName(lottery_title[position]);
             lottery_name = lottery_title[position];
             lotterylayout.setVisibility(View.GONE);
@@ -1318,8 +1354,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
             requestData();
         }*/else if(position>=0 && position<6){
             lotteryId = lottery_ids[position];
-            setURL(lotteryId, getPlay_cls() + "", SendMessage.getInstance().getMac());
-            SendMessage.getInstance().setLotteryId(Integer.parseInt(lottery_ids[position]));
+            SendMessage.getInstance().setLotteryId(lottery_ids[position]);
             SendMessage.getInstance().setLotteryName(lottery_title[position]);
             lottery_name = lottery_title[position];
             lotterylayout.setVisibility(View.VISIBLE);
@@ -1658,29 +1693,4 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
         nodataLayout.setVisibility(View.GONE);
         nointernetLayout.setVisibility(View.GONE);
     }
-
-    public String getURL() {
-        return URL;
-    }
-
-    public void setURL(String URL) {
-        this.URL = URL;
-    }
-
-    public String getLotteryId() {
-        return lotteryId;
-    }
-
-    public void setLotteryId(String lotteryId) {
-        this.lotteryId = lotteryId;
-    }
-
-    public int getPlay_cls() {
-        return play_cls;
-    }
-
-    public void setPlay_cls(int play_cls) {
-        this.play_cls = play_cls;
-    }
-
 }
