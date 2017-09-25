@@ -33,9 +33,14 @@ public class BannerLinkActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setView(R.layout.activity_banner_link);
+        initView();
+    }
+
+    public void initView(){
         String       title = getIntent().getExtras().getString("title");
         final String url   = getIntent().getExtras().getString("url");
         setTitle(title);
+
         program_back= (LinearLayout)findViewById(R.id.program_back);
         mWebView    = (WebView)findViewById(R.id.webviews);
         toolbar_title = (TextView)findViewById(R.id.toolbar_title);
@@ -46,6 +51,7 @@ public class BannerLinkActivity extends BaseActivity {
                 finish();
             }
         });
+        toolbar_title.setText(title);
         mWebView.requestFocusFromTouch();
         mWebView.requestFocus();
         WebSettings setting = mWebView.getSettings();
@@ -64,7 +70,7 @@ public class BannerLinkActivity extends BaseActivity {
         setting.setRenderPriority(WebSettings.RenderPriority.HIGH);  //提高渲染的优先级
         setting.setDomStorageEnabled(true);
         setting.setDatabaseEnabled(true);               //支持数据库
- //       setting.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);//关闭webview中缓存
+        //       setting.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);//关闭webview中缓存
         setting.setAllowFileAccess(true);               //设置可以访问文件
         setting.setNeedInitialFocus(true);              //当webview调用requestFocus时为webview设置节点
         setting.setLoadsImagesAutomatically(true);      //支持自动加载图片
@@ -98,6 +104,5 @@ public class BannerLinkActivity extends BaseActivity {
             }
         });
         mWebView.loadUrl(url);
-        toolbar_title.setText(title);
     }
 }

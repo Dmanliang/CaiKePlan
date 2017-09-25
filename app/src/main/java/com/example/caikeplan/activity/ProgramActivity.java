@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
@@ -74,7 +75,8 @@ import java.util.Map;
 
 public class ProgramActivity extends XActivity implements View.OnClickListener {
 
-    private SHSwipeRefreshLayout swipeRefreshLayout;
+    private RelativeLayout     loading;
+    private SwipeRefreshLayout swipe;
     private LinearLayout    title_layout;
     private RelativeLayout  program_toolbar;
     private RelativeLayout  toolbar_container;
@@ -91,7 +93,6 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
     private TextView        toolbar_save;
     private ImageView       btn_copy_plan;
     private ImageView       btn_video,btn_video_pk10,btn_video_k3;
-    private ScrollView      scroll;
     private ImageView       history_ssc,history_pk10,history_k3;
     private ImageView       lottery_open;
     private ImageView       lottery_open_pk10;
@@ -235,9 +236,10 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
         }else{
             cacheindex=0;
         }
+        loading             =   (RelativeLayout) findViewById(R.id.loading);
         lookthrough_layout  =   (RelativeLayout)findViewById(R.id.lookthrough_layout);
         title_layout        =   (LinearLayout)findViewById(R.id.title_layout);
-        scroll              =   (ScrollView)findViewById(R.id.scroll);
+        swipe               =   (SwipeRefreshLayout)findViewById(R.id.swipe);
         program_toolbar     =   (RelativeLayout)findViewById(R.id.program_toolbar);
         pk10layout          =   (RelativeLayout)findViewById(R.id.pk10layout);
         k3layout            =   (RelativeLayout)findViewById(R.id.k3layout);
@@ -332,82 +334,30 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
         SendMessage.getInstance().setLotteryName(lottery_name);
     }
 
-    //scrollview下拉刷新
-    private void initSwipeRefreshLayout() {
-        swipeRefreshLayout = (SHSwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-        /**
-         * 这里Sample中的headerview使用默认设置，即可通过setRefreshViewText（String）来更改headerview中TextView的文字；
-         * 而footview
-         */
-        LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
-        final View view = inflater.inflate(R.layout.refresh_view, null,false);
-        final TextView textView = (TextView) view.findViewById(R.id.title);
-     //   swipeRefreshLayout.setFooterView(view);
-        swipeRefreshLayout.setLoadmoreEnable(false);
-        swipeRefreshLayout.setOnRefreshListener(new SHSwipeRefreshLayout.SHSOnRefreshListener() {
+    public void initSwipeRefreshLayout(){
+        swipe.setColorSchemeResources(R.color.google_blue
+                ,R.color.google_green
+                ,R.color.google_red
+                ,R.color.google_yellow);
+        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                swipeRefreshLayout.postDelayed(new Runnable() {
+                swipe.setRefreshing(true);
+                (new Handler()).postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        swipeRefreshLayout.finishRefresh();
-                        ToastUtil.getShortToastByString(ProgramActivity.this,"刷新完成");
+                        swipe.setRefreshing(false);
+                        requestData();
                     }
                 }, 2000);
-            }
-
-            @Override
-            public void onLoading() {
-               /* swipeRefreshLayout.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeRefreshLayout.finishLoadmore();
-                        ToastUtil.getShortToastByString(ProgramActivity.this,"加载完成");
-                    }
-                }, 2000);*/
-            }
-
-            /**
-             * 监听下拉刷新过程中的状态改变
-             * @param percent 当前下拉距离的百分比（0-1）
-             * @param state 分三种状态{NOT_OVER_TRIGGER_POINT：还未到触发下拉刷新的距离；OVER_TRIGGER_POINT：已经到触发下拉刷新的距离；START：正在下拉刷新}
-             */
-            @Override
-            public void onRefreshPulStateChange(float percent, int state) {
-                switch (state) {
-                    case SHSwipeRefreshLayout.NOT_OVER_TRIGGER_POINT:
-                        swipeRefreshLayout.setRefreshViewText("下拉刷新");
-                        break;
-                    case SHSwipeRefreshLayout.OVER_TRIGGER_POINT:
-                        swipeRefreshLayout.setRefreshViewText("松开刷新");
-                        break;
-                    case SHSwipeRefreshLayout.START:
-                        requestData();
-                        textplan.setText("玩法选择");
-                        swipeRefreshLayout.setRefreshViewText("正在刷新");
-                        break;
-                }
-            }
-
-            @Override
-            public void onLoadmorePullStateChange(float percent, int state) {
-                switch (state) {
-                    case SHSwipeRefreshLayout.NOT_OVER_TRIGGER_POINT:
-                        textView.setText("上拉加载");
-                        break;
-                    case SHSwipeRefreshLayout.OVER_TRIGGER_POINT:
-                        textView.setText("松开加载");
-                        break;
-                    case SHSwipeRefreshLayout.START:
-                        textView.setText("正在加载...");
-                        break;
-                }
             }
         });
     }
 
+
     //请求数据
     public void requestData() {
+        enable(false);
         requestTime();
         requestOpenCurrentData();
         requestRecommend();
@@ -614,6 +564,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
                     }else if(success.equals("-1")){
                         Util.ShowMessageDialog(ProgramActivity.this);
                     }
+                    enable(true);
                 } catch (Exception e) {
                     e.printStackTrace();
                     checkDataState(false);
@@ -657,6 +608,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
                     }else if(success.equals("-1")){
                         Util.ShowMessageDialog(ProgramActivity.this);
                     }
+                    enable(true);
                 } catch (Exception e) {
                     e.printStackTrace();
                     checkDataState(false);
@@ -836,6 +788,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
                         msg.what = 4;
                         recomdHandler.sendMessage(msg);
                         checkDataState(true);
+                        enable(true);
                     }else if(success.equals("-1")){
                         Util.ShowMessageDialog(ProgramActivity.this);
                     }
@@ -1312,6 +1265,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
                     }else if(success.equals("-1")){
                         Util.ShowMessageDialog(ProgramActivity.this);
                     }
+                    enable(true);
                 } catch (Exception e) {
                     e.printStackTrace();
                     checkDataState(false);
@@ -1667,7 +1621,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
      * 网络未连接时,调用设置方法
      */
     private void setNetWork() {
-        swipeRefreshLayout.setVisibility(View.GONE);
+        swipe.setVisibility(View.GONE);
         nointernetLayout.setVisibility(View.VISIBLE);
         nodataLayout.setVisibility(View.GONE);
     }
@@ -1677,20 +1631,28 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
      * 设置一些自己的逻辑调用
      */
     private void isNetworkAvailable() {
-        swipeRefreshLayout.setVisibility(View.VISIBLE);
+        swipe.setVisibility(View.VISIBLE);
         nointernetLayout.setVisibility(View.GONE);
         nodataLayout.setVisibility(View.GONE);
     }
 
     private void setDatalayout(){
-        swipeRefreshLayout.setVisibility(View.GONE);
+        swipe.setVisibility(View.GONE);
         nodataLayout.setVisibility(View.VISIBLE);
         nointernetLayout.setVisibility(View.GONE);
     }
 
     private void isDataAvailable(){
-        swipeRefreshLayout.setVisibility(View.VISIBLE);
+        swipe.setVisibility(View.VISIBLE);
         nodataLayout.setVisibility(View.GONE);
         nointernetLayout.setVisibility(View.GONE);
+    }
+
+    private void enable(boolean enable) {
+        if (enable) {
+            loading.setVisibility(View.GONE);
+        } else {
+            loading.setVisibility(View.VISIBLE);
+        }
     }
 }

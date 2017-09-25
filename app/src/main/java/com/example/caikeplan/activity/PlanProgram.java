@@ -289,7 +289,7 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
                     PlanMessage planMessage;
                     for (int i = 0; i < data.length(); i++) {
                         jsonObject          = data.getJSONObject(i);
-                        String plan_num     = jsonObject.getString("plan_num");
+                        String plan_num     = jsonObject.getString("_plan_num");
                         String nums         = jsonObject.getString("nums");
                         String play_id      = jsonObject.getString("play_id");
                         String lottery_id   = jsonObject.getString("lottery_id");
@@ -311,7 +311,7 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
                             plan_num = dividerNum(plan_num);
                             SendMessage.getInstance().setSHUZU(ranges, nums_type, plan_num, issue + " " + nums, "  " + hit, index, true);
                         } else {
-                            if(cls_name.equals("单双")){
+                            /*if(cls_name.equals("单双")){
                                 if(plan_num.equals("1")){
                                     plan_num = "单";
                                 }else if(plan_num.equals("2")){
@@ -324,7 +324,7 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
                                 }else if(plan_num.equals("1")){
                                     plan_num = "大";
                                 }
-                            }
+                            }*/
                             SendMessage.getInstance().setSHUZU(ranges, nums_type, plan_num, issue + " " + nums, "  " + hit, index, false);
                         }
                         index++;
