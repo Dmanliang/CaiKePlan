@@ -38,7 +38,7 @@ public class Validator {
     /**
      * 正则表达式：验证手机号
      */
-    private static final String REGEX_PHONE_NUMBER = "^(0(10|2\\d|[3-9]\\d\\d)[- ]{0,3}\\d{7,8}|0?1[3584]\\d{9})$";
+    private static final String REGEX_PHONE_NUMBER = "^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|17[0-9]|18[0|1|2|3|5|6|7|8|9]|19[0-9])\\d{8}$";
 
     /**
      * 正则表达式：验证邮箱

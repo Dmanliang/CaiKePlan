@@ -60,6 +60,7 @@ import com.example.util.Util;
 import com.youth.xframe.base.XActivity;
 import com.youth.xframe.cache.XCache;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
@@ -190,7 +191,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
     //网络无法连接
     private RelativeLayout      nointernetLayout;
     private RelativeLayout      nodataLayout;
-    private Button              reload_button;
+    private Button              reload_button,dataload_button;
     private TextView            no_internet_text;
     //监测网络状
     private ConnectivityManager manager;
@@ -210,7 +211,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
         //开奖倒计时
         timerHandler.post(timeRunnable);
         //每60秒钟请求一次数据
-        datasHandler.postDelayed(dataRunnable, 60000);
+        datasHandler.post(dataRunnable);
     }
 
     @Override
@@ -308,8 +309,10 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
         nointernetLayout    =   (RelativeLayout)findViewById(R.id.reload_internet);
         nodataLayout        =   (RelativeLayout)findViewById(R.id.no_data);
         reload_button       =   (Button)findViewById(R.id.reload_button);
+        dataload_button     =   (Button)findViewById(R.id.dataload_button);
         no_internet_text    =   (TextView)findViewById(R.id.no_internet_text);
         reload_button.setOnClickListener(this);
+        dataload_button.setOnClickListener(this);
         title_layout.setOnClickListener(this);
         switch_plan.setOnClickListener(this);
         toolbar_title.setOnClickListener(this);
@@ -328,9 +331,9 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
         k3layout.setVisibility(View.GONE);
         mlistLotteryTitle = setLotteryTitleData();
         initSwipeRefreshLayout();
-        requestData();
         setLookGridView();
         setPlanGridView();
+        requestPlanData();
         SendMessage.getInstance().setLotteryName(lottery_name);
     }
 
@@ -360,6 +363,12 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
         enable(false);
         requestTime();
         requestOpenCurrentData();
+        requestRecommend();
+        requestPlanContent();
+    }
+
+    public void requestPlanData(){
+        enable(false);
         requestRecommend();
         requestPlanContent();
     }
@@ -507,12 +516,23 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
     public void requestRecommend() {
         OKHttpManager okHttpManager = new OKHttpManager();
         Map<String,String> map = new HashMap<>();
+        map.put("user_id",UserMessage.getInstance().getUser_id());
         map.put("lottery_id",lotteryId);
+        map.put("os_type","1");
         okHttpManager.setToken(UserMessage.getInstance().getToken());
         okHttpManager.post(Constants.API + Constants.RECOMMEND, map, new OnNetRequestCallback() {
             @Override
             public void onFailed(String reason) {
-                checkDataState(false);
+                try {
+                    JSONObject jsonObject = new JSONObject(reason);
+                    String success = jsonObject.getString("success");
+                    checkDataState(false);
+                    if (success.equals("-1")) {
+                        Util.ShowMessageDialog(ProgramActivity.this);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -561,8 +581,6 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
                         msg.what = 1;
                         recomdHandler.sendMessage(msg);
                         checkDataState(true);
-                    }else if(success.equals("-1")){
-                        Util.ShowMessageDialog(ProgramActivity.this);
                     }
                     enable(true);
                 } catch (Exception e) {
@@ -580,6 +598,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
         Map<String,String> map1 = new HashMap<>();
         map1.put("user_id",UserMessage.getInstance().getUser_id());
         map1.put("lottery_ids",lotteryId);
+        map1.put("os_type","1");
         okHttpManager1.setToken(UserMessage.getInstance().getToken());
         okHttpManager1.post(Constants.API + Constants.LAST_RESULT, map1, new OnNetRequestCallback() {
             @Override
@@ -605,8 +624,6 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
                         numList = nums.split(",");
                         showData();
                         checkDataState(true);
-                    }else if(success.equals("-1")){
-                        Util.ShowMessageDialog(ProgramActivity.this);
                     }
                     enable(true);
                 } catch (Exception e) {
@@ -621,6 +638,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
         Map<String,String> map2 = new HashMap<>();
         map2.put("user_id",UserMessage.getInstance().getUser_id());
         map2.put("lottery_ids",lotteryId);
+        map2.put("os_type","1");
         okHttpManager2.setToken(UserMessage.getInstance().getToken());
         okHttpManager2.post(Constants.API + Constants.OPEN_LOTTERY, map2, new OnNetRequestCallback() {
             @Override
@@ -640,8 +658,6 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
                         expect_time_now = id.getString("expect_time");
                         setNowMessage(isue_now,expect_time_now);
                         checkDataState(true);
-                    }else if(success.equals("-1")){
-                        Util.ShowMessageDialog(ProgramActivity.this);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -728,6 +744,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
         Map<String,String> map = new HashMap<>();
         map.put("user_id",UserMessage.getInstance().getUser_id());
         map.put("lottery_id",lotteryId);
+        map.put("os_type","1");
         okHttpManager.setToken(UserMessage.getInstance().getToken());
         okHttpManager.post(Constants.API + Constants.PLAN_CONTENT, map, new OnNetRequestCallback() {
             @Override
@@ -887,6 +904,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
         Map<String,String> map = new HashMap<>();
         map.put("user_id",UserMessage.getInstance().getUser_id());
         map.put("plan_id",plan_id);
+        map.put("os_type","1");
         httpManager.setToken(UserMessage.getInstance().getToken());
         httpManager.post(Constants.API + Constants.SCHEME_PLAN, map, new OnNetRequestCallback() {
             @Override
@@ -1089,8 +1107,10 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
         pickerView = new OptionsPickerView.Builder(this, new OptionsPickerView.OnOptionsSelectListener() {
             @Override
             public void onOptionsSelect(int options1, final int options2, int options3, View v) {
-                textplan.setText(options2Items.get(options1).get(options2) + options3Items.get(options1).get(options2).get(options3));
-                requestSelectPlanData(options1,options2,options3);
+                if(options2Items.get(options1).get(options2)!=null && options3Items.get(options1).get(options2).get(options3)!=null){
+                    textplan.setText(options2Items.get(options1).get(options2) + options3Items.get(options1).get(options2).get(options3));
+                    requestSelectPlanData(options1,options2,options3);
+                }
             }
         })
                 .setTitleText("玩法选择")
@@ -1380,7 +1400,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
             if (programActivity != null) {
                 programActivity.requestTime();
                 programActivity.requestOpenCurrentData();
-                programActivity.datasHandler.postDelayed(programActivity.dataRunnable, 60000);
+                programActivity.datasHandler.postDelayed(programActivity.dataRunnable, 15000);
             }
         }
 
@@ -1482,7 +1502,6 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
                 requestOpenCurrentData();
             }
         }
-
     }
 
     @Override
@@ -1492,6 +1511,9 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
                 if (pickerView != null) {
                     pickerView.show();
                 }
+                break;
+            case R.id.dataload_button:
+                requestData();
                 break;
             case R.id.toolbar_title:
                 showLotteryTitle();

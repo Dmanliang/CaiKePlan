@@ -25,7 +25,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class PersonalCopy extends BaseActivity implements OnClickListener{
+public class  PersonalCopy extends BaseActivity implements OnClickListener{
 
 	private RelativeLayout 		personalcopy_toolbar;
 	private RelativeLayout      toolbar_container;

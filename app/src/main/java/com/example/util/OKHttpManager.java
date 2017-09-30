@@ -146,7 +146,7 @@ public class OKHttpManager implements Callback {
     @Override
     public void onFailure(okhttp3.Call call, IOException e) {
         Message m = mMHandler.obtainMessage();
-        m.obj = "网络出现了问题，请稍后重试";
+        m.obj = "服务器或网络出现了问题，请稍后重试";
         m.what = FAILED;
         mMHandler.sendMessage(m);
     }
@@ -165,7 +165,7 @@ public class OKHttpManager implements Callback {
             message.obj = res;
         } catch (Exception e) {
             message.what = NONE;
-            message.obj = "网络数据出现了问题，请稍后重试";
+            message.obj = "服务器或网络出现了问题，请稍后重试";
         }finally {
             mMHandler.sendMessage(message);
         }

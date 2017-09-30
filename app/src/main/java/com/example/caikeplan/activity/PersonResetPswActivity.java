@@ -89,6 +89,7 @@ public class PersonResetPswActivity extends BaseActivity implements View.OnClick
             map.put("operator_id",operator_id);
             map.put("token",UserMessage.getInstance().getToken());
             map.put("new_password", Util.md5(new_password));
+            map.put("os_type","1");
             mPresenter.updatePassword(map);
         }
     }

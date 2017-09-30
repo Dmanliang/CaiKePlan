@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
-
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
@@ -8,8 +7,8 @@ android {
         applicationId "com.example.caikeplan"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 5
-        versionName "5.1"
+        versionCode 6
+        versionName "6.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 

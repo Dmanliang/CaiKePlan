@@ -57,6 +57,7 @@ public class ManagerActivity extends BaseActivity implements View.OnClickListene
     public void requestData(){
         map.put("user_id",UserMessage.getInstance().getUser_id());
         map.put("token",UserMessage.getInstance().getToken());
+        map.put("os_type","1");
         mPresenter.managerlist(map);
     }
 

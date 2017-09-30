@@ -40,9 +40,11 @@ import com.example.getJson.HttpTask;
 import com.example.personal.PersonalCopy;
 import com.example.util.OKHttpManager;
 import com.example.util.OnNetRequestCallback;
+import com.example.util.Util;
 import com.youth.xframe.cache.XCache;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -168,6 +170,7 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
         map.put("plan_id",plan_id);
         map.put("s_id",s_id);
         map.put("is_jcp",is_jcp);
+        map.put("os_type","1");
         httpManager.setToken(UserMessage.getInstance().getToken());
         httpManager.post(Constants.API + Constants.PLAN_FAVORITE, map, new OnNetRequestCallback() {
             @Override
@@ -189,6 +192,7 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
         map.put("user_id",user_id);
         map.put("plan_id",plan_id);
         map.put("s_id",s_id);
+        map.put("os_type","1");
         httpManager.setToken(UserMessage.getInstance().getToken());
         httpManager.post(Constants.API + Constants.PLAN_FAVORITE, map, new OnNetRequestCallback() {
             @Override
@@ -268,13 +272,23 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
         map.put("plan_id",plan_id);
         map.put("s_id",s_id);
         map.put("page_size","59");
+        map.put("os_type","1");
         map.put("user_id",UserMessage.getInstance().getUser_id());
         okHttpManager.setToken(UserMessage.getInstance().getToken());
         okHttpManager.post(Constants.API + Constants.PLAN_RUSULT, map, new OnNetRequestCallback() {
             @Override
             public void onFailed(String reason) {
-                btn_copy.setClickable(false);
-                btn_edit.setClickable(false);
+                try {
+                    JSONObject jsonObject = new JSONObject(reason);
+                    String success = jsonObject.getString("success");
+                    btn_copy.setClickable(false);
+                    btn_edit.setClickable(false);
+                    if (success.equals("-1")) {
+                        Util.ShowMessageDialog(PlanProgram.this);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override

@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.example.base.Constants;
 import com.example.caikeplan.R;
 import com.example.caikeplan.logic.ToastUtil;
+import com.example.caikeplan.logic.message.PayMessage;
 import com.example.caikeplan.logic.message.UserMessage;
 import com.example.caikeplan.logic.message.VauleMessage;
 import com.example.getJson.HttpTask;
@@ -56,12 +57,14 @@ public class RechargeActivity extends BaseActivity implements View.OnClickListen
     private TextView        toolbar_title;
     private TextView        recharge_username;
     private ListView        recharge_listview;
-    private ImageView       zhifu_close;
+    private ListView        pay_listview;
     private Button          button_recharge;
     private RechargeAdapter rechargeAdapter;
+    private PayAdapter      payAdapter;
     private EditText        daili_recharge_time;
     private TextView        daili_new_value;
     private List<VauleMessage>  vauleMessageList = new ArrayList<>();
+    private List<PayMessage>    payMessagesList = new ArrayList<>();
     private String[]        olds = {"￥240","￥480","￥960"};
     private int             month = 0;
     private int             selectPosition = -1;//用于记录用户选择的变量
@@ -69,9 +72,15 @@ public class RechargeActivity extends BaseActivity implements View.OnClickListen
     private String          payChannel="21";
     private PopupWindow     zhifuwindow;
     private View            zhifuview;
-    private Button          weixin,zhifubao;
     private int             allmoney = 0;
     private int             money = 0;
+    private int[]           pay_images  = {R.drawable.icon_weixin,R.drawable.icon_alipay};
+    private String[]        describes   = {"推荐安装微信5.0及以上的账户的使用","推荐有支付宝账号的用户使用"};
+    private String[]        pay_names   = {"微信支付","支付宝"};
+    private String[]        pay_payChannel = {"21","30"};
+    private int             payposition = -1;
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,6 +123,15 @@ public class RechargeActivity extends BaseActivity implements View.OnClickListen
                     rechargeAdapter.notifyDataSetChanged();
                 }
             });
+        }
+        setPayData();
+    }
+
+    public void setPayData(){
+        PayMessage payMessage;
+        for(int i=0;i<pay_images.length;i++){
+            payMessage = new PayMessage(pay_images[i],describes[i],pay_names[i],pay_payChannel[i]);
+            payMessagesList.add(payMessage);
         }
     }
 
@@ -160,6 +178,7 @@ public class RechargeActivity extends BaseActivity implements View.OnClickListen
         map.put("user_id",UserMessage.getInstance().getUser_id());
         map.put("month",month+"");
         map.put("payChannel",payChannel);
+        map.put("os_type","1");
         httpManager.post(Constants.API + Constants.RECHARGE, map, new OnNetRequestCallback() {
             @Override
             public void onFailed(String reason) {
@@ -222,12 +241,20 @@ public class RechargeActivity extends BaseActivity implements View.OnClickListen
     }
 
     public void setZhifuView(View view){
-        weixin = (Button)view.findViewById(R.id.weixin);
-        zhifubao = (Button)view.findViewById(R.id.zhifubao);
-        zhifu_close =  (ImageView)view.findViewById(R.id.zhifu_close);
-        weixin.setOnClickListener(this);
-        zhifubao.setOnClickListener(this);
-        zhifu_close.setOnClickListener(this);
+        pay_listview = (ListView)view.findViewById(R.id.pay_listview);
+        payAdapter = new PayAdapter(this,payMessagesList);
+        pay_listview.setAdapter(payAdapter);
+        payAdapter.notifyDataSetChanged();
+        pay_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                payposition = position;
+                payAdapter.notifyDataSetChanged();
+                zhifuwindow.dismiss();
+                payChannel = payMessagesList.get(position).getPay_payChannel();
+                requestPayData();
+            }
+        });
     }
 
     @Override
@@ -262,19 +289,6 @@ public class RechargeActivity extends BaseActivity implements View.OnClickListen
                     }
                 }
                 break;
-            case R.id.weixin:
-                zhifuwindow.dismiss();
-                payChannel = "21";
-                requestPayData();
-                break;
-            case R.id.zhifubao:
-                zhifuwindow.dismiss();
-                payChannel = "30";
-                requestPayData();
-                break;
-            case R.id.zhifu_close:
-                zhifuwindow.dismiss();
-                break;
         }
     }
 
@@ -283,6 +297,65 @@ public class RechargeActivity extends BaseActivity implements View.OnClickListen
             loading.setVisibility(View.GONE);
         } else {
             loading.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public class PayAdapter extends BaseAdapter {
+        private Context context;
+        private List<PayMessage>  payMessageList;
+        private LayoutInflater mInflater;
+        public PayAdapter(Context context,List<PayMessage> mList){
+            this.context = context;
+            this.payMessageList = mList;
+            mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
+        @Override
+        public int getCount() {
+            return payMessageList.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return position;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            PayViewHolder viewHolder = null;
+            if(convertView == null){
+                convertView = mInflater.inflate(R.layout.item_pay,parent,false);
+                viewHolder = new PayViewHolder();
+                viewHolder.pay_name         = (TextView)convertView.findViewById(R.id.pay_name);
+                viewHolder.pay_describe     = (TextView)convertView.findViewById(R.id.pay_describe);
+                viewHolder.pay_icon         = (ImageView)convertView.findViewById(R.id.icon_pay);
+                viewHolder.pay_radiobutton  = (RadioButton)convertView.findViewById(R.id.pay_radiobutton);
+                viewHolder.pay_layout       = (RelativeLayout) convertView.findViewById(R.id.pay_layout);
+                convertView.setTag(viewHolder);
+            }else{
+                viewHolder = (PayViewHolder)convertView.getTag();
+            }
+            viewHolder.pay_name.setText(payMessageList.get(position).getPay_name());
+            viewHolder.pay_describe.setText(payMessageList.get(position).getPay_describe());
+            viewHolder.pay_icon.setBackgroundResource(payMessageList.get(position).getPay_icon());
+            if(payposition == position){
+                viewHolder.pay_radiobutton.setChecked(true);
+            }
+            else{
+                viewHolder.pay_radiobutton.setChecked(false);
+            }
+            return convertView;
+        }
+
+        public class PayViewHolder{
+            public TextView         pay_name,pay_describe;
+            public ImageView        pay_icon;
+            public RadioButton      pay_radiobutton;
+            public RelativeLayout   pay_layout;
         }
     }
 
@@ -348,6 +421,5 @@ public class RechargeActivity extends BaseActivity implements View.OnClickListen
             public RadioButton      recharge_radiobutton;
             public RelativeLayout   recharger_layout;
         }
-
     }
 }

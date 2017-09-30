@@ -111,6 +111,7 @@ public class ManagerPersonActivity extends BaseActivity implements View.OnClickL
                 update_map.put("operator_id",operator_id);
                 update_map.put("power_add",power_add);
                 update_map.put("due_time",due_time);
+                update_map.put("os_type","1");
                 mPresenter.updateperson(update_map);
                 break;
             case R.id.person_delete_button:
@@ -120,6 +121,7 @@ public class ManagerPersonActivity extends BaseActivity implements View.OnClickL
                 delete_map.put("operator_id",operator_id);
                 delete_map.put("power_add",power_add);
                 delete_map.put("due_time",due_time);
+                delete_map.put("os_type","1");
                 mPresenter.deleteperson(delete_map);
                 break;
             case R.id.resetpassword_layout:

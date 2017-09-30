@@ -8,33 +8,38 @@
     <RelativeLayout
         android:id="@+id/zhif_layout"
         android:layout_width="match_parent"
-        android:layout_height="172dp"
+        android:layout_height="242dp"
         android:background="@color/whileBack"
-        android:layout_alignParentBottom="true"
-        android:gravity="center">
-        <Button
-            android:id="@+id/zhifubao"
-            android:layout_width="135dp"
-            android:layout_height="81dp"
-            android:background="@drawable/icon_alipay"
-            android:layout_centerVertical="true"
-            />
-        <Button
-            android:id="@+id/weixin"
-            android:layout_width="135dp"
-            android:layout_height="81dp"
-            android:background="@drawable/icon_weixin"
-            android:layout_toRightOf="@+id/zhifubao"
-            android:layout_marginLeft="23dp"
-            android:layout_centerVertical="true"
-            />
+        android:layout_alignParentBottom="true">
+        <RelativeLayout
+            android:id="@+id/paytitle_layout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.1dp"
+                android:background="@color/whileDivider"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="请选择支付方式"
+                android:layout_centerInParent="true"
+                android:textSize="16sp"
+                android:textColor="@color/balckText"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.1dp"
+                android:background="@color/whileDivider"
+                android:layout_alignParentBottom="true"
+                />
+        </RelativeLayout>
+       <ListView
+           android:id="@+id/pay_listview"
+           android:layout_width="match_parent"
+           android:layout_height="190dp"
+           android:divider="@color/whileDivider"
+           android:dividerHeight="0.1dp"
+           android:layout_below="@+id/paytitle_layout"/>
     </RelativeLayout>
-    <ImageView
-        android:id="@+id/zhifu_close"
-        android:layout_width="15dp"
-        android:layout_height="15dp"
-        android:background="@drawable/close"
-        android:layout_alignRight="@+id/zhif_layout"
-        android:layout_alignTop="@+id/zhif_layout"
-        android:layout_margin="15dp"/>
 </RelativeLayout>

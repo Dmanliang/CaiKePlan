@@ -50,6 +50,7 @@ import com.example.util.Util;
 import com.youth.xframe.cache.XCache;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
@@ -175,9 +176,11 @@ public class CopyPlan extends BaseActivity implements View.OnClickListener{
         pickerView = new OptionsPickerView.Builder(this, new OptionsPickerView.OnOptionsSelectListener() {
             @Override
             public void onOptionsSelect(int options1, final int options2, int options3, View v) {
-                copyList.clear();
-                textplan.setText(options2Items.get(options1).get(options2) + options3Items.get(options1).get(options2).get(options3));
-                requestSelectPlanData(options1,options2,options3);
+                if(options2Items.get(options1).get(options2)!=null && options3Items.get(options1).get(options2).get(options3)!=null){
+                    copyList.clear();
+                    textplan.setText(options2Items.get(options1).get(options2) + options3Items.get(options1).get(options2).get(options3));
+                    requestSelectPlanData(options1,options2,options3);
+                }
             }
         })
                 .setTitleText("玩法选择")
@@ -245,10 +248,19 @@ public class CopyPlan extends BaseActivity implements View.OnClickListener{
         Map<String,String> map = new HashMap<>();
         map.put("user_id",UserMessage.getInstance().getUser_id());
         map.put("plan_s_ids",plan_s_ids);
+        map.put("os_type","1");
         okHttpManager.post(Constants.API + Constants.COPY_PLAN, map, new OnNetRequestCallback() {
             @Override
             public void onFailed(String reason) {
-
+                try {
+                    JSONObject jsonObject = new JSONObject(reason);
+                    String success = jsonObject.getString("success");
+                    if (success.equals("-1")) {
+                        Util.ShowMessageDialog(CopyPlan.this);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -292,8 +304,6 @@ public class CopyPlan extends BaseActivity implements View.OnClickListener{
                         Message msg = new Message();
                         msg.what = 4;
                         recomdHandler.sendMessage(msg);
-                    }else if(success.equals("-1")){
-                        Util.ShowMessageDialog(CopyPlan.this);
                     }
                     enable(true);
                 }catch (Exception e){
@@ -398,11 +408,20 @@ public class CopyPlan extends BaseActivity implements View.OnClickListener{
         Map<String,String> map = new HashMap<>();
         map.put("lottery_id",lotteryId);
         map.put("user_id",UserMessage.getInstance().getUser_id());
+        map.put("os_type","1");
         httpManager.setToken(UserMessage.getInstance().getToken());
         httpManager.post(Constants.API + Constants.HOT_SCHEME, map, new OnNetRequestCallback() {
             @Override
             public void onFailed(String reason) {
-
+                try {
+                    JSONObject jsonObject = new JSONObject(reason);
+                    String success = jsonObject.getString("success");
+                    if (success.equals("-1")) {
+                        Util.ShowMessageDialog(CopyPlan.this);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -426,10 +445,7 @@ public class CopyPlan extends BaseActivity implements View.OnClickListener{
                         Message msg = new Message();
                         msg.what = 2;
                         recomdHandler.sendMessage(msg);
-                    }else if(success.equals("-1")){
-                        Util.ShowMessageDialog(CopyPlan.this);
                     }
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -446,10 +462,19 @@ public class CopyPlan extends BaseActivity implements View.OnClickListener{
         Map<String,String> map = new HashMap<>();
         map.put("lottery_id",lotteryId);
         map.put("user_id",UserMessage.getInstance().getUser_id());
+        map.put("os_type","1");
         okHttpManager.post(Constants.API + Constants.PLAN_CONTENT, map, new OnNetRequestCallback() {
             @Override
             public void onFailed(String reason) {
-
+                try {
+                    JSONObject jsonObject = new JSONObject(reason);
+                    String success = jsonObject.getString("success");
+                    if (success.equals("-1")) {
+                        Util.ShowMessageDialog(CopyPlan.this);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -498,8 +523,6 @@ public class CopyPlan extends BaseActivity implements View.OnClickListener{
                         Message msg = new Message();
                         msg.what = 1;
                         recomdHandler.sendMessage(msg);
-                    }else if(success.equals("-1")){
-                        Util.ShowMessageDialog(CopyPlan.this);
                     }
                     enable(true);
                 } catch (Exception e) {
@@ -521,10 +544,19 @@ public class CopyPlan extends BaseActivity implements View.OnClickListener{
         Map<String,String> map = new HashMap<>();
         map.put("user_id",UserMessage.getInstance().getUser_id());
         map.put("plan_id",plan_id);
+        map.put("os_type","1");
         okHttpManager.post(Constants.API + Constants.SCHEME_PLAN, map, new OnNetRequestCallback() {
             @Override
             public void onFailed(String reason) {
-
+                try {
+                    JSONObject jsonObject = new JSONObject(reason);
+                    String success = jsonObject.getString("success");
+                    if (success.equals("-1")) {
+                        Util.ShowMessageDialog(CopyPlan.this);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -548,8 +580,6 @@ public class CopyPlan extends BaseActivity implements View.OnClickListener{
                         Message msg = new Message();
                         msg.what = 2;
                         recomdHandler.sendMessage(msg);
-                    }else if(success.equals("-1")){
-                        Util.ShowMessageDialog(CopyPlan.this);
                     }
                     enable(true);
                 } catch (Exception e) {

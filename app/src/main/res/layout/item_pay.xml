@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="63dp">
+    <RelativeLayout
+        android:id="@+id/pay_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/icon_pay"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            />
+        <TextView
+            android:id="@+id/pay_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="支付名称"
+            android:textColor="@color/balckText"
+            android:textSize="16dp"
+            android:layout_toRightOf="@+id/icon_pay"
+            android:layout_marginLeft="19dp"
+            android:layout_marginTop="9dp"/>
+
+        <TextView
+            android:id="@+id/pay_describe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="支付描述"
+            android:textColor="@color/grayText3"
+            android:textSize="14dp"
+            android:layout_toRightOf="@+id/icon_pay"
+            android:layout_below="@+id/pay_name"
+            android:layout_marginLeft="19dp"
+            android:layout_marginTop="9dp"/>
+
+        <RadioButton
+            android:id="@+id/pay_radiobutton"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:button="@null"
+            android:background="@drawable/selector_pay_radio"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="15dp"
+            android:checked="false"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"/>
+    </RelativeLayout>
+
+</RelativeLayout>

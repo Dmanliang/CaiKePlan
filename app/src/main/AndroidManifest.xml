@@ -64,7 +64,6 @@
 
         <service android:name="com.example.base.DownLoadService"/>
 
-        <activity android:name=".activity.LotteryActivity"/>
         <activity android:name=".activity.DataActivity"/>
         <activity android:name=".activity.ProgramActivity"/>
         <activity android:name=".activity.CopyPlan"/>

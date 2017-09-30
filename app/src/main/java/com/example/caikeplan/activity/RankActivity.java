@@ -40,6 +40,7 @@ import com.example.util.OnNetRequestCallback;
 import com.example.util.Util;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -101,6 +102,7 @@ public class RankActivity extends BaseActivity implements View.OnClickListener,E
     public void requestMessage(){
         messagemap.put("user_id", UserMessage.getInstance().getUser_id());
         messagemap.put("token",UserMessage.getInstance().getToken());
+        messagemap.put("os_type","1");
         mPresenter.message(messagemap);
     }
 
@@ -111,11 +113,22 @@ public class RankActivity extends BaseActivity implements View.OnClickListener,E
         Map<String,String> map = new HashMap<>();
         map.put("user_id",UserMessage.getInstance().getUser_id());
         map.put("lottery_id",lottery_ids[position]);
+        map.put("os_type","1");
         httpManager.setToken(UserMessage.getInstance().getToken());
         httpManager.post(Constants.API + Constants.HOT_SCHEME, map, new OnNetRequestCallback() {
             @Override
             public void onFailed(String reason) {
-                checkDataState(false);
+                try {
+                    JSONObject jsonObject = new JSONObject(reason);
+                    String success = jsonObject.getString("success");
+                    checkDataState(false);
+                    enable(true);
+                    if (success.equals("-1")) {
+                        Util.ShowMessageDialog(RankActivity.this);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -153,10 +166,7 @@ public class RankActivity extends BaseActivity implements View.OnClickListener,E
                         recomdHandler.sendMessage(msg);
                         checkDataState(true);
                         enable(true);
-                    }else if(success.equals("-1")){
-                        Util.ShowMessageDialog(RankActivity.this);
                     }
-
                 } catch (Exception e) {
                     e.printStackTrace();
                     checkDataState(false);

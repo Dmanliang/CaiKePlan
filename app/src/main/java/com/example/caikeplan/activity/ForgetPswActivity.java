@@ -99,6 +99,7 @@ public class ForgetPswActivity extends BaseActivity implements View.OnClickListe
         }else{
             Map<String, String> mapsend = new HashMap<>();
             mapsend.put("phone",phone);
+            mapsend.put("os_type","1");
             mPresenter.sendCode(mapsend);
         }
     }
@@ -124,6 +125,7 @@ public class ForgetPswActivity extends BaseActivity implements View.OnClickListe
             mapbind.put("phone",phone);
             mapbind.put("code",code);
             mapbind.put("password",md5(newpaswd));
+            mapbind.put("os_type","1");
             mPresenter.resetPassword(mapbind);
         }
     }

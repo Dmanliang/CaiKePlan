@@ -107,6 +107,7 @@ public class BanPhoneActivity extends BaseActivity implements View.OnClickListen
         }else{
             Map<String, String> mapsend = new HashMap<>();
             mapsend.put("phone",phone);
+            mapsend.put("os_type","1");
             mPresenter.sendCode(mapsend);
         }
     }
@@ -117,6 +118,7 @@ public class BanPhoneActivity extends BaseActivity implements View.OnClickListen
             Map<String, String> map = new HashMap<>();
             map.put("type","1");
             map.put("phone",phone);
+            map.put("os_type","1");
             mPresenter.validuser(map);
         }else{
             phones_check.setText("");
@@ -140,6 +142,7 @@ public class BanPhoneActivity extends BaseActivity implements View.OnClickListen
             mapbind.put("phone",phone);
             mapbind.put("code",code);
             mapbind.put("token",token);
+            mapbind.put("os_type","1");
             mPresenter.banphone(mapbind);
         }
     }

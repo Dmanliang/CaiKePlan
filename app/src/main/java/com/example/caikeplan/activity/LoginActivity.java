@@ -185,6 +185,7 @@ public class LoginActivity extends XActivity implements View.OnClickListener,Ent
             Map<String, String> map = new HashMap<>();
             map.put("user_msg", usname);
             map.put("password", md5(password));
+            map.put("os_type","1");
             xCache.put("username",usname);
             xCache.put("password",password);
             mPresenter.login(map);

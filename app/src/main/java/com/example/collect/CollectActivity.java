@@ -16,6 +16,7 @@ import com.example.caikeplan.activity.CopyPlan;
 import com.example.caikeplan.activity.PlanProgram;
 import com.example.caikeplan.activity.RankActivity;
 import com.example.caikeplan.logic.MyGridView;
+import com.example.caikeplan.logic.ToastUtil;
 import com.example.caikeplan.logic.adapter.TitleGrildAdapter;
 import com.example.caikeplan.logic.message.LotteryTitle;
 import com.example.caikeplan.logic.message.PlanBaseMessage;
@@ -25,19 +26,27 @@ import com.example.util.OKHttpManager;
 import com.example.util.OnNetRequestCallback;
 import com.example.util.Util;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -237,17 +246,27 @@ public class CollectActivity extends BaseActivity implements OnClickListener {
 		return lottery_titleList;
 	}
 
-	public void requestCollection(){
+	public final void requestCollection(){
 		enable(false);
 		OKHttpManager okHttpManager = new OKHttpManager();
 		okHttpManager.setToken(UserMessage.getInstance().getToken());
 		Map<String,String> map = new HashMap<>();
 		map.put("user_id",UserMessage.getInstance().getUser_id());
+		map.put("os_type","1");
 		okHttpManager.post(Constants.API+Constants.FIND_FAVORITE, map, new OnNetRequestCallback() {
 			@Override
 			public void onFailed(String reason) {
-				checkDataState(false);
-				enable(true);
+				try {
+					JSONObject jsonObject = new JSONObject(reason);
+					String success = jsonObject.getString("success");
+					checkDataState(false);
+					enable(true);
+					if (success.equals("-1")) {
+						Util.ShowMessageDialog(CollectActivity.this);
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
 			}
 
 			@Override
@@ -279,9 +298,6 @@ public class CollectActivity extends BaseActivity implements OnClickListener {
 						adapter.notifyDataSetChanged();
 						checkDataState(true);
 						checkCollectState();
-						enable(true);
-					}else if(success.equals("-1")){
-						Util.ShowMessageDialog(CollectActivity.this);
 						enable(true);
 					}
 				} catch (JSONException e) {
@@ -294,15 +310,27 @@ public class CollectActivity extends BaseActivity implements OnClickListener {
 	}
 
 	public void requestSelectLottery(String lotteryid){
+		enable(false);
 		OKHttpManager okHttpManager = new OKHttpManager();
 		okHttpManager.setToken(UserMessage.getInstance().getToken());
 		Map<String,String> map = new HashMap<>();
 		map.put("user_id",UserMessage.getInstance().getUser_id());
 		map.put("lottery_id",lotteryid);
+		map.put("os_type","1");
 		okHttpManager.post(Constants.API + Constants.FIND_FAVORITE, map, new OnNetRequestCallback() {
 			@Override
 			public void onFailed(String reason) {
-				checkDataState(false);
+				try {
+					JSONObject jsonObject = new JSONObject(reason);
+					String success = jsonObject.getString("success");
+					checkDataState(false);
+					enable(true);
+					if (success.equals("-1")) {
+						Util.ShowMessageDialog(CollectActivity.this);
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
 			}
 
 			@Override
@@ -317,27 +345,25 @@ public class CollectActivity extends BaseActivity implements OnClickListener {
 						ArrayList<CollectBean> list = new ArrayList<>();
 						for (int i = 0; i < jsonArray.length(); i++) {
 							jsonObject = jsonArray.getJSONObject(i);
-							String plan_id 		= 	jsonObject.getString("plan_id");
-							String play_id 		= 	jsonObject.getString("play_id");
-							String lottery_id   = 	jsonObject.getString("lottery_id");
-							String log_id 		= 	jsonObject.getString("log_id");
-							String plan_name 	= 	jsonObject.getString("plan_name");
-							String s_id			= 	jsonObject.getString("s_id");
-							String schemem_name	= 	jsonObject.getString("scheme_name");
-							String lottery_name = 	jsonObject.getString("lottery_name");
-							String cls_name		=	jsonObject.getString("cls_name");
-							newsBean = new CollectBean(lottery_name,cls_name,plan_id,play_id,log_id,plan_name,s_id,schemem_name,lottery_id,true);
+							String plan_id = jsonObject.getString("plan_id");
+							String play_id = jsonObject.getString("play_id");
+							String lottery_id = jsonObject.getString("lottery_id");
+							String log_id = jsonObject.getString("log_id");
+							String plan_name = jsonObject.getString("plan_name");
+							String s_id = jsonObject.getString("s_id");
+							String schemem_name = jsonObject.getString("scheme_name");
+							String lottery_name = jsonObject.getString("lottery_name");
+							String cls_name = jsonObject.getString("cls_name");
+							newsBean = new CollectBean(lottery_name, cls_name, plan_id, play_id, log_id, plan_name, s_id, schemem_name, lottery_id, true);
 							list.add(newsBean);
 						}
 						newsBeanList.clear();
 						newsBeanList.addAll(list);
 						adapter.notifyDataSetChanged();
 						checkDataState(true);
+						enable(true);
 						checkCollectState();
-					}else if(success.equals("-1")){
-						Util.ShowMessageDialog(CollectActivity.this);
 					}
-
 				} catch (JSONException e) {
 					checkDataState(false);
 					e.printStackTrace();
@@ -459,5 +485,200 @@ public class CollectActivity extends BaseActivity implements OnClickListener {
 		} else {
 			loading.setVisibility(View.VISIBLE);
 		}
+	}
+
+	public class CollectListAdapter extends BaseAdapter {
+		private List<CollectBean> 	mList;
+		private LayoutInflater mInflater;
+		private Context context;
+		private LayoutInflater 		inflater;
+		private ViewHolder 			viewholder;
+		private boolean             mBusy;
+
+		// 构造方法
+		public CollectListAdapter(Context context, List<CollectBean> data) {
+			mList = data;
+			this.context = context;
+			mInflater = LayoutInflater.from(context);
+		}
+
+		public boolean ismBusy() {
+			return mBusy;
+		}
+
+		public void setmBusy(boolean mBusy) {
+			this.mBusy = mBusy;
+		}
+
+		//添加收藏
+		public void requestAddURL(String user_id, String plan_id ,String s_id) {
+			OKHttpManager okHttpManager = new OKHttpManager();
+			okHttpManager.setToken(UserMessage.getInstance().getToken());
+			Map<String,String> map = new HashMap<>();
+			map.put("user_id",user_id);
+			map.put("plan_id",plan_id);
+			map.put("s_id",s_id);
+			map.put("os_type","1");
+			okHttpManager.post(Constants.API + Constants.PLAN_FAVORITE, map, new OnNetRequestCallback() {
+				@Override
+				public void onFailed(String reason) {
+					ToastUtil.getShortToastByString(context,"收藏失败");
+				}
+
+				@Override
+				public void onSuccess(String response) {
+					ToastUtil.getShortToastByString(context,"收藏成功");
+				}
+			},true);
+		}
+
+		//删除收藏
+		public void requestDeleteURL(String user_id,String log_id){
+			OKHttpManager okHttpManager = new OKHttpManager();
+			okHttpManager.setToken(UserMessage.getInstance().getToken());
+			Map<String,String> map = new HashMap<>();
+			map.put("user_id",user_id);
+			map.put("log_id",log_id);
+			map.put("os_type","1");
+			okHttpManager.post(Constants.API+Constants.DELETE_PLAN, map, new OnNetRequestCallback() {
+				@Override
+				public void onFailed(String reason) {
+					ToastUtil.getShortToastByString(context,"取消收藏失败");
+				}
+
+				@Override
+				public void onSuccess(String response) {
+					ToastUtil.getShortToastByString(context,"取消收藏成功");
+				}
+			},true);
+		}
+
+		@Override
+		public int getCount() {
+			return mList.size();
+		}
+
+		@Override
+		public Object getItem(int position) {
+			return mList.get(position);
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+
+		@Override
+		public View getView(final int position, View convertView, ViewGroup parent)
+		{
+			if (convertView == null) {
+				viewholder = new ViewHolder();
+				convertView 			= mInflater.inflate(R.layout.program_collect_list_item, null,false);
+				viewholder.plan_name 	= (TextView) convertView.findViewById(R.id.program_collect_plan_name);
+				viewholder.scheme_name 	= (TextView) convertView.findViewById(R.id.program_collect_scheme_name);
+				viewholder.DelectStar 	= (CheckBox)convertView.findViewById(R.id.program_collect_list_item_star);
+				viewholder.program_collect_layout 	= (RelativeLayout) convertView.findViewById(R.id.program_collect_layout);
+				viewholder.DelectStar.setTag(position);
+				viewholder.program_collect_layout.setTag(position);
+				convertView.setTag(viewholder);
+			} else {
+				viewholder = (ViewHolder) convertView.getTag();
+			}
+			if(!mBusy) {
+				viewholder.scheme_name.setText(mList.get(position).getScheme_name()+mList.get(position).getPlan_name().substring(0,2));
+				if(mList.get(position).getLottery_id().equals("1")){
+					viewholder.plan_name.setText("(重庆时时彩"+mList.get(position).getPlan_name()+")");
+				}else if(mList.get(position).getLottery_id().equals("3")){
+					viewholder.plan_name.setText("(天津时时彩"+mList.get(position).getPlan_name()+")");
+				}else if(mList.get(position).getLottery_id().equals("7")){
+					viewholder.plan_name.setText("(新疆时时彩"+mList.get(position).getPlan_name()+")");
+				}else if(mList.get(position).getLottery_id().equals("27")){
+					viewholder.plan_name.setText("(北京PK10"+mList.get(position).getPlan_name()+")");
+				}else if(mList.get(position).getLottery_id().equals("9")){
+					viewholder.plan_name.setText("(广东11选5"+mList.get(position).getPlan_name()+")");
+				}else if(mList.get(position).getLottery_id().equals("22")){
+					viewholder.plan_name.setText("(上海11选5"+mList.get(position).getPlan_name()+")");
+				}else if(mList.get(position).getLottery_id().equals("10")){
+					viewholder.plan_name.setText("(山东11选5"+mList.get(position).getPlan_name()+")");
+				}else if(mList.get(position).getLottery_id().equals("23")){
+					viewholder.plan_name.setText("(江苏快3"+mList.get(position).getPlan_name()+")");
+				}
+				if(mList.get(position).getIsCollected()){
+					viewholder.DelectStar.setChecked(true);
+				}else{
+					viewholder.DelectStar.setChecked(false);
+				}
+		/*	viewholder.program_collect_layout.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					if (mList.get(position).getIsCollected()) {
+						mList.get(position).setCollected(false);
+						viewholder.DelectStar.setChecked(false);
+						requestDeleteURL(UserMessage.getInstance().getUser_id(),mList.get(position).getLog_id());
+					}else{
+						viewholder.DelectStar.setChecked(true);
+						mList.get(position).setCollected(true);
+						requestAddURL(UserMessage.getInstance().getUser_id(), mList.get(position).getLottery_id(),mList.get(position).getPlan_id(),mList.get(position).getS_id());
+					}
+				}
+			});*/
+				viewholder.DelectStar.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						if (mList.get(position).getIsCollected()) {
+							mList.get(position).setCollected(false);
+							ShowMessageDialog(position);
+
+						}else{
+							mList.get(position).setCollected(true);
+						}
+					}
+				});
+			}
+			return convertView;
+		}
+
+		public void ShowMessageDialog(final int position){
+			AlertDialog.Builder builder = new AlertDialog.Builder(context);
+			builder.setTitle("系统提示")//设置对话框标题
+					.setMessage("确定要取消收藏吗?")//设置显示的内容
+					.setPositiveButton("确定",new DialogInterface.OnClickListener() {//添加确定按钮
+						@Override
+						public void onClick(DialogInterface dialog, int which) {//确定按钮的响应事件
+							requestDeleteURL(UserMessage.getInstance().getUser_id(),mList.get(position).getLog_id());
+							requestCollection();
+						}
+					}).setNegativeButton("取消",new DialogInterface.OnClickListener() {//添加返回按钮
+				@Override
+				public void onClick(DialogInterface dialog, int which) {//响应事件
+					mList.get(position).setCollected(true);
+					CollectListAdapter.super.notifyDataSetChanged();
+				}
+			});
+			//在按键响应事件中显示此对话框;//在按键响应事件中显示此对话框
+			AlertDialog alertDialog = builder.create();
+			alertDialog.setCancelable(false);
+			alertDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+				@Override
+				public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event)
+				{
+					if (keyCode == KeyEvent.KEYCODE_SEARCH) {
+						return true;
+					}
+					else {
+						return false; //默认返回 false
+					}
+				}
+			});
+			alertDialog.show();
+		}
+
+
+		public class ViewHolder {
+			public TextView plan_name,scheme_name;
+			public CheckBox DelectStar;
+			public RelativeLayout program_collect_layout;
+		}
+
 	}
 }

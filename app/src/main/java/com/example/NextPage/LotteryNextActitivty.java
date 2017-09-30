@@ -14,6 +14,7 @@ import com.example.caikeplan.R;
 import com.example.caikeplan.activity.BaseActivity;
 import com.example.caikeplan.activity.CopyPlan;
 import com.example.caikeplan.logic.message.UserMessage;
+import com.example.collect.CollectActivity;
 import com.example.getJson.HttpTask;
 import com.example.util.OKHttpManager;
 import com.example.util.OnNetRequestCallback;
@@ -127,10 +128,20 @@ public class LotteryNextActitivty extends BaseActivity implements OnClickListene
 		Map<String,String> map = new HashMap<>();
 		map.put("user_id",UserMessage.getInstance().getUser_id());
 		map.put("lottery_id",lottery_id);
+		map.put("os_type","1");
 		okHttpManager.post(Constants.API + Constants.LOTTERY_HISTOEY, map, new OnNetRequestCallback() {
 			@Override
 			public void onFailed(String reason) {
-
+				try {
+					JSONObject jsonObject = new JSONObject(reason);
+					String success = jsonObject.getString("success");
+					enable(true);
+					if (success.equals("-1")) {
+						Util.ShowMessageDialog(LotteryNextActitivty.this);
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
 			}
 
 			@Override

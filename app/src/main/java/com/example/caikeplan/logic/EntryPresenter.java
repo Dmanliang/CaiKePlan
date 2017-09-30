@@ -78,6 +78,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                             mView.onMessage(jsonObject.getString("message"));
                         }
                     } catch (JSONException e) {
+                        ToastUtil.getShortToastByString(context,reason);
                         e.printStackTrace();
                     }
                 }
@@ -113,6 +114,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                         mView.toHome(UserMessage.getInstance());
                     }
                 } catch (JSONException e) {
+                    ToastUtil.getShortToastByString(context,response);
                     mView.disableLoadingAnimation();
                     e.printStackTrace();
                 }
@@ -137,6 +139,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                         mView.onMessage(jsonObject.getString("message"));
                     }
                 } catch (JSONException e) {
+                    ToastUtil.getShortToastByString(context,reason);
                     e.printStackTrace();
                 }
             }
@@ -168,6 +171,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                         mView.onMessage(jsonObject.getString("message"));
                     }
                 } catch (JSONException e) {
+                    ToastUtil.getShortToastByString(context,reason);
                     e.printStackTrace();
                 }
             }
@@ -180,6 +184,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                         JSONObject jsonObject = new JSONObject(response);
                         mView.onMessage(jsonObject.getString("message"));
                     } catch (JSONException e) {
+                        ToastUtil.getShortToastByString(context,response);
                         e.printStackTrace();
                     }
                     mView.toSuccessAction("code");
@@ -205,6 +210,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                         mView.onMessage(jsonObject.getString("message"));
                     }
                 } catch (JSONException e) {
+                    ToastUtil.getShortToastByString(context,reason);
                     e.printStackTrace();
                 }
             }
@@ -238,6 +244,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                         mView.onMessage(jsonObject.getString("message"));
                     }
                 } catch (JSONException e) {
+                    ToastUtil.getShortToastByString(context,reason);
                     e.printStackTrace();
                 }
             }
@@ -271,6 +278,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                         mView.onMessage(jsonObject.getString("message"));
                     }
                 } catch (JSONException e) {
+                    ToastUtil.getShortToastByString(context,reason);
                     e.printStackTrace();
                 }
             }
@@ -303,6 +311,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                         mView.toFailAction(jsonObject.getString("message"));
                     }
                 } catch (JSONException e) {
+                    ToastUtil.getShortToastByString(context,reason);
                     e.printStackTrace();
                 }
             }
@@ -328,6 +337,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                             }
                         }
                     }catch (Exception e){
+                        ToastUtil.getShortToastByString(context,response);
                         e.printStackTrace();
                     }
                 }
@@ -353,6 +363,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                         mView.toFailAction(jsonObject.getString("message"));
                     }
                 } catch (JSONException e) {
+                    ToastUtil.getShortToastByString(context,reason);
                     e.printStackTrace();
                 }
             }
@@ -378,6 +389,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                         UserMessage.getInstance().getPersonlist().addAll(list);
                         mView.toSuccessAction("");
                     }catch (Exception e){
+                        ToastUtil.getShortToastByString(context,response);
                         e.printStackTrace();
                     }
                 }
@@ -403,6 +415,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                         mView.toFailAction(jsonObject.getString("message"));
                     }
                 } catch (JSONException e) {
+                    ToastUtil.getShortToastByString(context,reason);
                     e.printStackTrace();
                 }
             }
@@ -436,6 +449,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                         mView.toFailAction(jsonObject.getString("message"));
                     }
                 } catch (JSONException e) {
+                    ToastUtil.getShortToastByString(context,reason);
                     e.printStackTrace();
                 }
             }
@@ -466,10 +480,12 @@ public class EntryPresenter implements EntryContract.Presenter {
                     JSONObject jsonObject = new JSONObject(reason);
                     if (jsonObject.getInt("success") == HttpStatusCode.UNKNOWN_ERROR) {
                         mView.onMessage(HttpStatusCode.MESSAGE_DES);
+                        Util.ShowMessageDialog(context);
                     } else {
                         mView.toFailAction(jsonObject.getString("message"));
                     }
                 } catch (JSONException e) {
+                    ToastUtil.getShortToastByString(context,reason);
                     e.printStackTrace();
                 }
             }
@@ -503,6 +519,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                             mView.onMessage("");
                         }
                     }catch (Exception e){
+                        ToastUtil.getShortToastByString(context,response);
                         e.printStackTrace();
                     }
 
@@ -529,6 +546,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                         mView.onMessage(jsonObject.getString("message"));
                     }
                 } catch (JSONException e) {
+                    ToastUtil.getShortToastByString(context,reason);
                     e.printStackTrace();
                 }
             }
@@ -560,6 +578,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                         mView.onMessage(jsonObject.getString("message"));
                     }
                 } catch (JSONException e) {
+                    ToastUtil.getShortToastByString(context,reason);
                     e.printStackTrace();
                 }
             }
@@ -595,6 +614,7 @@ public class EntryPresenter implements EntryContract.Presenter {
                         mView.toHome(UserMessage.getInstance());
                     }
                 } catch (JSONException e) {
+                    ToastUtil.getShortToastByString(context,response);
                     mView.disableLoadingAnimation();
                     e.printStackTrace();
                 }

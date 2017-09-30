@@ -156,6 +156,7 @@ public class AddUserActivity extends BaseActivity implements View.OnClickListene
                 map.put("username",username);
                 map.put("password",Util.md5(newpsw));
                 map.put("hours_count",hours_count);
+                map.put("os_type","1");
                 mPresenter.addusers(map);
             }else{
                 Map<String, String> map = new HashMap<>();
@@ -164,6 +165,7 @@ public class AddUserActivity extends BaseActivity implements View.OnClickListene
                 map.put("power_add",power_add);
                 map.put("username",username);
                 map.put("password",Util.md5(newpsw));
+                map.put("os_type","1");
                 mPresenter.addusers(map);
             }
         }

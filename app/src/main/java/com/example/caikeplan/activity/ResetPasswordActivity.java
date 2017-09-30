@@ -99,6 +99,7 @@ public class ResetPasswordActivity extends BaseActivity implements View.OnClickL
             map.put("token",UserMessage.getInstance().getToken());
             map.put("old_password",Util.md5(old_password));
             map.put("new_password", Util.md5(new_password));
+            map.put("os_type","1");
             mPresenter.setNewPassword(map);
         }
     }

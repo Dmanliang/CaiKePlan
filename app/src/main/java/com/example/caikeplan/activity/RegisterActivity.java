@@ -108,6 +108,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         }else{
             Map<String, String> mapsend = new HashMap<>();
             mapsend.put("phone",phone);
+            mapsend.put("os_type","1");
             mPresenter.sendCode(mapsend);
         }
     }
@@ -122,6 +123,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 Map<String, String> map = new HashMap<>();
                 map.put("type","1");
                 map.put("phone",phone);
+                map.put("os_type","1");
                 mPresenter.validuser(map);
             }
         }else{
@@ -135,6 +137,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             Map<String, String> map = new HashMap<>();
             map.put("username",user_name);
             map.put("type","0");
+            map.put("os_type","1");
             mPresenter.validuser(map);
         }else{
             username_check.setText("");
@@ -170,6 +173,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             map.put("password", md5(password));
             map.put("phone", phone);
             map.put("code", phoneCode);
+            map.put("os_type","1");
             mPresenter.register(map);
         }
     }

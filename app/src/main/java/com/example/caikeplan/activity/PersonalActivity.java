@@ -142,6 +142,7 @@ public class PersonalActivity extends XActivity implements View.OnClickListener,
     public void requestMessage(){
         messagemap.put("user_id",UserMessage.getInstance().getUser_id());
         messagemap.put("token",UserMessage.getInstance().getToken());
+        messagemap.put("os_type","1");
         mPresenter.message(messagemap);
     }
 
@@ -157,8 +158,6 @@ public class PersonalActivity extends XActivity implements View.OnClickListener,
                     if(success.equals("1")) {
                         due_time = jsonObject.getString("due_time");
                         UserMessage.getInstance().setDue_time(due_time);
-                    }else if(success.equals("-1")){
-                        Util.ShowMessageDialog(PersonalActivity.this);
                     }
                 }catch (Exception e){
                     e.printStackTrace();
@@ -167,7 +166,6 @@ public class PersonalActivity extends XActivity implements View.OnClickListener,
 
             @Override
             public void taskFailed() {
-
             }
         });
     }
