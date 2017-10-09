@@ -282,7 +282,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
     @Override
     public void toHome(UserMessage userMessage) {
-        ShowMessageDialog(userMessage);
+        ShowMessageDialog();
     }
 
     @Override
@@ -328,26 +328,16 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         super.onDestroy();
     }
 
-    public void ShowMessageDialog(final UserMessage userMessage){
+    public void ShowMessageDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("系统提示")//设置对话框标题
-                .setMessage("注册成功！试用时间3小时!")//设置显示的内容
+                .setMessage("注册成功！请充值!")//设置显示的内容
                 .setPositiveButton("确定",new DialogInterface.OnClickListener() {//添加确定按钮
                     @Override
                     public void onClick(DialogInterface dialog, int which) {//确定按钮的响应事件
                         dialog.dismiss();
-                        Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                        Intent intent = new Intent(RegisterActivity.this, RechargeActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        Bundle bundle= new Bundle();
-                        bundle.putString("user_id",userMessage.getUser_id());
-                        bundle.putString("username",userMessage.getUsername());
-                        bundle.putString("token",userMessage.getToken());
-                        bundle.putString("role_id",userMessage.getRole_id());
-                        bundle.putString("due_time",userMessage.getDue_time());
-                        bundle.putString("phone",userMessage.getPhone());
-                        bundle.putString("power_add",userMessage.getPower_add());
-                        bundle.putString("parent_id",userMessage.getParent_id());
-                        intent.putExtras(bundle);
                         startActivity(intent);
                     }
                 });//在按键响应事件中显示此对话框
@@ -358,8 +348,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_SEARCH) {
                     return true;
-                }
-                else {
+                }else {
                     return false; //默认返回 false
                 }
             }

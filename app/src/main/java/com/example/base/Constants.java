@@ -7,8 +7,9 @@ package com.example.base;
 public class Constants {
     public static final int     POST            = 0;                                                        //post请求方式
     public static final int     GET             = 1;                                                        //get请求方式
-    public static final String  API             = "http://39.108.185.81:8001"; 					            //http://39.108.185.81:8001服务器地址
-    public static final String  API2            = "http://39.108.185.81:8001"; 					            //服务器地址
+    public static final String  API             = "http://39.108.133.173:9550" +
+            ""; 					            //http://39.108.185.81:8001服务器地址
+    public static final String  API2            = "http://39.108.133.173:9550"; 					            //服务器地址
     public static final String  API3            = "http://39.108.133.173:9550"; 					        //服务器地址
     public static final String  PLAYCLASS       ="/lottery/find_lottery_play_cls_list";                     //查询彩种玩法分类列表
     public static final String  PLAY_LIST       ="/lottery/find_lottery_play_list";                         //查询彩种玩法列表

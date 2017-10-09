@@ -102,7 +102,7 @@ public class LoginActivity extends XActivity implements View.OnClickListener,Ent
 
     public void initViews(){
         xCache = XCache.get(this);
-        if(xCache.getAsString("username")!=null || xCache.getAsString("password")!=null){
+        if(xCache.getAsString("username")!=null && xCache.getAsString("password")!=null){
             username=xCache.getAsString("username");
             password=xCache.getAsString("password");
         }else{
