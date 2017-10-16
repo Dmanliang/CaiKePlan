@@ -7,9 +7,8 @@ package com.example.base;
 public class Constants {
     public static final int     POST            = 0;                                                        //post请求方式
     public static final int     GET             = 1;                                                        //get请求方式
-    public static final String  API             = "http://39.108.133.173:9550" +
-            ""; 					            //http://39.108.185.81:8001服务器地址
-    public static final String  API2            = "http://39.108.133.173:9550"; 					            //服务器地址
+    public static final String  API             = "http://39.108.185.81:8001"; 					            //http://39.108.185.81:8001服务器地址
+    public static final String  API2            = "http://39.108.185.81:8001"; 					            //服务器地址
     public static final String  API3            = "http://39.108.133.173:9550"; 					        //服务器地址
     public static final String  PLAYCLASS       ="/lottery/find_lottery_play_cls_list";                     //查询彩种玩法分类列表
     public static final String  PLAY_LIST       ="/lottery/find_lottery_play_list";                         //查询彩种玩法列表
@@ -54,6 +53,6 @@ public class Constants {
     public static final String  ALL_TOOLS       ="/static/tool/index.html";                                 //总工具列表
     public static final String  ZST_DATA        ="/static/tool/zoushitu.html?lottery_id=";                  //走势图
     public static final String  RECHARGE        ="/recharge_entrance";                                      //充值
-    public static final String  RECHARGE_DUETIME="/recharge_result/due_time";                               //充值完时间更新
+    public static final String  RECHARGE_DUETIME="/user/due_time";                                          //充值完时间更新
 
 }

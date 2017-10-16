@@ -1,7 +1,6 @@
 package com.example.caikeplan.activity;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
@@ -12,10 +11,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -32,13 +28,11 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import com.example.NextPage.LotteryNextActitivty;
 import com.example.base.Constants;
 import com.example.caikeplan.R;
 import com.example.caikeplan.logic.OptionsPickerView;
-import com.example.caikeplan.logic.ToastUtil;
 import com.example.caikeplan.logic.WifiAdmin;
 import com.example.caikeplan.logic.adapter.HotAdapter;
 import com.example.caikeplan.logic.adapter.LookAdapter;
@@ -52,7 +46,6 @@ import com.example.caikeplan.logic.message.PlanBaseMessage;
 import com.example.caikeplan.logic.message.PlanTypeMessage;
 import com.example.caikeplan.logic.message.SendMessage;
 import com.example.caikeplan.logic.message.UserMessage;
-import com.example.caikeplan.logic.refresh.SHSwipeRefreshLayout;
 import com.example.getJson.HttpTask;
 import com.example.util.OKHttpManager;
 import com.example.util.OnNetRequestCallback;
@@ -80,7 +73,6 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
     private SwipeRefreshLayout swipe;
     private LinearLayout    title_layout;
     private RelativeLayout  program_toolbar;
-    private RelativeLayout  toolbar_container;
     private RelativeLayout  pk10layout;
     private RelativeLayout  k3layout;
     private RelativeLayout  lotterylayout;
@@ -119,7 +111,6 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
     private ProgressBar     openTimeProgress_k3;
     private MyGridView      planGridView;
     private MyGridView      lookGridView;
-  //  private MyGridView      hotGridView;
     private ArrayList<PlanTypeMessage>              options1Items       = new ArrayList<>();        //用于保存第一层选择器名称
     private ArrayList<ArrayList<String>>            options2Items       = new ArrayList<>();        //用于保存第二层选择器名称
     private ArrayList<ArrayList<ArrayList<String>>> options3Items       = new ArrayList<>();        //用于保存第三层选择器名称
@@ -128,7 +119,6 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
     private List<MainListBean>                      mainListBeen        = new ArrayList<>();        //用于保存请求所有计划玩法数据
     private List<PlanBaseMessage>   planList                            = new ArrayList<>();        //用于保存请求筛选后的数据
     private List<PlanBaseMessage>   lookList                            = new ArrayList<>();        //用于保存浏览后的数据
-    private List<PlanBaseMessage>   hotList                             = new ArrayList<>();        //用于保存请求热门的数据
     private List<PlanBaseMessage>   recommendList                       = new ArrayList<>();        //用于保存请求推荐的数据
     private String                  iss,tempIss,lastTime,templastTime;
     private boolean                 isNextOpen   = true;
@@ -147,9 +137,6 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
     private List<String>            tiplist3 = new ArrayList<>();
     private List<String>            tiplist4 = new ArrayList<>();
     private String                  lotteryId = "1";            //彩种id
-    private int                     play_cls = 1;               //彩种类别
-    private String                  play_id;                    //玩法id
-    private String                  plan_id;                    //计划id
     private String                  lottery_name    = "重庆时时彩";
     private String[]                lottery_title   = {"重庆时时彩", "天津时时彩", "新疆时时彩","上海11选5","广东11选5","山东11选5","北京PK10","",""};
     private String[]                lottery_ids     = {"1","3","7","22","9","10","27","",""};
@@ -163,7 +150,6 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
     private PopupWindow             titleWindow,videoWindow;
     private View        lottery_window,video_window;
     private WebView     video_webview;
-    private ImageView   video_close;
     private String      server_time;
     private String[]    numList;                //保存开奖号码
     private String      nums;                   //球码号
@@ -173,21 +159,11 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
     private String      isue_now;               //即将开奖期数
     private String      expect_time_now;        //下期开奖时间
     private int         allissues;              //总期数
-    private int         ps, db, sg;             //个位,十位,百位的开奖号码
-    private String      plan_name;              //计划名称
-    private String      big = "大", little = "小", doub = "双", sige = "单";
     public  SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
     private long        min, secd, maxtime, lastmin, lastsecd, processtime;
-    private String      tempPlay_cls    = "1";
-    private String      tempPlay_id     = "10001";
-    private String      tempPlan_id     = "1-10001-3-4";
-    private int         index=0;
     private int         lookindex=0;
-    private PlanTypeMessage     planTypeMessage = new PlanTypeMessage();
-    private PlanTypeMessage.BitBean bitBean = new PlanTypeMessage.BitBean();
     private XCache              xCache;
     private int                 cacheindex=0;
-    private boolean             isComing        = false;
     //网络无法连接
     private RelativeLayout      nointernetLayout;
     private RelativeLayout      nodataLayout;
@@ -197,7 +173,6 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
     private ConnectivityManager manager;
     //自动连接网
     private WifiAdmin           wifiAdmin;
-    private List<LotteryTitle>	lottery_titleList = new ArrayList<>();
     private GridView            titleGridView;
     private TitleGrildAdapter   titleGrildAdapter;
     @Override
@@ -334,6 +309,7 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
         setLookGridView();
         setPlanGridView();
         requestPlanData();
+        requestRecommend();
         SendMessage.getInstance().setLotteryName(lottery_name);
     }
 
@@ -374,50 +350,27 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
     }
 
     //添加浏览记录
-    public void addLookItem(int position,List<PlanBaseMessage> addlist){
-        if(lookList.size() == 9){
-            if(!repeat(addlist.get(position))){
+    public void addLookItem(int position,List<PlanBaseMessage> addlist) {
+        if (lookList.size() == 9) {
+            if (!repeat(addlist.get(position))) {
                 lookList.remove(lookindex);
-                xCache.remove(cacheindex+"");
+                xCache.remove(cacheindex + "");
                 lookList.add(addlist.get(position));
-                xCache.put(cacheindex+"",addlist.get(position));
-                cacheindex=(cacheindex+1)%9;
-                xCache.put("cacheindex",cacheindex+"");
+                xCache.put(cacheindex + "", addlist.get(position));
+                cacheindex = (cacheindex + 1) % 9;
+                xCache.put("cacheindex", cacheindex + "");
             }
-        }else{
-            if(!repeat(addlist.get(position))){
+        } else {
+            if (!repeat(addlist.get(position))) {
                 lookList.add(addlist.get(position));
-                xCache.put(cacheindex+"",addlist.get(position));
-                cacheindex=(cacheindex+1)%9;
+                xCache.put(cacheindex + "", addlist.get(position));
+                cacheindex = (cacheindex + 1) % 9;
             }
         }
         Message msg = new Message();
         msg.what = 3;
         recomdHandler.sendMessage(msg);
     }
-
-    //设置热门列表
-   /* public void setHotGridView() {
-        hotAdapter = new HotAdapter(this, hotList);
-        hotGridView.setAdapter(hotAdapter);
-        hotAdapter.notifyDataSetChanged();
-        hotGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                addLookItem(position,hotList);
-                Intent intent = new Intent(ProgramActivity.this, PlanProgram.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("plan_id", hotList.get(position).getPlan_id());
-                bundle.putString("s_id", hotList.get(position).getS_id());
-                bundle.putString("scheme_name", hotList.get(position).getScheme_name());
-                bundle.putString("plan_name",hotList.get(position).getPlan_name());
-                bundle.putString("cls_name",hotList.get(position).getCls_name());
-                bundle.putString("lottery_name",hotList.get(position).getLottery_name());
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        });
-    }*/
 
     //设置推荐列表
     public void setRecommend(int position){
@@ -697,44 +650,6 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
 
     }
 
-    //请求热门计划数据
-    public void requestHotPlan() {
-        hotList.clear();
-        HttpTask httpTask = new HttpTask();
-        httpTask.execute(Constants.API + Constants.HOT_SCHEME + lotteryId);
-        httpTask.setTaskHandler(new HttpTask.HttpTaskHandler() {
-            @Override
-            public void taskSuccessful(String json) {
-                try {
-                    JSONObject jsonObject = new JSONObject(json);
-                    JSONArray data = jsonObject.getJSONArray("data");
-                    PlanBaseMessage planBaseMessage;
-                    for (int i = 0; i < data.length(); i++) {
-                        jsonObject = data.getJSONObject(i);
-                        String scheme_name  = jsonObject.getString("scheme_name");
-                        String s_id         = jsonObject.getString("s_id");
-                        String plan_name    = jsonObject.getString("plan_name");
-                        String plan_id      = jsonObject.getString("plan_id");
-                        String cls_name     = jsonObject.getString("cls_name");
-                        planBaseMessage     = new PlanBaseMessage(SendMessage.getInstance().getLotteryName(),lotteryId, s_id, scheme_name, plan_id,plan_name,cls_name,"","0");
-                        hotList.add(planBaseMessage);
-                    }
-                    Message msg = new Message();
-                    msg.what = 2;
-                    recomdHandler.sendMessage(msg);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            }
-
-            @Override
-            public void taskFailed() {
-
-            }
-        });
-    }
-
     public void requestPlanContent(){
         planSecondSelectList.clear();
         mainListBeen.clear();
@@ -815,82 +730,6 @@ public class ProgramActivity extends XActivity implements View.OnClickListener {
                 }
             }
         },true);
-    }
-
-    //请求计划玩法数据
-    public void requestPlanList() {
-        HttpTask httpTask = new HttpTask();
-        httpTask.execute(Constants.API + Constants.PLAN + lotteryId);
-        httpTask.setTaskHandler(new HttpTask.HttpTaskHandler() {
-            @Override
-            public void taskSuccessful(String json) {
-                try {
-                    JSONObject jsonObject = new JSONObject(json);
-                    JSONArray data = jsonObject.getJSONArray("data");
-                    for (int i = 0; i < data.length(); i++) {
-                        jsonObject = data.getJSONObject(i);
-                        MainListBean newsBean = new MainListBean();
-                        plan_name = jsonObject.getString("plan_name");
-                        newsBean.setPlan_name(plan_name);
-                        String cls      = jsonObject.getString("play_cls");
-                        String plan_id  = jsonObject.getString("plan_id");
-                        String play_id  = jsonObject.getString("play_id");
-                        newsBean.setPlan_id(jsonObject.getString("plan_id"));
-                        newsBean.setPlay_id(jsonObject.getString("play_id"));
-                        newsBean.setIssue_count(jsonObject.getString("issue_count"));
-                        newsBean.setNum_count(jsonObject.getString("num_count"));
-                        newsBean.setPlay_cls(cls);
-                        newsBean.setIsCollect(jsonObject.getString("iscollect"));
-                        newsBean.setLottery_id(jsonObject.getString("lottery_id"));
-                        newsBean.setLog_id(jsonObject.getString("log_id"));
-                        if (tempPlay_cls.equals(cls)) {
-                            if (tempPlay_id.equals(play_id)) {
-                                mainListBeen.add(newsBean);
-                                bitBean.setName(plan_name.substring(2,4));
-                                bitBean.getIssues_list().add(plan_name.substring(4,plan_name.length()));
-                            } else {
-                                planSecondSelectList.add(mainListBeen);
-                                mainListBeen = new ArrayList<>();
-                                mainListBeen.add(newsBean);
-                                tempPlay_id = play_id;
-                                planTypeMessage.getBitBeen().add(bitBean);
-                                bitBean = new PlanTypeMessage.BitBean();
-                                bitBean.newList();
-                                bitBean.setName(plan_name.substring(2,4));
-                                bitBean.getIssues_list().add(plan_name.substring(4,plan_name.length()));
-                            }
-                        } else {
-                            planSecondSelectList.add(mainListBeen);
-                            planAllSelectList.add(planSecondSelectList);
-                            mainListBeen = new ArrayList<>();
-                            planSecondSelectList = new ArrayList<>();
-                            mainListBeen.add(newsBean);
-                            tempPlay_cls = cls;
-                            tempPlay_id = play_id;
-                            planTypeMessage.getBitBeen().add(bitBean);
-                            bitBean = new PlanTypeMessage.BitBean();
-                            planTypeMessage.setName(types[index]);
-                            options1Items.add(planTypeMessage);
-                            planTypeMessage = new PlanTypeMessage();
-                            index++;
-                        }
-                    }
-                    planAllSelectList.add(planSecondSelectList);
-                    planTypeMessage.setName(types[index]);
-                    options1Items.add(planTypeMessage);
-                    setSelectTitle();
-                    Message msg = new Message();
-                    msg.what = 4;
-                    recomdHandler.sendMessage(msg);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void taskFailed() {
-            }
-        });
     }
 
     //请求筛选后的计划玩法数据

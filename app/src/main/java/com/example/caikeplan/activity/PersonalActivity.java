@@ -155,7 +155,7 @@ public class PersonalActivity extends XActivity implements View.OnClickListener,
                 try{
                     JSONObject jsonObject = new JSONObject(json);
                     String success  = jsonObject.getString("success");
-                    if(success.equals("1")) {
+                    if(success.equals("true")) {
                         due_time = jsonObject.getString("due_time");
                         UserMessage.getInstance().setDue_time(due_time);
                     }

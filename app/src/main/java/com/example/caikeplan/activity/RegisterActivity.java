@@ -48,7 +48,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     private RelativeLayout  loading;
     private EntryPresenter  mPresenter;
     private boolean         ispswOpen = false;
-    private boolean         isExist = true;
+    private boolean         isExist = false;
     private boolean         isnameExist = true;
     private String          user_name,phone;
     private String          codetype = " ";
@@ -331,12 +331,12 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     public void ShowMessageDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("系统提示")//设置对话框标题
-                .setMessage("注册成功！请充值!")//设置显示的内容
+                .setMessage("注册成功,您有20分钟的试用时间!")//设置显示的内容
                 .setPositiveButton("确定",new DialogInterface.OnClickListener() {//添加确定按钮
                     @Override
                     public void onClick(DialogInterface dialog, int which) {//确定按钮的响应事件
                         dialog.dismiss();
-                        Intent intent = new Intent(RegisterActivity.this, RechargeActivity.class);
+                        Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                     }

@@ -79,7 +79,7 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
     private TextView            save_copy;
     private EditText            copy_plan_title, copy_content_title, rangestitle, planstitle, numstitle, resultstitle, edit_end_time, copylist, edit_end_text;
     private PopupWindow         windowItem, copyeditWindow,loadItem;
-    private View                copyView, header,loadview;
+    private View                copyView, header,loadview,itemview;
     private Bundle              bundle;
     private ListView            planlistView;
     private List<PlanMessage>   mList = new ArrayList<>();
@@ -362,23 +362,36 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
         },true);
     }
 
+
+
+    //复制子选项内容
+    public void copyitemContent() {
+        String textNum = mList.get(0).getPlan_num();
+        String copyContext = textNum;
+        ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        cm.setText(copyContext);
+        ToastUtil.getShortToastByString(PlanProgram.this, "复制成功");
+    }
+
     //显示选项复制弹框
-    public void showItem(View view, int pos) {
+    public void showItem(int pos) {
         int flag = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+       //         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-        view = PlanProgram.this.getLayoutInflater().inflate(R.layout.program_next_detailed_dialog, null);
-        windowItem = new PopupWindow(view, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
+        itemview = PlanProgram.this.getLayoutInflater().inflate(R.layout.program_next_detailed_dialog, null);
+        windowItem = new PopupWindow(itemview, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
+        windowItem.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
+        windowItem.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         windowItem.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#80000000")));
         windowItem.setOutsideTouchable(true);
-        view.setSystemUiVisibility(flag);
+        itemview.setSystemUiVisibility(flag);
         windowItem.update();
         if (windowItem.isShowing()) {
             windowItem.dismiss();
         } else {
-            windowItem.showAtLocation(view, Gravity.CENTER, 0, 0);
+            windowItem.showAtLocation(itemview, Gravity.CENTER, 0, 0);
             windowItem.setFocusable(true);
            /* windowItem.getContentView().setOnTouchListener(new View.OnTouchListener() {
                 @Override
@@ -389,12 +402,12 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
                 }
             });*/
         }
-        scrollView = (BorderScrollView)view.findViewById(R.id.myScrollView);
-        copy_ranges    = (TextView) view.findViewById(R.id.copy_ranges);
-        copy_context   = (TextView) view.findViewById(R.id.copy_context);
-        copy_plays     = (TextView) view.findViewById(R.id.copy_plays);
-        copy_close       = (Button) view.findViewById(R.id.copy_close);
-        copy_button      = (Button) view.findViewById(R.id.copy_button);
+        scrollView     = (BorderScrollView)itemview.findViewById(R.id.myScrollView);
+        copy_ranges    = (TextView) itemview.findViewById(R.id.copy_ranges);
+        copy_context   = (TextView) itemview.findViewById(R.id.copy_context);
+        copy_plays     = (TextView) itemview.findViewById(R.id.copy_plays);
+        copy_close     = (Button) itemview.findViewById(R.id.copy_close);
+        copy_button    = (Button) itemview.findViewById(R.id.copy_button);
         textRanges = mList.get(pos).getRanges();
         textPlays = scheme_name + plan_name;
         textNum = mList.get(pos).getPlan_num();
@@ -418,15 +431,6 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
             }
         });
 
-    }
-
-    //复制子选项内容
-    public void copyitemContent() {
-        String textNum = mList.get(0).getPlan_num();
-        String copyContext = textNum;
-        ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-        cm.setText(copyContext);
-        ToastUtil.getShortToastByString(PlanProgram.this, "复制成功");
     }
 
     //显示复制编辑弹框
@@ -564,7 +568,7 @@ public class PlanProgram extends BaseActivity implements View.OnClickListener {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position >= 1) {
-                    showItem(view, position - 1);
+                    showItem(position - 1);
                 }
             }
         });
